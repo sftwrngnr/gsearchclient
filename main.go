@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	url := "https://www.google.com/search?q=go+tutorials&gl=us&hl=en"
+	url := "https://www.google.com/search?q=dentists+in+henderson%2C+nevada&oq=dentists"
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Fatal(err)
