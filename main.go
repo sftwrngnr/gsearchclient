@@ -2,29 +2,22 @@ package main
 
 import (
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
-	"log"
-	"net/http"
+	g "github.com/serpapi/google-search-results-golang"
 )
 
 func main() {
-	url := "https://www.google.com/search?q=dentists+in+henderson%2C+nevada&oq=dentists"
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		log.Fatal(err)
+	parameter := map[string]string{
+		"q":             "dentists",
+		"location":      "Henderson, Nevada, United States",
+		"hl":            "en",
+		"gl":            "us",
+		"google_domain": "google.com",
 	}
 
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36")
-	client := &http.Client{}
-	res, err := client.Do(req)
+	search := g.NewGoogleSearch(parameter, "330b3fbe3c76655dfa738ffade25801d699dce3d45384a9a0643d89ba90c01df")
+	results, err := search.GetJSON()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
-	defer res.Body.Close()
-
-	doc, err := goquery.NewDocumentFromReader(res.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(doc.Find("body").Text())
+	fmt.Println(results["organic_results"])
 }
