@@ -1,11 +1,11 @@
-package main
+package searcher
 
 import (
 	"fmt"
 	g "github.com/serpapi/google-search-results-golang"
 )
 
-func main() {
+func searchdata() {
 	parameter := map[string]string{
 		"q":             "dentists",
 		"location":      "Henderson, Nevada, United States",
@@ -20,4 +20,5 @@ func main() {
 		fmt.Println(err)
 	}
 	fmt.Println(results["organic_results"])
+
 }
