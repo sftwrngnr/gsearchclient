@@ -1,5 +1,5 @@
 build:
-	go build -o bin/gsearch cmd/main.go
+	go build -o bin/gsearch ./main.go
 
 run:
-	go run cmd/main.go
+	go run ./main.go
