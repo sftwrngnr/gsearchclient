@@ -11,6 +11,13 @@ import (
 )
 
 // dbinitCmd represents the dbinit command
+var initFlg bool
+var LoadPath string
+var dbHost string
+var dbName string
+var dbUser string
+var dbPass string
+
 var dbinitCmd = &cobra.Command{
 	Use:   "dbinit",
 	Short: "A brief description of your command",
@@ -22,6 +29,9 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("dbinit called")
+		if initFlg {
+			fmt.Printf("Init called!\n")
+		}
 	},
 }
 
@@ -37,4 +47,12 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// dbinitCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	dbinitCmd.Flags().BoolVarP(&initFlg, "Init", "I", false, "Initialize database with imported data")
+	dbinitCmd.Flags().StringVarP(&LoadPath, "loadpath", "L", "../data/", "Path to import files")
+	dbinitCmd.Flags().StringVarP(&dbHost, "host", "H", "localhost", "Host")
+	dbinitCmd.Flags().StringP("port", "p", "", "Port")
+	dbinitCmd.Flags().StringVarP(&dbUser, "username", "U", "", "Username")
+	dbinitCmd.Flags().StringVarP(&dbPass, "password", "P", "", "Password")
+	dbinitCmd.Flags().StringVarP(&dbName, "database", "d", "", "Database name")
+
 }
