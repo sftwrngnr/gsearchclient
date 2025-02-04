@@ -44,10 +44,13 @@ to quickly create a Cobra application.`,
 			Password: dbPass,
 			Port:     dbPort,
 		}
-		dbcdata.Connect()
-		defer dbcdata.Close()
 		// Import states
-		states := &data_importers.States{DBconn: dbcdata}
+		err := dbcdata.Connect()
+		if err != nil {
+			fmt.Printf("Error connecting to DB: %v\n", err)
+			return
+		}
+		states := &data_importers.States{DB: dbcdata.DB}
 		nload, err := LoadTables(states)
 		if err != nil {
 			fmt.Printf("Error loading tables: %v\n", err)

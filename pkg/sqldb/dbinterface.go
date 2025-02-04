@@ -1,10 +1,10 @@
 package sqldb
 
 import (
-	"database/sql"
 	"errors"
 	"fmt"
-	_ "github.com/jackc/pgx/v5/stdlib"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 type DBConnData struct {
@@ -13,7 +13,7 @@ type DBConnData struct {
 	User     string
 	Password string
 	Port     int16
-	db       *sql.DB
+	DB       *gorm.DB
 }
 
 func (dbc *DBConnData) CheckError(err error) {
@@ -23,41 +23,36 @@ func (dbc *DBConnData) CheckError(err error) {
 }
 
 func (dbc *DBConnData) Ping() error {
-	return dbc.db.Ping()
+	return nil
 }
 
-func (dbc *DBConnData) Connect() (bool, error) {
-	var rval bool
+func (dbc *DBConnData) Connect() error {
 	var err error
 
 	if (dbc.DBName == "") || (dbc.User == "") || (dbc.Password == "") {
 		err = errors.New("Missing database connection parameters")
 	}
 	if err == nil {
-		psqlconn := fmt.Sprintf("host=%s port=%d database=%s user=%s password=%s  sslmode=disable", dbc.Host, dbc.Port, dbc.DBName, dbc.User, dbc.Password)
+		dsn := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%d sslmode=disable", dbc.User, dbc.Password, dbc.DBName, dbc.Host, dbc.Port)
 
 		// open database
-		dbc.db, err = sql.Open("pgx", psqlconn)
-		dbc.CheckError(err)
-
-		// check db
-		err = dbc.Ping()
-		dbc.CheckError(err)
-
+		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		if err != nil {
+			fmt.Println("Error connecting to database")
+			return err
+		}
 		fmt.Println("Connected!")
-		rval = true
+		dbc.DB = db
 	}
 
-	return rval, err
+	return err
 
 }
 
 func (dbc *DBConnData) DeleteTableRecs(tablename string) error {
-	sqlstmt := fmt.Sprintf("DELETE FROM %s", tablename)
-	_, err := dbc.db.Exec(sqlstmt)
-	return err
+	return nil
 }
 
 func (dbc *DBConnData) Close() {
-	dbc.db.Close()
+
 }

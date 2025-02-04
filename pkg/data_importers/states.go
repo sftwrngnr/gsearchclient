@@ -3,7 +3,7 @@ package data_importers
 import (
 	"bufio"
 	"fmt"
-	"github.com/sftwrngnr/gsearchclient/pkg/sqldb"
+	"gorm.io/gorm"
 	"os"
 	"path/filepath"
 	"strings"
@@ -11,7 +11,16 @@ import (
 
 type States struct {
 	inputfile string
-	DBconn    *sqldb.DBConnData
+	DB        *gorm.DB
+}
+
+type states struct {
+	gorm.Model
+	ID      int32  `gorm:"id"`
+	Abbrev  string `gorm:"abbrev"`
+	Name    string `gorm:"name"`
+	Capitol string `gorm:"capitol"`
+	Region  string `gorm:"region"`
 }
 
 func (s *States) Init(dirname string) bool {
@@ -40,7 +49,9 @@ func (s *States) Import() (int, error) {
 		if numin > 0 {
 			// parse csv line
 			v := strings.Split(fs.Text(), ",")
-			fmt.Printf("States.Import(%d): %s (%s)\n", numin, v[1], v[0])
+			fmt.Printf("[%d]: %s (%s) [%s,%s]\n", numin, v[1], v[0], v[2], v[3])
+			newState := states{Abbrev: v[1], Name: v[0], Capitol: v[2], Region: v[3]}
+			s.DB.Create(&newState)
 		}
 		numin++
 	}
