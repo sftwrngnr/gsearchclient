@@ -12,5 +12,5 @@ func (s States) Init(dirname string) bool {
 
 func (s States) Import() (int, error) {
 	fmt.Printf("States.Import()\n")
-
+	return 0, nil
 }

@@ -5,9 +5,10 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"errors"
 	"fmt"
+	"github.com/sftwrngnr/gsearchclient/pkg/data_importers"
 	"github.com/sftwrngnr/gsearchclient/pkg/sqldb"
-
 	"github.com/spf13/cobra"
 )
 
@@ -18,7 +19,7 @@ var dbHost string
 var dbName string
 var dbUser string
 var dbPass string
-var dbPort int8
+var dbPort int16
 
 var dbinitCmd = &cobra.Command{
 	Use:   "dbinit",
@@ -47,8 +48,22 @@ to quickly create a Cobra application.`,
 		dbcdata.Connect()
 		defer dbcdata.Close()
 		// Import states
+		var states data_importers.States
+		nload, err := LoadTables(states)
+		if err != nil {
+			fmt.Printf("Error loading tables: %v\n", err)
+		}
+		fmt.Printf("Loaded %d states into state table.\n", nload)
 
 	},
+}
+
+func LoadTables(myClass data_importers.Importer) (int, error) {
+	if myClass.Init(LoadPath) {
+		return myClass.Import()
+	} else {
+		return 0, errors.New("Error with intialization.")
+	}
 }
 
 func init() {
@@ -66,7 +81,7 @@ func init() {
 	dbinitCmd.Flags().BoolVarP(&initFlg, "Init", "I", false, "Initialize database with imported data")
 	dbinitCmd.Flags().StringVarP(&LoadPath, "loadpath", "L", "../data/", "Path to import files")
 	dbinitCmd.Flags().StringVarP(&dbHost, "host", "H", "localhost", "Host")
-	dbinitCmd.Flags().Int8VarP(&dbPort, "port", "p", 5432, "Port")
+	dbinitCmd.Flags().Int16VarP(&dbPort, "port", "p", 5432, "Port")
 	dbinitCmd.Flags().StringVarP(&dbUser, "username", "U", "crawler", "Username")
 	dbinitCmd.Flags().StringVarP(&dbPass, "password", "P", "", "Password")
 	dbinitCmd.Flags().StringVarP(&dbName, "database", "d", "soleirclear", "Database name")

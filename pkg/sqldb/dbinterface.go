@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 type DBConnData struct {
@@ -11,7 +12,7 @@ type DBConnData struct {
 	Host     string
 	User     string
 	Password string
-	Port     int8
+	Port     int16
 	db       *sql.DB
 }
 
@@ -33,10 +34,10 @@ func (dbc *DBConnData) Connect() (bool, error) {
 		err = errors.New("Missing database connection parameters")
 	}
 	if err == nil {
-		psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s DBName=%s sslmode=disable", dbc.Host, dbc.Port, dbc.User, dbc.Password, dbc.DBName)
+		psqlconn := fmt.Sprintf("host=%s port=%d database=%s user=%s password=%s  sslmode=disable", dbc.Host, dbc.Port, dbc.DBName, dbc.User, dbc.Password)
 
 		// open database
-		dbc.db, err = sql.Open("postgres", psqlconn)
+		dbc.db, err = sql.Open("pgx", psqlconn)
 		dbc.CheckError(err)
 
 		// check db

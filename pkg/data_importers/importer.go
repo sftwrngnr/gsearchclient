@@ -1,6 +1,6 @@
 package data_importers
 
-type importer interface {
+type Importer interface {
 	Init(dirname string) bool
 	Import() (int, error)
 }
