@@ -6,6 +6,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/sftwrngnr/gsearchclient/pkg/sqldb"
 
 	"github.com/spf13/cobra"
 )
@@ -17,6 +18,7 @@ var dbHost string
 var dbName string
 var dbUser string
 var dbPass string
+var dbPort int8
 
 var dbinitCmd = &cobra.Command{
 	Use:   "dbinit",
@@ -32,6 +34,20 @@ to quickly create a Cobra application.`,
 		if initFlg {
 			fmt.Printf("Init called!\n")
 		}
+		if dbPass == "" {
+			fmt.Println("dbPass (-P) is required")
+			return
+		}
+		dbcdata := &sqldb.DBConnData{DBName: dbName,
+			Host:     dbHost,
+			User:     dbUser,
+			Password: dbPass,
+			Port:     dbPort,
+		}
+		dbcdata.Connect()
+		defer dbcdata.Close()
+		// Import states
+
 	},
 }
 
@@ -50,9 +66,9 @@ func init() {
 	dbinitCmd.Flags().BoolVarP(&initFlg, "Init", "I", false, "Initialize database with imported data")
 	dbinitCmd.Flags().StringVarP(&LoadPath, "loadpath", "L", "../data/", "Path to import files")
 	dbinitCmd.Flags().StringVarP(&dbHost, "host", "H", "localhost", "Host")
-	dbinitCmd.Flags().StringP("port", "p", "", "Port")
-	dbinitCmd.Flags().StringVarP(&dbUser, "username", "U", "", "Username")
+	dbinitCmd.Flags().Int8VarP(&dbPort, "port", "p", 5432, "Port")
+	dbinitCmd.Flags().StringVarP(&dbUser, "username", "U", "crawler", "Username")
 	dbinitCmd.Flags().StringVarP(&dbPass, "password", "P", "", "Password")
-	dbinitCmd.Flags().StringVarP(&dbName, "database", "d", "", "Database name")
+	dbinitCmd.Flags().StringVarP(&dbName, "database", "d", "soleirclear", "Database name")
 
 }
