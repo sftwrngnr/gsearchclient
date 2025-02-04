@@ -57,7 +57,7 @@ to quickly create a Cobra application.`,
 			fmt.Printf("Error loading tables: %v\n", err)
 		}
 		fmt.Printf("Loaded %d states into state table.\n", nload)
-		zipcodes := &data_importers.Zipcodes{DB: dbcdata.DB}
+		zipcodes := &data_importers.ZCImport{DB: dbcdata.DB}
 		nload, err = LoadTables(zipcodes)
 		if err != nil {
 			fmt.Printf("Error loading zipcodes: %v\n", err)
