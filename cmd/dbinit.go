@@ -1,6 +1,5 @@
 /*
 Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
@@ -48,7 +47,7 @@ to quickly create a Cobra application.`,
 		dbcdata.Connect()
 		defer dbcdata.Close()
 		// Import states
-		var states data_importers.States
+		states := &data_importers.States{DBconn: dbcdata}
 		nload, err := LoadTables(states)
 		if err != nil {
 			fmt.Printf("Error loading tables: %v\n", err)
@@ -79,7 +78,7 @@ func init() {
 	// is called directly, e.g.:
 	// dbinitCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	dbinitCmd.Flags().BoolVarP(&initFlg, "Init", "I", false, "Initialize database with imported data")
-	dbinitCmd.Flags().StringVarP(&LoadPath, "loadpath", "L", "../data/", "Path to import files")
+	dbinitCmd.Flags().StringVarP(&LoadPath, "loadpath", "L", "./data/", "Path to import files")
 	dbinitCmd.Flags().StringVarP(&dbHost, "host", "H", "localhost", "Host")
 	dbinitCmd.Flags().Int16VarP(&dbPort, "port", "p", 5432, "Port")
 	dbinitCmd.Flags().StringVarP(&dbUser, "username", "U", "crawler", "Username")
