@@ -65,8 +65,10 @@ func (z *ZCImport) Import() (int, error) {
 			stateid, ferr := z.checkState(rmvqts(v[4]))
 			if ferr != nil {
 				fmt.Println(ferr)
-				fmt.Println("skipping state")
-				continue
+				fmt.Println("Inserting state")
+				tState := sqldb.States{Abbrev: rmvqts(v[4]), Name: rmvqts(v[5])}
+				z.DB.Create(&tState)
+				stateid = tState.ID
 			}
 			cityid, cerr := z.checkorcreatecity(stateid, rmvqts(v[3]))
 			if cerr != nil {
