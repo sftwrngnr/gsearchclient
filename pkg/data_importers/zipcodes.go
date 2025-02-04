@@ -3,6 +3,7 @@ package data_importers
 import (
 	"bufio"
 	"fmt"
+	"github.com/sftwrngnr/gsearchclient/pkg/sqldb"
 	"gorm.io/gorm"
 	"os"
 	"path/filepath"
@@ -31,6 +32,15 @@ func (z *Zipcodes) Init(dirname string) bool {
 }
 
 func (z *Zipcodes) Import() (int, error) {
+	rmvqts := func(s string) string {
+		if len(s) > 0 && s[0] == '"' {
+			s = s[1:]
+		}
+		if len(s) > 0 && s[len(s)-1] == '"' {
+			s = s[:len(s)-1]
+		}
+		return s
+	}
 	fmt.Printf("Zipcodes.Import(%s)\n", z.inputfile)
 	readFile, err := os.Open(z.inputfile)
 	if err != nil {
@@ -43,13 +53,31 @@ func (z *Zipcodes) Import() (int, error) {
 	for fs.Scan() {
 		if numin > 0 {
 			// parse csv line
+
 			v := strings.Split(fs.Text(), ",")
-			fmt.Printf("%v\n", v)
+			// Check to see if we have a valid state, if so, check to see if city exists. If city exists, get ID, otherwise insert
+			stateid := z.checkState(rmvqts(v[4]))
+			if stateid == -1 {
+				cityid := checkorcreatecity(stateid, rmvqts(v[3]))
+				myZip := sqldb.Zipcode{Zipcode: rmvqts(v[0]),
+					City:  cityid,
+					State: stateid}
+				z.DB.Create(&myZip)
+			}
+
 		} else {
-			fmt.Printf("Zipcodes.Import: Header line %s.\n", fs.Text())
+			if numin == 0 {
+				fmt.Printf("Zipcodes.Import: Header line %s.\n", fs.Text())
+			}
 		}
 		numin++
 	}
 	return numin, nil
+
+}
+
+func (z *Zipcodes) checkState(instate string) int {
+	myState := sqldb.States{Abbrev: instate}
+	myState := z.DB.First(&myState)
 
 }
