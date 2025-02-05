@@ -1,7 +1,10 @@
 package sqldb
 
+import "gorm.io/gorm"
+
 type Areacodes struct {
-	ID    uint `gorm:"primary_key"`
-	Code  uint `gorm:"column:code"`
-	State uint `gorm:"column:state"`
+	gorm.Model
+	ID    uint   `gorm:"primary_key"`
+	Code  string `gorm:"column:code"`
+	State uint   `gorm:"column:state"`
 }

@@ -15,7 +15,7 @@ type ACImport struct {
 }
 
 type ACData struct {
-	AreaCode  uint    `json:"area-code"`
+	AreaCode  int     `json:"area-code"`
 	City      string  `json:"city"`
 	State     string  `json:"state"`
 	Country   string  `json:"country"`
@@ -66,7 +66,7 @@ func (a *ACImport) Import() (int, error) {
 			fmt.Printf("Couldn't find %s\n", ac.State)
 			continue
 		}
-		myAc := a.insertAreaCode(ac.AreaCode, mySt)
+		myAc := a.insertAreaCode(fmt.Sprintf("%d", ac.AreaCode), mySt)
 		myCity := a.findOrInsertCity(ac.City, mySt)
 		// Now insert into correlation table
 		a.insertACCity(myAc, myCity)
@@ -94,18 +94,18 @@ func (a *ACImport) findOrInsertCity(c string, s uint) uint {
 
 func (a *ACImport) insertACCity(acode uint, ccode uint) uint {
 	myACCity := &sqldb.Cityareacodes{Areacode: acode, City: ccode}
-	a.DB.Where(myACCity).First(myACCity)
-	if myACCity.ID != 0 {
-		a.DB.Create(myACCity)
+	a.DB.Where(myACCity).First(&myACCity)
+	if myACCity.ID == 0 {
+		a.DB.Create(&myACCity)
 	}
 	return myACCity.ID
 }
 
-func (a *ACImport) insertAreaCode(acode uint, s uint) uint {
-	myACode := sqldb.Areacodes{Code: acode, State: s}
-	a.DB.Where(myACode).First(myACode)
+func (a *ACImport) insertAreaCode(acode string, st uint) uint {
+	myACode := sqldb.Areacodes{Code: acode, State: st}
+	a.DB.Where(myACode).First(&myACode)
 	if myACode.ID == 0 {
-		a.DB.Create(myACode)
+		a.DB.Create(&myACode)
 	}
 	return myACode.ID
 }
