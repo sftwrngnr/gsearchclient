@@ -1,7 +1,7 @@
 package sqldb
 
-type AreaCode struct {
-	ID   uint   `gorm:"primary_key"`
-	Code string `gorm:"column:code"`
-	City Cities
+type Areacodes struct {
+	ID    uint `gorm:"primary_key"`
+	Code  uint `gorm:"column:code"`
+	State uint `gorm:"column:state"`
 }

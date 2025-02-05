@@ -50,6 +50,7 @@ to quickly create a Cobra application.`,
 			fmt.Printf("Error connecting to DB: %v\n", err)
 			return
 		}
+
 		states := &data_importers.States{DB: dbcdata.DB}
 		nload, err := LoadTables(states)
 		if err != nil {
@@ -63,6 +64,15 @@ to quickly create a Cobra application.`,
 			fmt.Printf("Error loading zipcodes: %v\n", err)
 		}
 		fmt.Printf("Loaded %d zipcodes into zipcode table.\n", nload)
+
+		areacodes := &data_importers.ACImport{DB: dbcdata.DB}
+		nload, err = LoadTables(areacodes)
+		if err != nil {
+			fmt.Printf("Error loading tables: %v\n", err)
+			return
+		}
+		fmt.Printf("Loaded %d area code records\n", nload)
+
 	},
 }
 
