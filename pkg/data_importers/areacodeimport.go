@@ -38,15 +38,6 @@ func (a *ACImport) Init(dirname string) bool {
 }
 
 func (a *ACImport) Import() (int, error) {
-	//rmvqts := func(s string) string {
-	//	if len(s) > 0 && s[0] == '"' {
-	//		s = s[1:]
-	//	}
-	//	if len(s) > 0 && s[len(s)-1] == '"' {
-	//		s = s[:len(s)-1]
-	//	}
-	//	return s
-	//}
 	fmt.Printf("ACImport.Import(%s)\n", a.inputfile)
 	var acArr []ACData
 	content, err := os.ReadFile(a.inputfile)
