@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/sftwrngnr/gsearchclient/pkg/data_importers"
 	"github.com/sftwrngnr/gsearchclient/pkg/sqldb"
+	"github.com/sftwrngnr/gsearchclient/pkg/system"
 	"github.com/spf13/cobra"
 )
 
@@ -41,21 +42,22 @@ database connection.`,
 			fmt.Println("dbPass (-P) is required")
 			return
 		}
-		dbcdata := &sqldb.DBConnData{DBName: dbName,
+		sp := system.GetSystemParams()
+		sp.Dbc = &sqldb.DBConnData{DBName: dbName,
 			Host:     dbHost,
 			User:     dbUser,
 			Password: dbPass,
 			Port:     dbPort,
 		}
 		// Import states
-		err := dbcdata.Connect()
+		err := sp.Dbc.Connect()
 		if err != nil {
 			fmt.Printf("Error connecting to DB: %v\n", err)
 			return
 		}
 
 		if initFlg {
-			states := &data_importers.States{DB: dbcdata.DB}
+			states := &data_importers.States{DB: sp.Dbc.DB}
 			_, err := LoadTables(states)
 			if err != nil {
 
@@ -63,14 +65,14 @@ database connection.`,
 			}
 			//fmt.Printf("Loaded %d states into state table.\n", nload)
 
-			zipcodes := &data_importers.ZCImport{DB: dbcdata.DB}
+			zipcodes := &data_importers.ZCImport{DB: sp.Dbc.DB}
 			_, err = LoadTables(zipcodes)
 			if err != nil {
 				fmt.Printf("Error loading zipcodes: %v\n", err)
 			}
 			//fmt.Printf("Loaded %d zipcodes into zipcode table.\n", nload)
 
-			areacodes := &data_importers.ACImport{DB: dbcdata.DB}
+			areacodes := &data_importers.ACImport{DB: sp.Dbc.DB}
 			_, err = LoadTables(areacodes)
 			if err != nil {
 				//fmt.Printf("Error loading tables: %v\n", err)
