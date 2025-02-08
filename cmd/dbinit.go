@@ -30,14 +30,10 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("dbinit called")
 		ghost, _ := cmd.Flags().GetString("host")
 		if ghost != "" {
 			dbHost = ghost
 			fmt.Println("dbinit host:", dbHost)
-		}
-		if initFlg {
-			fmt.Printf("Init called!\n")
 		}
 		if dbPass == "" {
 			fmt.Println("dbPass (-P) is required")
@@ -58,7 +54,7 @@ to quickly create a Cobra application.`,
 
 		if initFlg {
 			states := &data_importers.States{DB: dbcdata.DB}
-			nload, err := LoadTables(states)
+			_, err := LoadTables(states)
 			if err != nil {
 
 				//fmt.Printf("Error loading tables: %v\n", err)
@@ -66,19 +62,18 @@ to quickly create a Cobra application.`,
 			//fmt.Printf("Loaded %d states into state table.\n", nload)
 
 			zipcodes := &data_importers.ZCImport{DB: dbcdata.DB}
-			nload, err = LoadTables(zipcodes)
+			_, err = LoadTables(zipcodes)
 			if err != nil {
 				fmt.Printf("Error loading zipcodes: %v\n", err)
 			}
 			//fmt.Printf("Loaded %d zipcodes into zipcode table.\n", nload)
 
 			areacodes := &data_importers.ACImport{DB: dbcdata.DB}
-			nload, err = LoadTables(areacodes)
+			_, err = LoadTables(areacodes)
 			if err != nil {
 				//fmt.Printf("Error loading tables: %v\n", err)
 				return
 			}
-			fmt.Printf("Loaded %d area code records\n", nload)
 
 		}
 
