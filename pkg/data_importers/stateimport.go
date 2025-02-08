@@ -3,6 +3,7 @@ package data_importers
 import (
 	"bufio"
 	"fmt"
+	"github.com/schollz/progressbar/v3"
 	"github.com/sftwrngnr/gsearchclient/pkg/sqldb"
 	"gorm.io/gorm"
 	"os"
@@ -16,9 +17,9 @@ type States struct {
 }
 
 func (s *States) Init(dirname string) bool {
-	fmt.Printf("States.Init(%s)\n", dirname)
+	//fmt.Printf("States.Init(%s)\n", dirname)
 	s.inputfile = filepath.Join(dirname, "50States.csv")
-	fmt.Printf("Verifying that %s exists.\n", s.inputfile)
+	//fmt.Printf("Verifying that %s exists.\n", s.inputfile)
 	_, err := os.Stat(s.inputfile)
 	if err != nil {
 		fmt.Printf("File %s doesn't exist.", s.inputfile)
@@ -28,16 +29,32 @@ func (s *States) Init(dirname string) bool {
 }
 
 func (s *States) Import() (int, error) {
-	fmt.Printf("States.Import(%s)\n", s.inputfile)
+	//fmt.Printf("States.Import(%s)\n", s.inputfile)
 	readFile, err := os.Open(s.inputfile)
 	if err != nil {
-		fmt.Println(err)
+		//fmt.Println(err)
 		return 0, err
 	}
 	fs := bufio.NewScanner(readFile)
 	fs.Split(bufio.ScanLines)
 	numin := 0
+	lineCount := 0
 	for fs.Scan() {
+		lineCount++
+	}
+	readFile.Close()
+	bar := progressbar.Default(int64(lineCount), "States")
+	//fmt.Println("number of lines:", lineCount)
+	readFile, _ = os.Open(s.inputfile)
+	defer readFile.Close()
+	fs = bufio.NewScanner(readFile)
+	defer bar.Close()
+	for fs.Scan() {
+		err := bar.Add(1)
+		if err != nil {
+			fmt.Println(err)
+			//return 0, err
+		}
 		if numin > 0 {
 			// parse csv line
 			v := strings.Split(fs.Text(), ",")

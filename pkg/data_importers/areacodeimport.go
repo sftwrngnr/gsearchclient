@@ -3,6 +3,7 @@ package data_importers
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/schollz/progressbar/v3"
 	"github.com/sftwrngnr/gsearchclient/pkg/sqldb"
 	"gorm.io/gorm"
 	"os"
@@ -26,9 +27,9 @@ type ACData struct {
 // "zip","lat","lng","city","state_id","state_name","zcta","parent_zcta","population","density","county_fips","county_name","county_weights","county_names_all","county_fips_all","imprecise","military","timezone"
 // 0,3, 4, 5 [state name], 8
 func (a *ACImport) Init(dirname string) bool {
-	fmt.Printf("ACImport.Init(%s)\n", dirname)
+	//fmt.Printf("ACImport.Init(%s)\n", dirname)
 	a.inputfile = filepath.Join(dirname, "area-codes-usa.json")
-	fmt.Printf("Verifying that %s exists.\n", a.inputfile)
+	//fmt.Printf("Verifying that %s exists.\n", a.inputfile)
 	_, err := os.Stat(a.inputfile)
 	if err != nil {
 		fmt.Printf("File %s doesn't exist.", a.inputfile)
@@ -38,7 +39,6 @@ func (a *ACImport) Init(dirname string) bool {
 }
 
 func (a *ACImport) Import() (int, error) {
-	fmt.Printf("ACImport.Import(%s)\n", a.inputfile)
 	var acArr []ACData
 	content, err := os.ReadFile(a.inputfile)
 	if err != nil {
@@ -46,15 +46,17 @@ func (a *ACImport) Import() (int, error) {
 		return 0, err
 	}
 	json.Unmarshal(content, &acArr)
-	fmt.Printf("Processing JSON data\n")
 	var iCount int
+	bar := progressbar.Default(int64(len(acArr)), "Area codes")
+	defer bar.Close()
 	for _, ac := range acArr {
 		if ac.Country != "US" {
 			continue
 		}
+		bar.Add(1)
 		mySt := a.findState(ac.State)
 		if mySt == 0 {
-			fmt.Printf("Couldn't find %s\n", ac.State)
+			//fmt.Printf("Couldn't find %s\n", ac.State)
 			continue
 		}
 		myAc := a.insertAreaCode(fmt.Sprintf("%d", ac.AreaCode), mySt)
@@ -75,9 +77,7 @@ func (a *ACImport) findState(s string) uint {
 func (a *ACImport) findOrInsertCity(c string, s uint) uint {
 	myCity := &sqldb.Cities{Name: c, State: s}
 	a.DB.Where(myCity).First(myCity)
-	if myCity.ID != 0 {
-		fmt.Printf("Found %s\n", myCity.Name)
-	} else {
+	if myCity.ID == 0 {
 		a.DB.Create(myCity)
 	}
 	return myCity.ID

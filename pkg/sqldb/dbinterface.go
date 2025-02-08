@@ -43,7 +43,6 @@ func (dbc *DBConnData) Connect() error {
 			fmt.Println("Error connecting to database")
 			return err
 		}
-		fmt.Println("Connected!")
 		dbc.DB = db
 	}
 
