@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type DBConnData struct {
@@ -36,7 +37,8 @@ func (dbc *DBConnData) Connect() error {
 		dsn := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%d sslmode=disable", dbc.User, dbc.Password, dbc.DBName, dbc.Host, dbc.Port)
 
 		// open database
-		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+			Logger: logger.Default.LogMode(logger.Silent)})
 		if err != nil {
 			fmt.Println("Error connecting to database")
 			return err
