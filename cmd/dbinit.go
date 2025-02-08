@@ -14,7 +14,7 @@ import (
 // dbinitCmd represents the dbinit command
 var initFlg bool
 var LoadPath string
-var dbHost string
+var dbHost string = "localhost"
 var dbName string
 var dbUser string
 var dbPass string
@@ -31,6 +31,11 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("dbinit called")
+		ghost, _ := cmd.Flags().GetString("host")
+		if ghost != "" {
+			dbHost = ghost
+			fmt.Println("dbinit host:", dbHost)
+		}
 		if initFlg {
 			fmt.Printf("Init called!\n")
 		}
@@ -51,27 +56,31 @@ to quickly create a Cobra application.`,
 			return
 		}
 
-		states := &data_importers.States{DB: dbcdata.DB}
-		nload, err := LoadTables(states)
-		if err != nil {
+		if initFlg {
+			states := &data_importers.States{DB: dbcdata.DB}
+			nload, err := LoadTables(states)
+			if err != nil {
 
-			fmt.Printf("Error loading tables: %v\n", err)
-		}
-		fmt.Printf("Loaded %d states into state table.\n", nload)
-		zipcodes := &data_importers.ZCImport{DB: dbcdata.DB}
-		nload, err = LoadTables(zipcodes)
-		if err != nil {
-			fmt.Printf("Error loading zipcodes: %v\n", err)
-		}
-		fmt.Printf("Loaded %d zipcodes into zipcode table.\n", nload)
+				fmt.Printf("Error loading tables: %v\n", err)
+			}
+			fmt.Printf("Loaded %d states into state table.\n", nload)
 
-		areacodes := &data_importers.ACImport{DB: dbcdata.DB}
-		nload, err = LoadTables(areacodes)
-		if err != nil {
-			fmt.Printf("Error loading tables: %v\n", err)
-			return
+			zipcodes := &data_importers.ZCImport{DB: dbcdata.DB}
+			nload, err = LoadTables(zipcodes)
+			if err != nil {
+				fmt.Printf("Error loading zipcodes: %v\n", err)
+			}
+			fmt.Printf("Loaded %d zipcodes into zipcode table.\n", nload)
+
+			areacodes := &data_importers.ACImport{DB: dbcdata.DB}
+			nload, err = LoadTables(areacodes)
+			if err != nil {
+				fmt.Printf("Error loading tables: %v\n", err)
+				return
+			}
+			fmt.Printf("Loaded %d area code records\n", nload)
+
 		}
-		fmt.Printf("Loaded %d area code records\n", nload)
 
 	},
 }
@@ -98,7 +107,7 @@ func init() {
 	// dbinitCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	dbinitCmd.Flags().BoolVarP(&initFlg, "Init", "I", false, "Initialize database with imported data")
 	dbinitCmd.Flags().StringVarP(&LoadPath, "loadpath", "L", "./data/", "Path to import files")
-	dbinitCmd.Flags().StringVarP(&dbHost, "host", "H", "localhost", "Host")
+	dbinitCmd.Flags().StringVarP(&dbHost, "host", "H", dbHost, "Host")
 	dbinitCmd.Flags().Int16VarP(&dbPort, "port", "p", 5432, "Port")
 	dbinitCmd.Flags().StringVarP(&dbUser, "username", "U", "crawler", "Username")
 	dbinitCmd.Flags().StringVarP(&dbPass, "password", "P", "", "Password")
