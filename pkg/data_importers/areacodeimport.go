@@ -24,8 +24,6 @@ type ACData struct {
 	Longitude float64 `json:"longitude"`
 }
 
-// "zip","lat","lng","city","state_id","state_name","zcta","parent_zcta","population","density","county_fips","county_name","county_weights","county_names_all","county_fips_all","imprecise","military","timezone"
-// 0,3, 4, 5 [state name], 8
 func (a *ACImport) Init(dirname string) bool {
 	//fmt.Printf("ACImport.Init(%s)\n", dirname)
 	a.inputfile = filepath.Join(dirname, "area-codes-usa.json")
@@ -59,7 +57,7 @@ func (a *ACImport) Import() (int, error) {
 			//fmt.Printf("Couldn't find %s\n", ac.State)
 			continue
 		}
-		myAc := a.insertAreaCode(fmt.Sprintf("%d", ac.AreaCode), mySt)
+		myAc := a.insertAreaCode(fmt.Sprintf("%d", ac.AreaCode), mySt, float32(ac.Longitude), float32(ac.Latitude))
 		myCity := a.findOrInsertCity(ac.City, mySt)
 		// Now insert into correlation table
 		a.insertACCity(myAc, myCity)
@@ -92,8 +90,8 @@ func (a *ACImport) insertACCity(acode uint, ccode uint) uint {
 	return myACCity.ID
 }
 
-func (a *ACImport) insertAreaCode(acode string, st uint) uint {
-	myACode := sqldb.Areacodes{Code: acode, State: st}
+func (a *ACImport) insertAreaCode(acode string, st uint, longi float32, lati float32) uint {
+	myACode := sqldb.Areacodes{Code: acode, State: st, Longitude: longi, Latitude: lati}
 	a.DB.Where(myACode).First(&myACode)
 	if myACode.ID == 0 {
 		a.DB.Create(&myACode)

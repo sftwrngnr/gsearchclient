@@ -4,8 +4,7 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/sftwrngnr/gsearchclient/pkg/http"
 	"github.com/spf13/cobra"
 )
 
@@ -26,7 +25,7 @@ to quickly create a Cobra application.`,
 		if ghost == "" {
 			webhost = ghost
 		}
-		fmt.Println("webfe called")
+		runWS(webhost, webport)
 	},
 }
 
@@ -45,4 +44,8 @@ func init() {
 	webfeCmd.Flags().StringVarP(&webhost, "host", "H", webhost, "Web server Host")
 	webfeCmd.Flags().Int16VarP(&webport, "port", "p", webport, "Web server port")
 
+}
+
+func runWS(host string, port int16) error {
+	return http.ServerStart(host, port)
 }

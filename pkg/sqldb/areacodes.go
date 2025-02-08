@@ -4,7 +4,9 @@ import "gorm.io/gorm"
 
 type Areacodes struct {
 	gorm.Model
-	ID    uint   `gorm:"primary_key"`
-	Code  string `gorm:"column:code"`
-	State uint   `gorm:"column:state"`
+	ID        uint    `gorm:"primary_key"`
+	Code      string  `gorm:"column:code"`
+	State     uint    `gorm:"column:state"`
+	Latitude  float32 `gorm:"column:latitude"`
+	Longitude float32 `gorm:"column:longitude"`
 }

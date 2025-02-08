@@ -79,6 +79,14 @@ func (z *ZCImport) Import() (int, error) {
 				//fmt.Println(cerr)
 				population = 0
 			}
+			latitude, lerr := strconv.ParseFloat(rmvqts(v[1]), 32)
+			if lerr != nil {
+
+			}
+			longitude, lerr2 := strconv.ParseFloat(rmvqts(v[2]), 32)
+			if lerr2 != nil {
+
+			}
 			// Check to see if we have a valid state, if so, check to see if city exists. If city exists, get ID, otherwise insert
 			stateid, ferr := z.checkState(rmvqts(v[4]))
 			if ferr != nil {
@@ -97,6 +105,8 @@ func (z *ZCImport) Import() (int, error) {
 			myZip := sqldb.Zipcode{Zipcode: rmvqts(v[0]),
 				City:       cityid,
 				State:      stateid,
+				Latitude:   float32(latitude),
+				Longitude:  float32(longitude),
 				Population: uint(population)}
 			z.DB.Create(&myZip)
 
