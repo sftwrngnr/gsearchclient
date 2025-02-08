@@ -10,6 +10,8 @@ import (
 )
 
 // webfeCmd represents the webfe command
+var webhost string = "localhost"
+var webport int16 = 9090
 var webfeCmd = &cobra.Command{
 	Use:   "webfe",
 	Short: "A brief description of your command",
@@ -20,6 +22,10 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		ghost, _ := cmd.Flags().GetString("host")
+		if ghost == "" {
+			webhost = ghost
+		}
 		fmt.Println("webfe called")
 	},
 }
@@ -36,4 +42,7 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// webfeCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	webfeCmd.Flags().StringVarP(&webhost, "host", "H", webhost, "Web server Host")
+	webfeCmd.Flags().Int16VarP(&webport, "port", "p", webport, "Web server port")
+
 }

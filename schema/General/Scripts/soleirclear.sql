@@ -2,6 +2,9 @@ CREATE TABLE public.areacodes (
                                   id bigserial NOT NULL,
                                   code varchar NULL,
                                   state bigint NULL,
+                                  created_at date NULL,
+                                  updated_at date NULL,
+                                  deleted_at date NULL,
                                   CONSTRAINT areacodes_pk PRIMARY KEY (id)
 );
 
@@ -19,7 +22,8 @@ CREATE TABLE public.states (
 );
 CREATE INDEX states_name_idx ON public.states ("name");
 
-ALTER TABLE public.areacodes ADD CONSTRAINT areacodes_areacodes_fk FOREIGN KEY (state) REFERENCES public.areacodes(id) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE public.areacodes ADD CONSTRAINT areacodes_states_fk FOREIGN KEY (state) REFERENCES public.states(id) ON DELETE CASCADE ON UPDATE CASCADE;
+
 
 CREATE TABLE public.cities (
                                id bigserial NOT NULL,
