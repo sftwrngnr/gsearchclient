@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// dbinitCmd represents the dbinit command
+// dbCmd represents the db command
 var initFlg bool
 var LoadPath string
 var dbHost string = "localhost"
@@ -20,20 +20,22 @@ var dbUser string
 var dbPass string
 var dbPort int16
 
-var dbinitCmd = &cobra.Command{
-	Use:   "dbinit",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+var dbCmd = &cobra.Command{
+	Use:   "db",
+	Short: "The db connection and initializer",
+	Long: `The DB connection sets the database connection paraameters and
+also performs the initial database loading
+of the state, zip, and area code databases. It will also import the
+list of query keywords. If the -I flag is not specified, the database
+loading will not take place, and instead the database connection will be
+created for use with other parts of the application. When launching the
+web service, include the db command and parameters for establishing the
+database connection.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		ghost, _ := cmd.Flags().GetString("host")
 		if ghost != "" {
 			dbHost = ghost
-			fmt.Println("dbinit host:", dbHost)
+			fmt.Println("db host:", dbHost)
 		}
 		if dbPass == "" {
 			fmt.Println("dbPass (-P) is required")
@@ -89,23 +91,23 @@ func LoadTables(myClass data_importers.Importer) (int, error) {
 }
 
 func init() {
-	rootCmd.AddCommand(dbinitCmd)
+	rootCmd.AddCommand(dbCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// dbinitCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// dbCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// dbinitCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	dbinitCmd.Flags().BoolVarP(&initFlg, "Init", "I", false, "Initialize database with imported data")
-	dbinitCmd.Flags().StringVarP(&LoadPath, "loadpath", "L", "./data/", "Path to import files")
-	dbinitCmd.Flags().StringVarP(&dbHost, "host", "H", dbHost, "Host")
-	dbinitCmd.Flags().Int16VarP(&dbPort, "port", "p", 5432, "Port")
-	dbinitCmd.Flags().StringVarP(&dbUser, "username", "U", "crawler", "Username")
-	dbinitCmd.Flags().StringVarP(&dbPass, "password", "P", "", "Password")
-	dbinitCmd.Flags().StringVarP(&dbName, "database", "d", "soleirclear", "Database name")
+	// dbCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	dbCmd.Flags().BoolVarP(&initFlg, "Init", "I", false, "Initialize database with imported data")
+	dbCmd.Flags().StringVarP(&LoadPath, "loadpath", "L", "./data/", "Path to import files")
+	dbCmd.Flags().StringVarP(&dbHost, "host", "H", dbHost, "Host")
+	dbCmd.Flags().Int16VarP(&dbPort, "port", "p", 5432, "Port")
+	dbCmd.Flags().StringVarP(&dbUser, "username", "U", "crawler", "Username")
+	dbCmd.Flags().StringVarP(&dbPass, "password", "P", "", "Password")
+	dbCmd.Flags().StringVarP(&dbName, "database", "d", "soleirclear", "Database name")
 
 }
