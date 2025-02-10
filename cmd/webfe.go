@@ -4,6 +4,7 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
 	"github.com/sftwrngnr/gsearchclient/pkg/http"
 	"github.com/spf13/cobra"
 )
@@ -25,6 +26,7 @@ to quickly create a Cobra application.`,
 		if ghost == "" {
 			webhost = ghost
 		}
+		fmt.Printf("webfe: web server listening on %s:%d\n", ghost, webport)
 		runWS(webhost, webport)
 	},
 }

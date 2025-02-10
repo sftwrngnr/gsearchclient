@@ -57,6 +57,6 @@ func container(padY bool, children ...Node) Node {
 
 func footer() Node {
 	return Div(Class("bg-gray-900 text-white shadow text-center h-16 flex items-center justify-center"),
-		A(Href("https://www.gomponents.com"), Text("gomponents")),
+		A(Href("https://yradvantage.com"), Text("Copyright (C) 2025 Your Net Advantage Software, LLC")),
 	)
 }

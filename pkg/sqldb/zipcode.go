@@ -1,6 +1,9 @@
 package sqldb
 
-import "gorm.io/gorm"
+import (
+	"fmt"
+	"gorm.io/gorm"
+)
 
 type Zipcode struct {
 	gorm.Model
@@ -11,4 +14,17 @@ type Zipcode struct {
 	Population uint    `gorm:"column:population"`
 	Latitude   float32 `gorm:"column:latitude"`
 	Longitude  float32 `gorm:"column:longitude"`
+}
+
+func (dbc *DBConnData) GetZipsForState(abbrv string) ([]Zipcode, error) {
+	rval := []Zipcode{}
+	myStId, err := dbc.GetStateId(abbrv)
+	if err != nil {
+		return rval, err
+	}
+	fmt.Printf("myStId: %v\n", myStId)
+	myzcq := Zipcode{State: myStId}
+	err = dbc.DB.Find(&rval, &myzcq).Error
+	fmt.Printf("There are %d records returned\n", len(rval))
+	return rval, err
 }

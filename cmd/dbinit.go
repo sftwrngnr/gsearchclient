@@ -80,7 +80,7 @@ database connection.`,
 			}
 
 		}
-
+		webfeCmd.Run(cmd, args)
 	},
 }
 
