@@ -19,6 +19,7 @@ func ZipCodes(qs string) Node {
 		fmt.Printf("ZipCodes: %v\n", err)
 		return nil
 	}
+	rval = append(rval, Multiple())
 	for _, z := range myZips {
 		rval = append(rval, Option(Value(strconv.Itoa(int(z.ID))), Text(z.Zipcode)))
 	}
