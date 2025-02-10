@@ -16,13 +16,6 @@ func Home(mux *http.ServeMux) {
 	}))
 }
 
-func AltHPage(mux *http.ServeMux) {
-	mux.Handle("GET /althpage", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
-		fmt.Printf("AltHPage")
-		return html.AltHPage(nil), nil
-	}))
-}
-
 func ZipCodes(mux *http.ServeMux) {
 	mux.Handle("GET /zipcodes", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
 		qs := r.URL.Query().Get("state")

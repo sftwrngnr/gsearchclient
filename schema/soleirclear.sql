@@ -54,7 +54,7 @@ CREATE TABLE public.zipcodes (
                                 CONSTRAINT zipcode_cities_fk FOREIGN KEY (city) REFERENCES public.cities(id) ON DELETE CASCADE ON UPDATE CASCADE,
                                 CONSTRAINT zipcode_states_fk FOREIGN KEY (state) REFERENCES public.states(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-CREATE INDEX zipcode_state_idx ON public.zipcode (state,population);
+CREATE INDEX zipcode_state_idx ON public.zipcodes (state,population);
 
 CREATE TABLE public.cityareacodes (
                                       id bigserial NOT NULL,
@@ -67,6 +67,16 @@ CREATE TABLE public.cityareacodes (
                                       CONSTRAINT cityareacodes_cities_fk_1 FOREIGN KEY (city) REFERENCES public.cities(id)
 );
 CREATE INDEX cityareacodes_city_idx ON public.cityareacodes (city,created_at,updated_at,deleted_at);
+
+CREATE TABLE public.keywords (
+                                 id bigserial NOT NULL,
+                                 keyword varchar NULL,
+                                 created_at date NULL,
+                                 updated_at date NULL,
+                                 deleted_at date NULL,
+                                 CONSTRAINT keywords_pk PRIMARY KEY (id)
+);
+
 
 
 commit;
