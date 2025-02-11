@@ -50,8 +50,10 @@ func ZipCodes(qs string) Node {
 		Tr(
 			Td(Input(Type("checkbox"), Label(Text("allzc"))), Text("All Zipcodes")),
 			Td(Input(Type("checkbox"), Label(Text("allac"))), Text("All Area Codes")),
-			Td(Input(Type("checkbox"), Label(Text("allkw"))), Text("All Keywords"),
-				Input(Type("checkbox"), Label(Text("indivkw"))), Text("Individual Keywords")),
+			Td(Input(Type("checkbox"), Label(Text("allkw"))), Text("All Keywords"))),
+		Tr(Td(),
+			Td(),
+			Td(Input(Type("checkbox"), Label(Text("indivkw"))), Text("Individual Keywords")),
 		),
 	))
 
