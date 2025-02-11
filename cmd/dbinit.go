@@ -79,6 +79,12 @@ database connection.`,
 				return
 			}
 
+			kwrds := &data_importers.KWImporter{DB: sp.Dbc.DB}
+			_, err = LoadTables(kwrds)
+			if err != nil {
+				return
+			}
+
 		}
 		webfeCmd.Run(cmd, args)
 	},

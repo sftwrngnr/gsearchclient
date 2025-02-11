@@ -16,15 +16,14 @@ type Zipcode struct {
 	Longitude  float32 `gorm:"column:longitude"`
 }
 
-func (dbc *DBConnData) GetZipsForState(abbrv string) ([]Zipcode, error) {
-	rval := []Zipcode{}
-	myStId, err := dbc.GetStateId(abbrv)
+func (dbc *DBConnData) GetZipsForState(abbrv string) (zips []Zipcode, err error) {
+	var myStid uint
+	myStid, err = dbc.GetStateId(abbrv)
 	if err != nil {
-		return rval, err
+		return
 	}
-	fmt.Printf("myStId: %v\n", myStId)
-	myzcq := Zipcode{State: myStId}
-	err = dbc.DB.Find(&rval, &myzcq).Error
-	fmt.Printf("There are %d records returned\n", len(rval))
-	return rval, err
+	myzcq := Zipcode{State: myStid}
+	err = dbc.DB.Find(&zips, &myzcq).Error
+	fmt.Printf("There are %d records returned\n", len(zips))
+	return
 }

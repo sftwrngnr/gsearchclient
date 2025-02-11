@@ -44,62 +44,32 @@ func (z *ZCImport) Import() (int, error) {
 		return s
 	}
 	//fmt.Printf("ZCImport.Import(%s)\n", z.inputfile)
-	readFile, err := os.Open(z.inputfile)
-	if err != nil {
-		//fmt.Println(err)
-		return 0, err
-	}
+	lineCount := getLineCount(z.inputfile)
+	bar := progressbar.Default(lineCount, "Zipcodes")
+	//fmt.Println("number of lines:", lineCount)
+	readFile, _ := os.Open(z.inputfile)
+	defer readFile.Close()
 	fs := bufio.NewScanner(readFile)
 	fs.Split(bufio.ScanLines)
-	numin := 0
-	lineCount := 0
-	for fs.Scan() {
-		lineCount++
-	}
-	readFile.Close()
-	bar := progressbar.Default(int64(lineCount), "Zipcodes")
-	//fmt.Println("number of lines:", lineCount)
-	readFile, _ = os.Open(z.inputfile)
-	defer readFile.Close()
-	fs = bufio.NewScanner(readFile)
-	fs.Split(bufio.ScanLines)
 	defer bar.Close()
+	numin := 0
 	for fs.Scan() {
 		if numin > 0 {
 			// parse csv line
-			err := bar.Add(1)
-			if err != nil {
-				fmt.Println(err)
-				//return 0, err
-			}
-
+			_ = bar.Add(1)
 			v := strings.Split(fs.Text(), ",")
-			population, cerr := strconv.ParseInt(rmvqts(v[8]), 10, 0)
-			if cerr != nil {
-				//fmt.Println(cerr)
-				population = 0
-			}
-			latitude, lerr := strconv.ParseFloat(rmvqts(v[1]), 32)
-			if lerr != nil {
-
-			}
-			longitude, lerr2 := strconv.ParseFloat(rmvqts(v[2]), 32)
-			if lerr2 != nil {
-
-			}
+			population, _ := strconv.ParseInt(rmvqts(v[8]), 10, 0)
+			latitude, _ := strconv.ParseFloat(rmvqts(v[1]), 32)
+			longitude, _ := strconv.ParseFloat(rmvqts(v[2]), 32)
 			// Check to see if we have a valid state, if so, check to see if city exists. If city exists, get ID, otherwise insert
 			stateid, ferr := z.checkState(rmvqts(v[4]))
 			if ferr != nil {
-				//fmt.Println(ferr)
-				//fmt.Println("Inserting state")
 				tState := sqldb.States{Abbrev: rmvqts(v[4]), Name: rmvqts(v[5])}
 				z.DB.Create(&tState)
 				stateid = tState.ID
 			}
 			cityid, cerr := z.checkorcreatecity(stateid, rmvqts(v[3]))
 			if cerr != nil {
-				//fmt.Println(cerr)
-				//fmt.Println("skipping city")
 				continue
 			}
 			myZip := sqldb.Zipcode{Zipcode: rmvqts(v[0]),
