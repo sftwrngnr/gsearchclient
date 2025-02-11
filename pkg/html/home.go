@@ -33,6 +33,11 @@ func HomePage(items []string) Node {
 	)
 }
 
+func searchreqscript() (rval []Node) {
+	rval = append(rval, Script())
+	return
+}
+
 func getStateOptions() []Node {
 	rval := []Node{}
 	myStates, err := system.GetSystemParams().Dbc.GetAllStates()
