@@ -48,6 +48,8 @@ func consolidate(inval []Areacodes) []ConsolidateAreacodes {
 				newCa.IDList = append(newCa.IDList, ac.ID)
 			}
 		}
+		rVal = append(rVal, newCa)
+
 	}
 	return rVal
 }

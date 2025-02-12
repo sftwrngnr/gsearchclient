@@ -35,27 +35,29 @@ func ZipCodes(qs string) Node {
 	for _, k := range myKeywords {
 		kwval = append(kwval, Option(Value(k.Keyword), Text(k.Keyword)))
 	}
-	rval = append(rval, Table(Tr(Th(Text("Zip code")), Th(Text("Area code")), Th(Text("Keywords"))),
-		Tr(
-			Td(Div(Label(Name("zipcodes")), ID("zipcodes")),
-				Select(Name("zc"), ID("zc"), Multiple(), Var(zval...)),
+	rval = append(rval,
+		Table(
+			Tr(Th(Text("Zip code")), Th(Text("Area code")), Th(Text("Keywords"))),
+			Tr(
+				Td(Div(Label(Name("zipcodes")), ID("zipcodes")),
+					Select(Name("zc"), ID("zc"), Multiple(), Var(zval...)),
+				),
+				Td(Div(Label(Name("areacodes")), ID("areacodes")),
+					Select(Name("ac"), ID("ac"), Multiple(), Var(acval...)),
+				),
+				Td(Div(Label(Name("keywords")), ID("keywords")),
+					Select(Name("kw"), ID("kw"), Multiple(), Var(kwval...)),
+				),
 			),
-			Td(Div(Label(Name("areacodes")), ID("areacodes")),
-				Select(Name("ac"), ID("ac"), Multiple(), Var(acval...)),
-			),
-			Td(Div(Label(Name("keywords")), ID("keywords")),
-				Select(Name("kw"), ID("kw"), Multiple(), Var(kwval...)),
-			),
+			Tr(
+				Td(Input(Type("checkbox"), Label(Text("allzc"))), Text("All Zipcodes")),
+				Td(Input(Type("checkbox"), Label(Text("allac"))), Text("All Area Codes")),
+				Td(Input(Type("checkbox"), Label(Text("allkw"))), Text("All Keywords"))),
+			Tr(Td(),
+				Td(),
+				Td(Input(Type("checkbox"), Label(Text("indivkw"))), Text("Individual Keywords"))),
 		),
-		Tr(
-			Td(Input(Type("checkbox"), Label(Text("allzc"))), Text("All Zipcodes")),
-			Td(Input(Type("checkbox"), Label(Text("allac"))), Text("All Area Codes")),
-			Td(Input(Type("checkbox"), Label(Text("allkw"))), Text("All Keywords"))),
-		Tr(Td(),
-			Td(),
-			Td(Input(Type("checkbox"), Label(Text("indivkw"))), Text("Individual Keywords")),
-		),
-	))
+	)
 
 	return Var(rval...)
 }
