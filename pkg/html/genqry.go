@@ -35,7 +35,7 @@ func GenQry(mymap map[string][]string) (myOut Node, err error) {
 		qrystr += "+" + build_areacodeqry(mymap["ac"])
 	}
 	fmt.Printf("Generating a query with qry string: %v\n", qrystr)
-	tOut := []Node{GetSearchPostReq()}
+	tOut := []Node{}
 	tOut = append(tOut, GetQueryString(qrystr))
 	myOut = html.Var(tOut...)
 	return

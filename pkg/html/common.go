@@ -18,13 +18,17 @@ func GetSearchPostReq() (rval Node) {
 		hx.Include("#allkw"),
 		hx.Include("#indivkw"),
 		hx.Include("#sonly"),
-		hx.Post("/genqry"), hx.Include("*"),
+		hx.Target("#qrystring"),
+		hx.Post("/genqry"),
 	)
 	return
 }
 
 func GetQueryString(qs string) (rval Node) {
-	tval := []Node{Text(qs)}
+	tval := []Node{Div(ID("qrystring"),
+		H2(Text("Query String")),
+		Text(qs)),
+	}
 	rval = Var(tval...)
 	return
 }
