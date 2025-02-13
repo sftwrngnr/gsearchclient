@@ -32,3 +32,16 @@ func GetQueryString(qs string) (rval Node) {
 	rval = Var(tval...)
 	return
 }
+
+func GetQueryResults(qr []string) (rval Node) {
+	tval := []Node{
+		Var(
+			H3(Text("Raw query Results")),
+		),
+	}
+	for _, q := range qr {
+		tval = append(tval, Text(q), Br())
+	}
+	rval = Var(tval...)
+	return
+}

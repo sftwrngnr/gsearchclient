@@ -47,6 +47,7 @@ func HomePage(items []string) Node {
 			GetSearchPostReq(),
 		),
 		GetQueryString(""),
+		GetQueryResults([]string{""}),
 	)
 
 }

@@ -8,7 +8,10 @@ import (
 var lock = &sync.Mutex{}
 
 type SystemParams struct {
-	Dbc *sqldb.DBConnData
+	Dbc   *sqldb.DBConnData
+	GHost string
+	GQKey string
+	pLock *sync.Mutex
 }
 
 var sysparmInst *SystemParams
@@ -18,7 +21,8 @@ func GetSystemParams() *SystemParams {
 		lock.Lock()
 		defer lock.Unlock()
 		if sysparmInst == nil {
-			sysparmInst = &SystemParams{}
+			sysparmInst = &SystemParams{pLock: &sync.Mutex{}}
+
 		}
 	}
 	return sysparmInst
@@ -26,4 +30,12 @@ func GetSystemParams() *SystemParams {
 
 func (s *SystemParams) Close() {
 	s.Dbc.Close()
+}
+
+func (SP *SystemParams) ParmLock() {
+	SP.pLock.Lock()
+}
+
+func (SP *SystemParams) ParmUnlock() {
+	SP.pLock.Unlock()
 }

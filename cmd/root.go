@@ -4,6 +4,7 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"github.com/sftwrngnr/gsearchclient/pkg/system"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -36,6 +37,7 @@ func Execute() {
 }
 
 func init() {
+	myParms := system.GetSystemParams()
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
@@ -44,7 +46,10 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
+	myParms.ParmLock()
+	defer myParms.ParmUnlock()
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	rootCmd.PersistentFlags().StringVarP(&ghost, "host", "H", "localhost", "host")
-
+	rootCmd.PersistentFlags().StringVarP(&myParms.GHost, "host", "H", "localhost", "host")
+	rootCmd.PersistentFlags().StringVarP(&myParms.GQKey, "APIKey", "A", "", "API key (required)")
+	rootCmd.MarkPersistentFlagRequired("APIKey")
 }
