@@ -18,7 +18,7 @@ func HomePage(items []string) Node {
 		P(Text("Select query options:")),
 		Img(ID("spinner"), Class("htmx-indicator"), Src("https://unpkg.com/html-spinner")),
 		Form(States,
-			Text("State:"), Input(Type("checkbox"), ID("sonly")), Text("State Only"),
+			Text("State:"), Br(), Input(Type("checkbox"), Name("sonly"), ID("sonly")), Text("State Only"),
 			Hr(Style("border: 5px solid blue; border-radius: 5px")),
 			Div(ID("selectorupdate"),
 				Table(Tr(Th(Text("Zip code")), Th(Text("Area code")), Th(Text("Keywords"))),
@@ -46,6 +46,7 @@ func HomePage(items []string) Node {
 			Hr(Style("border: 5px solid blue; border-radius: 5px")),
 			GetSearchPostReq(),
 		),
+		GetQueryString(""),
 	)
 
 }

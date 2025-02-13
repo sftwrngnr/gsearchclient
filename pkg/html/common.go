@@ -22,3 +22,9 @@ func GetSearchPostReq() (rval Node) {
 	)
 	return
 }
+
+func GetQueryString(qs string) (rval Node) {
+	tval := []Node{Text(qs)}
+	rval = Var(tval...)
+	return
+}

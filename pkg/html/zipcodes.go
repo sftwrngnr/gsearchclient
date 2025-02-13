@@ -10,9 +10,9 @@ import (
 	. "maragu.dev/gomponents/html"
 )
 
-func ZipCodes(qs string) Node {
+func ZipCodes(qs string) (rval Node) {
 	fmt.Printf("ZipCode handler called")
-	var rval []Node
+	var tval []Node
 	var zval []Node
 	var acval []Node
 	var kwval []Node
@@ -30,12 +30,12 @@ func ZipCodes(qs string) Node {
 		acval = append(acval, Option(Value(ac.Code), Text(ac.Code)))
 	}
 	for _, z := range myZips {
-		zval = append(zval, Option(Value(strconv.Itoa(int(z.ID))), Text(z.Zipcode)))
+		zval = append(zval, Option(Value(z.Zipcode), Text(z.Zipcode)))
 	}
 	for _, k := range myKeywords {
-		kwval = append(kwval, Option(Value(k.Keyword), Text(k.Keyword)))
+		kwval = append(kwval, Option(Value(strconv.Itoa(int(k.ID))), Text(k.Keyword)))
 	}
-	rval = append(rval,
+	tval = append(tval,
 		Table(
 			Tr(Th(Text("Zip code")), Th(Text("Area code")), Th(Text("Keywords"))),
 			Tr(
@@ -50,14 +50,15 @@ func ZipCodes(qs string) Node {
 				),
 			),
 			Tr(
-				Td(Input(Type("checkbox"), Label(Text("allzc"))), Text("All Zipcodes")),
-				Td(Input(Type("checkbox"), Label(Text("allac"))), Text("All Area Codes")),
-				Td(Input(Type("checkbox"), Label(Text("allkw"))), Text("All Keywords"))),
+				Td(Input(Type("checkbox"), Name("allzc"), ID("allzc")), Text("All Zipcodes")),
+				Td(Input(Type("checkbox"), Name("allac"), ID("allac")), Text("All Area Codes")),
+				Td(Input(Type("checkbox"), Name("allkw"), ID("allkw")), Text("All Keywords"))),
 			Tr(Td(),
 				Td(),
-				Td(Input(Type("checkbox"), Label(Text("indivkw"))), Text("Individual Keywords"))),
+				Td(Input(Type("checkbox"), Label(Text("indivkw")), ID("indivkw")), Text("Individual Keywords"))),
 		),
 	)
 
-	return Var(rval...)
+	rval = Var(tval...)
+	return
 }

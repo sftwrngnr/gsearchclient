@@ -23,5 +23,10 @@ func (dbc *DBConnData) GetStateId(abbrev string) (uint, error) {
 	var state States
 	err := dbc.DB.First(&state, "abbrev = ?", abbrev).Error
 	return state.ID, err
+}
 
+func (dbc *DBConnData) GetStateByAbbr(abbr string) (States, error) {
+	var state States
+	err := dbc.DB.First(&state, "Abbrev = ?", abbr).Error
+	return state, err
 }

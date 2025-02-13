@@ -26,7 +26,11 @@ func ZipCodes(mux *http.ServeMux) {
 
 func GenQry(mux *http.ServeMux) {
 	mux.Handle("POST /genqry", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
-		return html.GenQry()
+		err := r.ParseForm()
+		if err != nil {
+			return nil, err
+		}
+		return html.GenQry(r.Form)
 	}))
 }
 

@@ -16,6 +16,7 @@ func setupRoutes() http.Handler {
 	mux := http.NewServeMux()
 	Home(mux)
 	ZipCodes(mux)
+	GenQry(mux)
 	About(mux)
 	return mux
 }
