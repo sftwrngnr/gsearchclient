@@ -31,6 +31,9 @@ func GenQry(mymap map[string][]string) (myOut Node, err error) {
 	if slices.Contains(keys, "zc") {
 		qrystr += "+" + build_zipcodeqry(mymap["zc"])
 	}
+	if slices.Contains(keys, "ac") {
+		qrystr += "+" + build_areacodeqry(mymap["ac"])
+	}
 	fmt.Printf("Generating a query with qry string: %v\n", qrystr)
 	tOut := []Node{GetSearchPostReq()}
 	tOut = append(tOut, GetQueryString(qrystr))
@@ -71,7 +74,11 @@ func build_keywordqry(mykws []string) string {
 }
 
 func build_zipcodeqry(zipcodes []string) string {
-	return "in zip codes(" + strings.Join(zipcodes, ",") + ")"
+	return "in zip code(" + strings.Join(zipcodes, ",") + ")"
+}
+
+func build_areacodeqry(areacodes []string) string {
+	return "in areacode(" + strings.Join(areacodes, ",") + ")"
 }
 
 func getDentistIdents(kwr []sqldb.Keywords, mykws []string) (rstring string, rval string) {
