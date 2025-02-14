@@ -1,6 +1,8 @@
 package html
 
 import (
+	"fmt"
+	"github.com/sftwrngnr/gsearchclient/pkg/searcher"
 	. "maragu.dev/gomponents"
 	hx "maragu.dev/gomponents-htmx"
 	. "maragu.dev/gomponents/html"
@@ -24,10 +26,26 @@ func GetSearchPostReq() (rval Node) {
 	return
 }
 
-func GetQueryString(qs string) (rval Node) {
+func GetQueryString(qs string, st string) (rval Node) {
 	tval := []Node{Div(ID("qrystring"),
 		H2(Text("Query String")),
 		Text(qs)),
+	}
+	if st != "" {
+		mySp := &searcher.SearchParms{Query: qs, Location: fmt.Sprintf("%s, United States", st)}
+
+		qrs, qerr := mySp.Searchdata()
+		if qerr != nil {
+			tval = append(tval, H2(Text(fmt.Sprintf("Query Error %s", qerr))))
+		}
+		for i, d := range qrs {
+			fmt.Printf("Line %d, %v\n", i, d)
+		}
+		olE := []Node{}
+		for _, q := range qrs {
+			olE = append(olE, Li(Text(q)))
+		}
+		tval = append(tval, Ol(olE...))
 	}
 	rval = Var(tval...)
 	return

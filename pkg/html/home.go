@@ -46,8 +46,7 @@ func HomePage(items []string) Node {
 			Hr(Style("border: 5px solid blue; border-radius: 5px")),
 			GetSearchPostReq(),
 		),
-		GetQueryString(""),
-		GetQueryResults([]string{""}),
+		GetQueryString("", ""),
 	)
 
 }

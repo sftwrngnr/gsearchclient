@@ -36,7 +36,7 @@ func GenQry(mymap map[string][]string) (myOut Node, err error) {
 	}
 	fmt.Printf("Generating a query with qry string: %v\n", qrystr)
 	tOut := []Node{}
-	tOut = append(tOut, GetQueryString(qrystr))
+	tOut = append(tOut, GetQueryString(qrystr, myst.Name))
 	myOut = html.Var(tOut...)
 	return
 }
