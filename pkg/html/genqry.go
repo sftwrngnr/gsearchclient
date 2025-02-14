@@ -69,7 +69,6 @@ func build_keywordqry(mykws []string) string {
 			qrystring += "+" + getKwd(kw, keywordrecs)
 		}
 	}
-	fmt.Printf("qrystring:%s\n", qrystring)
 	return qrystring
 }
 

@@ -25,23 +25,39 @@ func (sp *SearchParms) Searchdata() ([]string, error) {
 	}
 
 	search := g.NewGoogleSearch(parameter, system.GetSystemParams().GQKey)
-	results, err := search.GetJSON()
-	for k, v := range results {
-		//fmt.Println(k, v)
-		if k == "organic_results" {
-			tres := v.([]interface{})
-			for _, t := range tres {
-				fmt.Printf("%v\n", t)
-			}
-			fmt.Println("\n")
-		}
-	}
-	// Now unmarshal json
-
+	data, err := search.GetJSON()
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("Fuck chocolate shakes.\n")
 		return rval, err
 	}
+	//fmt.Printf("%v\n", data)
+	if data["organic_results"] != nil {
+		results := data["organic_results"].([]interface{})
+		fmt.Printf("Got organic results: \n")
+		for i := range len(results) {
+			if results[i] == nil {
+				continue
+			}
+			myMap := results[i].(map[string]interface{})
+			fmt.Printf("%s\n", myMap["title"].(string))
+			fmt.Printf("%s\n", myMap["link"].(string))
+			//fmt.Printf("%i\n", myMap["display_link"].(string))
+			fmt.Printf("\n")
+			rval = append(rval, myMap["link"].(string))
+		}
+	}
 
+	/*
+		results := data["organic_results"].([]interface{})
+		for i := range len(results) {
+			if results[i] != nil {
+				for k, v := range results[i].(map[string]interface{}) {
+					fmt.Printf("%s :: %v\n", k, v)
+				}
+			}
+			//rval = append(rval, results[i].(map[string]interface{})["displayed_link"].(string))
+		}
+
+	*/
 	return rval, err
 }

@@ -1,0 +1,190 @@
+{
+  "search_metadata": {
+    "id": "67aea5b9ed38945a3a0049c2",
+    "status": "Success",
+    "json_endpoint": "https://serpapi.com/searches/974e467ee72a1541/67aea5b9ed38945a3a0049c2.json",
+    "created_at": "2025-02-14 02:08:57 UTC",
+    "processed_at": "2025-02-14 02:08:57 UTC",
+    "google_url": "https://www.google.com/search?q=Arizona%2BOrthodontist%2B%22Clear+Aligner%22%2Bin+areacode%28480%29&oq=Arizona%2BOrthodontist%2B%22Clear+Aligner%22%2Bin+areacode%28480%29&uule=w+CAIQICIVQXJpem9uYSxVbml0ZWQgU3RhdGVz&sourceid=chrome&ie=UTF-8",
+    "raw_html_file": "https://serpapi.com/searches/974e467ee72a1541/67aea5b9ed38945a3a0049c2.html",
+    "total_time_taken": 1.38
+  },
+  "search_parameters": {
+    "engine": "google",
+    "q": "Arizona+Orthodontist+\"Clear Aligner\"+in areacode(480)",
+    "location_requested": "Arizona, United States",
+    "location_used": "Arizona,United States",
+    "google_domain": "google.com",
+    "device": "desktop"
+  },
+  "search_information": {
+    "query_displayed": "Arizona+Orthodontist+\"Clear Aligner\"+in areacode(480)",
+    "total_results": 0,
+    "time_taken_displayed": 0.31,
+    "organic_results_state": "Some results for exact spelling but showing fixed spelling",
+    "spelling_fix": "Arizona+Orthodontic\"Clear Aligner\"+in area code(480)",
+    "showing_results_for": "Arizona+Orthodontic\"Clear Aligner\"+in area code(480)"
+  },
+  "knowledge_graph": {
+    "title": "Arizona Orthodontic Centers",
+    "thumbnail": "https://serpapi.com/searches/67aea5b9ed38945a3a0049c2/images/6f629d7a73ccbe191c6a5018b94533ffa23b8ff6451934ac9aa554ef1c12eff1.jpeg",
+    "type": "Orthodontist in Phoenix, Arizona",
+    "kgmid": "/g/1tmxg06r",
+    "knowledge_graph_search_link": "https://www.google.com/search?kgmid=/g/1tmxg06r&hl=en-US&q=Arizona+Orthodontic+Centers",
+    "serpapi_knowledge_graph_search_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en-US&kgmid=%2Fg%2F1tmxg06r&location=Arizona%2C+United+States&q=Arizona+Orthodontic+Centers",
+    "place_id": "ChIJcRXHa4RAK4cRrzaXfitFBvk",
+    "website": "https://www.azorthodonticcenter.com/",
+    "directions": "https://maps.google.com/maps?uule=w+CAIQICIVQXJpem9uYSxVbml0ZWQgU3RhdGVz&um=1&ie=UTF-8&fb=1&gl=us&sa=X&geocode=KXEVx2uEQCuHMa82l34rRQb5&daddr=4130+N+108th+Ave+STE+103,+Phoenix,+AZ+85037",
+    "reviews": "https://www.google.com/search?sca_esv=54fcc75b4f72cd60&si=APYL9btvhO6SAb8jF9HqTZMMa7vs_teLnZaEVrJZwRKFIIKjoQldsKfswQIVeiIxE9vAvm9gDMXJpj0qa2q_Lj53gQcbcO1YMpn111NRZHNQbni5XkWGsuGd2tC3dZPP1TZisEeolvUix7vjWUtjTloDSsWRDO7YSg%3D%3D&q=Arizona+Orthodontic+Centers+Reviews&sa=X&ved=2ahUKEwiPxKrCisKLAxVWTkEAHWgHBasQ0bkNegQIMRAE",
+    "local_map": {
+      "image": "https://serpapi.com/searches/67aea5b9ed38945a3a0049c2/images/6f629d7a73ccbe191c6a5018b94533ffe48cc02335ab7a5b374363eee42abdba.webp",
+      "link": "https://www.google.com/maps/place/Arizona+Orthodontic+Centers/data=!4m2!3m1!1s0x0:0xf906452b7e9736af?sa=X&ved=2ahUKEwiPxKrCisKLAxVWTkEAHWgHBasQ_BJ6BAgXEAA"
+    },
+    "rating": 5.0,
+    "review_count": 1751,
+    "located_in": "Garden lakes Professional Plaza",
+    "address": "4130 N 108th Ave STE 103, Phoenix, AZ 85037",
+    "address_links": [
+      {
+        "text": "Address",
+        "link": "https://www.google.com/search?sca_esv=54fcc75b4f72cd60&q=arizona+orthodontic+centers+address&ludocid=17944105818414069423&sa=X&ved=2ahUKEwiPxKrCisKLAxVWTkEAHWgHBasQ6BN6BAgtEAI"
+      }
+    ],
+    "raw_hours": "Closed ⋅ Opens 8 AM Fri",
+    "hours": {
+      "thursday": {
+        "opens": "9 AM",
+        "closes": "3 PM"
+      },
+      "friday": {
+        "opens": "8 AM",
+        "closes": "5 PM"
+      },
+      "saturday": {
+        "opens": "8 AM",
+        "closes": "2 PM"
+      },
+      "sunday": {
+        "opens": "Closed"
+      },
+      "monday_washington_s_birthday": {
+        "opens": "9 AM",
+        "closes": "3 PMHours might differ"
+      },
+      "tuesday": {
+        "opens": "9 AM",
+        "closes": "3 PM"
+      },
+      "wednesday": {
+        "opens": "8 AM",
+        "closes": "5 PM"
+      }
+    },
+    "phone": "(623) 877-8500",
+    "merchant_description": "\"Welcome to Arizona Orthodontic Centers! Dr. Park is pleased to provide exceptional orthodontics in Phoenix, Arizona. We are happy to accommodate your needs, and we have team members who speak English, Spanish, and Korean. Dr. Park and his extensive qualifications enable him and our team to give you the smile you have always wanted. We look forward to helping you improve your smile!\"",
+    "user_reviews": [
+      {
+        "summary": "Hard workers very kind environment makes you feel right at home!",
+        "link": "https://www.google.com/maps/reviews/data=!4m5!14m4!1m3!1m2!1s117087758244769141843!2s0x872b40846bc71571:0xf906452b7e9736af?ved=1t:31295&ictx=111",
+        "user": {
+          "name": "Cristina Leal",
+          "link": "https://www.google.com/maps/contrib/117087758244769141843?hl=en-US&ved=1t:31296&ictx=111",
+          "thumbnail": "https://serpapi.com/searches/67aea5b9ed38945a3a0049c2/images/6f629d7a73ccbe191c6a5018b94533ffb0f97a7132d61028f8b98d02493b83387fb680ffd817dccd82d90f610fdaff6e.png"
+        }
+      },
+      {
+        "summary": "I LOVE this place 😆😃..Staff and Service is Amazing👌💯",
+        "link": "https://www.google.com/maps/reviews/data=!4m5!14m4!1m3!1m2!1s106830650757308413300!2s0x872b40846bc71571:0xf906452b7e9736af?ved=1t:31295&ictx=111",
+        "user": {
+          "name": "Damion Herrera",
+          "link": "https://www.google.com/maps/contrib/106830650757308413300?hl=en-US&ved=1t:31296&ictx=111",
+          "thumbnail": "https://serpapi.com/searches/67aea5b9ed38945a3a0049c2/images/6f629d7a73ccbe191c6a5018b94533ffb0f97a7132d61028106237522107e04d285e7639a4e4b9fcf5108658e7042857.png"
+        }
+      },
+      {
+        "summary": "Very nice people work here, the doctor very attention with the patients",
+        "link": "https://www.google.com/maps/reviews/data=!4m5!14m4!1m3!1m2!1s105225821958638166845!2s0x872b40846bc71571:0xf906452b7e9736af?ved=1t:31295&ictx=111",
+        "user": {
+          "name": "claudia magno",
+          "link": "https://www.google.com/maps/contrib/105225821958638166845?hl=en-US&ved=1t:31296&ictx=111",
+          "thumbnail": "https://serpapi.com/searches/67aea5b9ed38945a3a0049c2/images/6f629d7a73ccbe191c6a5018b94533ffb0f97a7132d61028c75d3da0dd30003f75f99d1c1758cfb669366f8d5568e8c5.png"
+        }
+      }
+    ],
+    "unclaimed_listing": true,
+    "profiles": [
+      {
+        "name": "YouTube",
+        "link": "https://www.youtube.com/channel/UCX-8Iggc41Dc8YfR4vrWGmw",
+        "image": "https://ssl.gstatic.com/kpui/social/youtube_32x32.png"
+      },
+      {
+        "name": "X (Twitter)",
+        "link": "https://twitter.com/AZOrthoCenters",
+        "image": "https://ssl.gstatic.com/kpui/social/x_32x32.png"
+      },
+      {
+        "name": "Instagram",
+        "link": "https://www.instagram.com/arizonaorthodonticcenters/",
+        "image": "https://ssl.gstatic.com/kpui/social/instagram_32x32.png"
+      },
+      {
+        "name": "YouTube",
+        "link": "https://www.youtube.com/@arizonaorthodonticcenters1537",
+        "image": "https://ssl.gstatic.com/kpui/social/youtube_32x32.png"
+      }
+    ],
+    "people_also_search_for": [
+      {
+        "name": "Arizona Pediatric Dentistry and Orthodontics",
+        "extensions": [
+          "Pediatric dentist"
+        ],
+        "place_id": "3472857718912579689",
+        "link": "https://www.google.com/search?sca_esv=54fcc75b4f72cd60&tbm=lcl&q=Arizona+Orthodontic+Centers&rflfq=1&num=20&uule=w+CAIQICIVQXJpem9uYSxVbml0ZWQgU3RhdGVz&stick=H4sIAAAAAAAAAB2QvU0DQRSE5QBEbkRwJFfC-_8JEQVACxYcAsnyobMjyqEC6qIKZol2NTs7b753cz3t1VLKM7maxbOjetoniQhxEZFaOLMkxNKAZtxN3eakNN1yRIcHvgeJChzu077diwxmVy8TKh9WUTVIzJ5a2kQj1YyyBIkahqFODrEtDCJMJeRk3hARk3CooChqWeZ_KQ4jQZ1ul2QLwSQycHA7XoA0Kuv__DQVE7UyMCggoWaMliqhFZmS3TXtGTRkxerBLpEUOayeaE8hUoqsygSrFFUjGhpIDD8JVMJqyp1EXj0OAVXizigj7MbgjUFVbErNCnbsBM4Y-69CHI-VGPvYwM9u97u7e17Wz-MyH47ndT4vh-3lfX5bt--r-4ft42s9Hean7fK-vq6ny8fL_LicLst2_gPa_VCW5gEAAA",
+        "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_local&gl=us&google_domain=google.com&hl=en&location=Arizona%2C+United+States&q=Arizona+Orthodontic+Centers&uule=w+CAIQICIVQXJpem9uYSxVbml0ZWQgU3RhdGVz",
+        "image": "https://lh5.googleusercontent.com/p/AF1QipNoqnaycCoo2rr2C0jnlGw3WLXHQD6UZTMoYghi=w72-h72-n-k-no"
+      },
+      {
+        "name": "Dr. Jae Park",
+        "extensions": [
+          "Orthodontist"
+        ],
+        "place_id": "7022201800034651127",
+        "link": "https://www.google.com/search?sca_esv=54fcc75b4f72cd60&tbm=lcl&q=Arizona+Orthodontic+Centers&rflfq=1&num=20&uule=w+CAIQICIVQXJpem9uYSxVbml0ZWQgU3RhdGVz&stick=H4sIAAAAAAAAAB2QvU0DQRSE5QBEbkRwJFfC-_8JEQVACxYcAsnyobMjyqEC6qIKZol2NTs7b753cz3t1VLKM7maxbOjetoniQhxEZFaOLMkxNKAZtxN3eakNN1yRIcHvgeJChzu077diwxmVy8TKh9WUTVIzJ5a2kQj1YyyBIkahqFODrEtDCJMJeRk3hARk3CooChqWeZ_KQ4jQZ1ul2QLwSQycHA7XoA0Kuv__DQVE7UyMCggoWaMliqhFZmS3TXtGTRkxerBLpEUOayeaE8hUoqsygSrFFUjGhpIDD8JVMJqyp1EXj0OAVXizigj7MbgjUFVbErNCnbsBM4Y-69CHI-VGPvYwM9u97u7e17Wz-MyH47ndT4vh-3lfX5bt--r-4ft42s9Hean7fK-vq6ny8fL_LicLst2_gPa_VCW5gEAAA",
+        "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_local&gl=us&google_domain=google.com&hl=en&location=Arizona%2C+United+States&q=Arizona+Orthodontic+Centers&uule=w+CAIQICIVQXJpem9uYSxVbml0ZWQgU3RhdGVz",
+        "image": "https://www.google.com/maps/vt/data=X6H8Xf8CMIcDAqn6mYxXnpn5yZRHGtU_KaC8x51YKkRlEtqMLlqYWkjSNgk6ckubiMRaBxMvB_qfm223VJh1K9tBmJM1ASaNM1HhtL0x_qce8mrQ4Mgy7GVG_0Dh83GlLrmAjludfkrZeZCzaKImApDnwqne8MKqrCOEW_K5XWai7ic9PlE"
+      },
+      {
+        "name": "Arizona Orthodontic Studio",
+        "extensions": [
+          "Orthodontist"
+        ],
+        "place_id": "7836018419909945030",
+        "link": "https://www.google.com/search?sca_esv=54fcc75b4f72cd60&tbm=lcl&q=Arizona+Orthodontic+Centers&rflfq=1&num=20&uule=w+CAIQICIVQXJpem9uYSxVbml0ZWQgU3RhdGVz&stick=H4sIAAAAAAAAAB2QvU0DQRSE5QBEbkRwJFfC-_8JEQVACxYcAsnyobMjyqEC6qIKZol2NTs7b753cz3t1VLKM7maxbOjetoniQhxEZFaOLMkxNKAZtxN3eakNN1yRIcHvgeJChzu077diwxmVy8TKh9WUTVIzJ5a2kQj1YyyBIkahqFODrEtDCJMJeRk3hARk3CooChqWeZ_KQ4jQZ1ul2QLwSQycHA7XoA0Kuv__DQVE7UyMCggoWaMliqhFZmS3TXtGTRkxerBLpEUOayeaE8hUoqsygSrFFUjGhpIDD8JVMJqyp1EXj0OAVXizigj7MbgjUFVbErNCnbsBM4Y-69CHI-VGPvYwM9u97u7e17Wz-MyH47ndT4vh-3lfX5bt--r-4ft42s9Hean7fK-vq6ny8fL_LicLst2_gPa_VCW5gEAAA",
+        "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_local&gl=us&google_domain=google.com&hl=en&location=Arizona%2C+United+States&q=Arizona+Orthodontic+Centers&uule=w+CAIQICIVQXJpem9uYSxVbml0ZWQgU3RhdGVz",
+        "image": "https://lh5.googleusercontent.com/p/AF1QipPUvdWUl0_WZhRwrCXuqsuq6GGiEQ1GyySh1-Wx=w72-h72-n-k-no"
+      },
+      {
+        "name": "North Phoenix Orthodontic Studio",
+        "extensions": [
+          "Orthodontist"
+        ],
+        "place_id": "16696567186023236055",
+        "link": "https://www.google.com/search?sca_esv=54fcc75b4f72cd60&tbm=lcl&q=Arizona+Orthodontic+Centers&rflfq=1&num=20&uule=w+CAIQICIVQXJpem9uYSxVbml0ZWQgU3RhdGVz&stick=H4sIAAAAAAAAAB2QvU0DQRSE5QBEbkRwJFfC-_8JEQVACxYcAsnyobMjyqEC6qIKZol2NTs7b753cz3t1VLKM7maxbOjetoniQhxEZFaOLMkxNKAZtxN3eakNN1yRIcHvgeJChzu077diwxmVy8TKh9WUTVIzJ5a2kQj1YyyBIkahqFODrEtDCJMJeRk3hARk3CooChqWeZ_KQ4jQZ1ul2QLwSQycHA7XoA0Kuv__DQVE7UyMCggoWaMliqhFZmS3TXtGTRkxerBLpEUOayeaE8hUoqsygSrFFUjGhpIDD8JVMJqyp1EXj0OAVXizigj7MbgjUFVbErNCnbsBM4Y-69CHI-VGPvYwM9u97u7e17Wz-MyH47ndT4vh-3lfX5bt--r-4ft42s9Hean7fK-vq6ny8fL_LicLst2_gPa_VCW5gEAAA",
+        "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_local&gl=us&google_domain=google.com&hl=en&location=Arizona%2C+United+States&q=Arizona+Orthodontic+Centers&uule=w+CAIQICIVQXJpem9uYSxVbml0ZWQgU3RhdGVz",
+        "image": "https://lh5.googleusercontent.com/p/AF1QipOLIhN245u-gfiTpxgxOCv4AWo_jzuqU1ByqyuD=w72-h72-n-k-no"
+      },
+      {
+        "name": "Wild West Orthodontics",
+        "extensions": [
+          "Orthodontist"
+        ],
+        "place_id": "9558040185358420850",
+        "link": "https://www.google.com/search?sca_esv=54fcc75b4f72cd60&tbm=lcl&q=Arizona+Orthodontic+Centers&rflfq=1&num=20&uule=w+CAIQICIVQXJpem9uYSxVbml0ZWQgU3RhdGVz&stick=H4sIAAAAAAAAAB2QvU0DQRSE5QBEbkRwJFfC-_8JEQVACxYcAsnyobMjyqEC6qIKZol2NTs7b753cz3t1VLKM7maxbOjetoniQhxEZFaOLMkxNKAZtxN3eakNN1yRIcHvgeJChzu077diwxmVy8TKh9WUTVIzJ5a2kQj1YyyBIkahqFODrEtDCJMJeRk3hARk3CooChqWeZ_KQ4jQZ1ul2QLwSQycHA7XoA0Kuv__DQVE7UyMCggoWaMliqhFZmS3TXtGTRkxerBLpEUOayeaE8hUoqsygSrFFUjGhpIDD8JVMJqyp1EXj0OAVXizigj7MbgjUFVbErNCnbsBM4Y-69CHI-VGPvYwM9u97u7e17Wz-MyH47ndT4vh-3lfX5bt--r-4ft42s9Hean7fK-vq6ny8fL_LicLst2_gPa_VCW5gEAAA",
+        "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_local&gl=us&google_domain=google.com&hl=en&location=Arizona%2C+United+States&q=Arizona+Orthodontic+Centers&uule=w+CAIQICIVQXJpem9uYSxVbml0ZWQgU3RhdGVz",
+        "image": "https://lh5.googleusercontent.com/p/AF1QipMJvAy2xxO1wM7V0kPjJajQV60_vQOnJhT-sSNQ=w72-h72-n-k-no"
+      }
+    ]
+  }
+}

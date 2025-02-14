@@ -77,6 +77,14 @@ CREATE TABLE public.keywords (
                                  CONSTRAINT keywords_pk PRIMARY KEY (id)
 );
 
+CREATE TABLE public.crawler_results (
+                                id bigserial NOT NULL,
+                                query_id bigint NULL,
+                                title varchar NULL,
+                                link varchar NULL,
+                                display_link varchar NULL,
+                                CONSTRAINT crawler_results_pk PRIMARY KEY (id)
+);
 
 
 commit;
