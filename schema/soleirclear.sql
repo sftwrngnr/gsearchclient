@@ -77,38 +77,6 @@ CREATE TABLE public.keywords (
     CONSTRAINT keywords_pk PRIMARY KEY (id)
 );
 
-
-CREATE TABLE public.qry_ac (
-    id bigserial NOT NULL,
-    qry_id bigint NULL,
-    qry_ac bigint NULL,
-    CONSTRAINT qry_ac_pk PRIMARY KEY (id),
-    CONSTRAINT qry_ac_areacodes_fk FOREIGN KEY (qry_ac) REFERENCES public.areacodes(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT qry_ac_query_fk FOREIGN KEY (qry_id) REFERENCES public.query(id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-
-create table query_results
-(
-    id bigserial not null,
-    query_id  bigint,
-    title varchar,
-    link   varchar,
-    display_link varchar,
-    constraint crawler_results_pk primary key
-    constraint query_results_query_fk foreign key (query_id) references public.query(id) on update cascade on delete cascade,
-);
-
-CREATE TABLE public.qry_zips (
-    id bigserial NOT NULL,
-    query_id bigint NULL,
-    zip_id bigint NULL,
-    CONSTRAINT qry_zips_pk PRIMARY KEY (id),
-    CONSTRAINT qry_zips_query_fk FOREIGN KEY (query_id) REFERENCES public.query(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT qry_zips_zipcodes_fk FOREIGN KEY (zip_id) REFERENCES public.zipcodes(id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-
 CREATE TABLE public.query
 (
     id bigserial NOT NULL,
@@ -122,6 +90,35 @@ CREATE TABLE public.query
     CONSTRAINT query_states_fk FOREIGN KEY (state) REFERENCES public.states(id)
 );
 
+create table query_results
+(
+    id bigserial not null,
+    query_id  bigint,
+    title varchar,
+    link   varchar,
+    display_link varchar,
+    constraint crawler_results_pk primary key
+    constraint query_results_query_fk foreign key (query_id) references public.query(id) on update cascade on delete cascade,
+);
+
+
+CREATE TABLE public.qry_zips (
+    id bigserial NOT NULL,
+    query_id bigint NULL,
+    zip_id bigint NULL,
+    CONSTRAINT qry_zips_pk PRIMARY KEY (id),
+    CONSTRAINT qry_zips_query_fk FOREIGN KEY (query_id) REFERENCES public.query(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT qry_zips_zipcodes_fk FOREIGN KEY (zip_id) REFERENCES public.zipcodes(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE public.qry_ac (
+    id bigserial NOT NULL,
+    qry_id bigint NULL,
+    qry_ac bigint NULL,
+    CONSTRAINT qry_ac_pk PRIMARY KEY (id),
+    CONSTRAINT qry_ac_areacodes_fk FOREIGN KEY (qry_ac) REFERENCES public.areacodes(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT qry_ac_query_fk FOREIGN KEY (qry_id) REFERENCES public.query(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 
 CREATE TABLE public.qry_kwds (
@@ -132,6 +129,16 @@ CREATE TABLE public.qry_kwds (
     CONSTRAINT qry_kwds_query_fk FOREIGN KEY (query_id) REFERENCES public.query(id),
     CONSTRAINT qry_kwds_keywords_fk FOREIGN KEY (keyword_id) REFERENCES public.keywords(id)
 );
+
+CREATE TABLE public.qry_state (
+	id bigserial NOT NULL,
+	query_id bigint NULL,
+	query_state bigint NULL,
+	CONSTRAINT qry_state_pk PRIMARY KEY (id),
+	CONSTRAINT qry_state_states_fk FOREIGN KEY (query_state) REFERENCES public.states(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT qry_state_query_fk FOREIGN KEY (query_id) REFERENCES public.query(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 
 
 commit;
