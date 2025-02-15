@@ -25,7 +25,7 @@ const (
 
 type SearchResults struct {
 	RsltType ResultType
-	Results  inter1face{}
+	Results  interface{}
 }
 
 type Searcher interface {
@@ -34,7 +34,7 @@ type Searcher interface {
 }
 
 func (sp *SearchParms) BuildSearch() string {
-
+	return ""
 }
 
 func (sp *SearchParms) Searchdata() (rval []string, err error) {

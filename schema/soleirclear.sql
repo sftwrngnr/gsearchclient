@@ -275,40 +275,6 @@ ALTER SEQUENCE public.qry_kwds_id_seq OWNED BY public.qry_kwds.id;
 
 
 --
--- Name: qry_state; Type: TABLE; Schema: public; Owner: crawler
---
-
-CREATE TABLE public.qry_state (
-    id bigint NOT NULL,
-    query_id bigint,
-    query_state bigint
-);
-
-
-ALTER TABLE public.qry_state OWNER TO crawler;
-
---
--- Name: qry_state_id_seq; Type: SEQUENCE; Schema: public; Owner: crawler
---
-
-CREATE SEQUENCE public.qry_state_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.qry_state_id_seq OWNER TO crawler;
-
---
--- Name: qry_state_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: crawler
---
-
-ALTER SEQUENCE public.qry_state_id_seq OWNED BY public.qry_state.id;
-
-
---
 -- Name: qry_zips; Type: TABLE; Schema: public; Owner: crawler
 --
 
@@ -349,9 +315,9 @@ ALTER SEQUENCE public.qry_zips_id_seq OWNED BY public.qry_zips.id;
 CREATE TABLE public.query (
     id bigint NOT NULL,
     state bigint,
-    keyword_ids character varying,
-    zip_ids character varying,
-    ac_ids character varying
+    kwds bigint,
+    zips bigint,
+    acs bigint
 );
 
 
@@ -501,13 +467,6 @@ ALTER TABLE ONLY public.qry_kwds ALTER COLUMN id SET DEFAULT nextval('public.qry
 
 
 --
--- Name: qry_state id; Type: DEFAULT; Schema: public; Owner: crawler
---
-
-ALTER TABLE ONLY public.qry_state ALTER COLUMN id SET DEFAULT nextval('public.qry_state_id_seq'::regclass);
-
-
---
 -- Name: qry_zips id; Type: DEFAULT; Schema: public; Owner: crawler
 --
 
@@ -628,14 +587,6 @@ COPY public.qry_kwds (id, query_id, keyword_id) FROM stdin;
 
 
 --
--- Data for Name: qry_state; Type: TABLE DATA; Schema: public; Owner: crawler
---
-
-COPY public.qry_state (id, query_id, query_state) FROM stdin;
-\.
-
-
---
 -- Data for Name: qry_zips; Type: TABLE DATA; Schema: public; Owner: crawler
 --
 
@@ -647,7 +598,7 @@ COPY public.qry_zips (id, query_id, zip_id) FROM stdin;
 -- Data for Name: query; Type: TABLE DATA; Schema: public; Owner: crawler
 --
 
-COPY public.query (id, state, keyword_ids, zip_ids, ac_ids) FROM stdin;
+COPY public.query (id, state, kwds, zips, acs) FROM stdin;
 \.
 
 
@@ -722,13 +673,6 @@ SELECT pg_catalog.setval('public.qry_ac_id_seq', 1, false);
 --
 
 SELECT pg_catalog.setval('public.qry_kwds_id_seq', 1, false);
-
-
---
--- Name: qry_state_id_seq; Type: SEQUENCE SET; Schema: public; Owner: crawler
---
-
-SELECT pg_catalog.setval('public.qry_state_id_seq', 1, false);
 
 
 --
@@ -813,14 +757,6 @@ ALTER TABLE ONLY public.qry_ac
 
 ALTER TABLE ONLY public.qry_kwds
     ADD CONSTRAINT qry_kwds_pk PRIMARY KEY (id);
-
-
---
--- Name: qry_state qry_state_pk; Type: CONSTRAINT; Schema: public; Owner: crawler
---
-
-ALTER TABLE ONLY public.qry_state
-    ADD CONSTRAINT qry_state_pk PRIMARY KEY (id);
 
 
 --
@@ -948,22 +884,6 @@ ALTER TABLE ONLY public.qry_kwds
 
 
 --
--- Name: qry_state qry_state_query_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
---
-
-ALTER TABLE ONLY public.qry_state
-    ADD CONSTRAINT qry_state_query_fk FOREIGN KEY (query_id) REFERENCES public.query(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: qry_state qry_state_states_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
---
-
-ALTER TABLE ONLY public.qry_state
-    ADD CONSTRAINT qry_state_states_fk FOREIGN KEY (query_state) REFERENCES public.states(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
 -- Name: qry_zips qry_zips_query_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
 --
 
@@ -980,6 +900,30 @@ ALTER TABLE ONLY public.qry_zips
 
 
 --
+-- Name: query query_qry_ac_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.query
+    ADD CONSTRAINT query_qry_ac_fk FOREIGN KEY (acs) REFERENCES public.qry_ac(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: query query_qry_kwds_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.query
+    ADD CONSTRAINT query_qry_kwds_fk FOREIGN KEY (kwds) REFERENCES public.qry_kwds(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: query query_qry_zips_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.query
+    ADD CONSTRAINT query_qry_zips_fk FOREIGN KEY (zips) REFERENCES public.qry_zips(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
 -- Name: query_results query_results_query_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
 --
 
@@ -992,7 +936,7 @@ ALTER TABLE ONLY public.query_results
 --
 
 ALTER TABLE ONLY public.query
-    ADD CONSTRAINT query_states_fk FOREIGN KEY (state) REFERENCES public.states(id);
+    ADD CONSTRAINT query_states_fk FOREIGN KEY (state) REFERENCES public.states(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
