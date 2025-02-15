@@ -143,7 +143,7 @@ CREATE TABLE public.query_results (
     query_id bigint,
     resultseq bigint,
     result_type bigint,
-    result json
+    result jsonb
 );
 
 
