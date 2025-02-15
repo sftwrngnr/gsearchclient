@@ -14,8 +14,30 @@ type SearchParms struct {
 	SearchDomain string `default:"google.com"`
 }
 
-func (sp *SearchParms) Searchdata() ([]string, error) {
-	var rval []string
+type ResultType int
+
+const (
+	OrganicResultType ResultType = iota
+	KnowledgeGraph
+	LocalPack
+	Pagination
+)
+
+type SearchResults struct {
+	RsltType ResultType
+	Results  inter1face{}
+}
+
+type Searcher interface {
+	BuildQueryString(SearchParms) (string, error)
+	ExecuteQuery(SearchParms) ([]SearchResults, error)
+}
+
+func (sp *SearchParms) BuildSearch() string {
+
+}
+
+func (sp *SearchParms) Searchdata() (rval []string, err error) {
 	parameter := map[string]string{
 		"q":             sp.Query,
 		"location":      sp.Location,
