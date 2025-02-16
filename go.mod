@@ -6,6 +6,7 @@ toolchain go1.23.5
 
 require (
 	github.com/schollz/progressbar/v3 v3.18.0
+	github.com/serpapi/google-search-results-golang v0.0.0-20240325113416-ec93f510648e
 	github.com/spf13/cobra v1.8.1
 	gorm.io/driver/postgres v1.5.11
 	gorm.io/gorm v1.25.12

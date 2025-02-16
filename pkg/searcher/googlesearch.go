@@ -2,7 +2,12 @@ package searcher
 
 import (
 	"fmt"
+	g "github.com/serpapi/google-search-results-golang"
+	"github.com/sftwrngnr/gsearchclient/pkg/sqldb"
+	"github.com/sftwrngnr/gsearchclient/pkg/system"
 	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
+	"strings"
 )
 
 type GooglesearchClient struct {
@@ -25,11 +30,21 @@ func (gsc *GooglesearchClient) ValidateSearchParameters(sp *SearchParms) (rval e
 		rval = fmt.Errorf("At least one keyword must be specified")
 		return
 	}
+	fmt.Printf("Checking to see if at least one required keyword has been selected\n")
+	rval = gsc.CheckRequiredKeywords(sp.KeywordList)
+	if rval != nil {
+		rval = fmt.Errorf("At least one of the following keywords needs to be selected: %s", rval)
+	}
 	gsc.Location = fmt.Sprintf("%s, United Statess", sp.State.Name)
 	return
 }
 
 func (gsc *GooglesearchClient) BuildQuery() (rval error) {
+	fmt.Printf("Building search query\n")
+	gsc.Query = gsc.sParms.State.Name
+	gsc.Query += " + " + gsc.GetFirstReqKwd()
+	gsc.Query += "+" + gsc.GetAddtlKwds()
+	//gsc.Query = gsc.Query + " in " + gsc.Location
 	return
 }
 
@@ -41,7 +56,8 @@ func (gsc *GooglesearchClient) SaveResults() (rval error) {
 func (gsc *GooglesearchClient) ExecuteSearch() (rval error) {
 	myRes := NewSearchResults()
 	myRes = myRes.AddResult(OrganicResultType, nil).AddResult(KnowledgeGraph, nil)
-	//search := g.NewGoogleSearch(gsc.sParms, system.GetSystemParams().GQKey)
+	search := NewGoogleSearch(gsc.sParms, system.GetSystemParams().GQKey)
+
 	/*
 		data, err := search.GetJSON()
 		if err != nil {
@@ -68,5 +84,44 @@ func (gsc *GooglesearchClient) ExecuteSearch() (rval error) {
 }
 
 func (gsc *GooglesearchClient) GetNodeResults() (rval Node) {
+	fmt.Printf("Getting node results\n")
+	rval = Div(ID("qrystring"),
+		H2(Text("Query String")),
+		Text(gsc.Query))
+	return
+}
+
+func (gsc *GooglesearchClient) CheckRequiredKeywords(kwds []sqldb.Keywords) (rval error) {
+	reqlist, err := system.GetSystemParams().Dbc.GetReqKeywords()
+	if err != nil {
+		return err
+	}
+	for _, kwd := range kwds {
+		if kwd.Req {
+			return
+		}
+	}
+	rval = fmt.Errorf("Keywords selected must include one of the following: [%s]", strings.Join(reqlist, ", "))
+	return
+}
+
+func (gsc *GooglesearchClient) GetFirstReqKwd() string {
+	for _, kwd := range gsc.sParms.KeywordList {
+		if kwd.Req {
+			return fmt.Sprintf("\"%s\"", kwd.Keyword)
+		}
+	}
+	return ""
+}
+
+func (gsc *GooglesearchClient) GetAddtlKwds() (rval string) {
+	for _, kwd := range gsc.sParms.KeywordList {
+		if !kwd.Req {
+			if len(rval) > 0 {
+				rval += " + "
+			}
+			rval += fmt.Sprintf("\"%s\"", kwd.Keyword)
+		}
+	}
 	return
 }

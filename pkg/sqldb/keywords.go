@@ -10,15 +10,24 @@ type Keywords struct {
 	gorm.Model
 	ID      uint   `gorm:"primary_key"`
 	Keyword string `gorm:"column:keyword"`
+	Req     bool   `gorm:"column:req"`
 }
 
-func (dbc *DBConnData) GetKeywords() (keywords []Keywords, err error) {
-	err = dbc.DB.Find(&keywords).Error
+func (dbc *DBConnData) GetKeywords() (keywrds []Keywords, err error) {
+	err = dbc.DB.Find(&keywrds).Error
 	return
 }
 
-func (dbc *DBConnData) GetKeywordList(kwds *[]Keywords) error {
-	return dbc.DB.Find(kwds).Error
+func (dbc *DBConnData) GetReqKeywords() (reqd []string, err error) {
+	var keywords []Keywords
+	err = dbc.DB.Where("req = true").Find(&keywords).Error
+	if err != nil {
+		return
+	}
+	for _, kw := range keywords {
+		reqd = append(reqd, kw.Keyword)
+	}
+	return
 }
 
 func (dbc *DBConnData) GetMatchingKeywords(kwl []uint, KList *[]Keywords) (err error) {
