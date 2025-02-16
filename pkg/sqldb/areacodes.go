@@ -32,6 +32,12 @@ func (dbc *DBConnData) GetAreaCodesForState(abbrv string) ([]ConsolidateAreacode
 	return consolidate(rval), err
 }
 
+func (dbc *DBConnData) GetAreaCodesList(ac []string, aclist *[]Areacodes) (err error) {
+	err = dbc.DB.Where("code IN ?", ac).Find(aclist).Error
+	fmt.Printf("There are %d records returned\n", len(*aclist))
+	return dbc.DB.Find(&aclist).Error
+}
+
 func consolidate(inval []Areacodes) []ConsolidateAreacodes {
 	rVal := []ConsolidateAreacodes{}
 	if len(inval) > 0 {

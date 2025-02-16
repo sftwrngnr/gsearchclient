@@ -32,6 +32,7 @@ func ZipCodes(qs string) (rval Node) {
 	for _, z := range myZips {
 		zval = append(zval, Option(Value(z.Zipcode), Text(z.Zipcode)))
 	}
+	fmt.Printf("There are %d keywords for qs: %s\n", len(myKeywords), qs)
 	for _, k := range myKeywords {
 		kwval = append(kwval, Option(Value(strconv.Itoa(int(k.ID))), Text(k.Keyword)))
 	}

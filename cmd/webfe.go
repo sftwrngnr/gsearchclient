@@ -14,13 +14,9 @@ var webhost string = "localhost"
 var webport int16 = 9090
 var webfeCmd = &cobra.Command{
 	Use:   "webfe",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "webfe launches the web front end",
+	Long: `webfe launches the web front end
+host and port are required for the front end to launch.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		ghost, _ := cmd.Flags().GetString("host")
 		if ghost == "" {
@@ -32,7 +28,6 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	rootCmd.AddCommand(webfeCmd)
 
 	// Here you will define your flags and configuration settings.
 
@@ -43,9 +38,9 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// webfeCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	webfeCmd.Flags().StringVarP(&webhost, "host", "H", webhost, "Web server Host")
-	webfeCmd.Flags().Int16VarP(&webport, "port", "p", webport, "Web server port")
-
+	webfeCmd.Flags().StringVarP(&webhost, "webhost", "W", webhost, "Web server Host")
+	webfeCmd.Flags().Int16VarP(&webport, "webport", "w", webport, "Web server port")
+	fmt.Printf("webfe::init finished.\n")
 }
 
 func runWS(host string, port int16) error {

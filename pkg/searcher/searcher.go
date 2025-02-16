@@ -1,70 +1,102 @@
 package searcher
 
 import (
+	"errors"
 	"fmt"
-	g "github.com/serpapi/google-search-results-golang"
+	"github.com/sftwrngnr/gsearchclient/pkg/sqldb"
 	"github.com/sftwrngnr/gsearchclient/pkg/system"
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
+
+	"strconv"
 )
 
 type SearchParms struct {
-	Query        string
-	Location     string
-	Language     string `default:"en"`
-	Country      string `default:"us"`
-	SearchDomain string `default:"google.com"`
-}
-
-type ResultType int
-
-const (
-	OrganicResultType ResultType = iota
-	KnowledgeGraph
-	LocalPack
-	Pagination
-)
-
-type SearchResults struct {
-	RsltType ResultType
-	Results  interface{}
+	Dbcref       *sqldb.DBConnData
+	State        sqldb.States
+	KeywordList  []sqldb.Keywords
+	ZipcodeList  []sqldb.Zipcode
+	AreaCodeList []sqldb.Areacodes
 }
 
 type Searcher interface {
-	BuildQueryString(SearchParms) (string, error)
-	ExecuteQuery(SearchParms) ([]SearchResults, error)
+	ValidateSearchParameters(*SearchParms) error
+	BuildQuery() error
+	ExecuteSearch() error
+	SaveResults() error
+	GetNodeResults() Node
 }
 
-func (sp *SearchParms) BuildSearch() string {
-	return ""
+// Helpers to populate Search Parameters
+func (sp *SearchParms) ImportState(s string) (rval error) {
+	fmt.Printf("ImportState: %s\n", s)
+	sp.Dbcref = system.GetSystemParams().Dbc
+	sp.State, rval = sp.Dbcref.GetStateByAbbr(s)
+	return
 }
 
-func (sp *SearchParms) Searchdata() (rval []string, err error) {
-	parameter := map[string]string{
-		"q":             sp.Query,
-		"location":      sp.Location,
-		"hl":            sp.Language,
-		"gl":            sp.Country,
-		"google_domain": sp.SearchDomain,
+func (sp *SearchParms) ImportKeywords(kw []string) (err error) {
+	var kwl []uint
+	if len(kw) > 0 {
+		err = errors.New("At least one keyword is required")
 	}
-
-	search := g.NewGoogleSearch(parameter, system.GetSystemParams().GQKey)
-	data, err := search.GetJSON()
-	if err != nil {
-		return rval, err
-	}
-	//fmt.Printf("%v\n", data)
-	if data["organic_results"] != nil {
-		results := data["organic_results"].([]interface{})
-		fmt.Printf("Got organic results: \n")
-		for i := range len(results) {
-			if results[i] == nil {
-				continue
-			}
-			myMap := results[i].(map[string]interface{})
-			fmt.Printf("%s\n", myMap["title"].(string))
-			fmt.Printf("%s\n", myMap["link"].(string))
-			fmt.Printf("\n")
-			rval = append(rval, myMap["link"].(string))
+	for _, k := range kw {
+		i, cerr := strconv.Atoi(k)
+		if cerr != nil {
+			err = cerr
+			return
 		}
+		kwl = append(kwl, uint(i))
 	}
-	return rval, err
+	fmt.Printf("ImportKeywords: %v\n", kw)
+	err = sp.Dbcref.GetMatchingKeywords(kwl, &sp.KeywordList)
+
+	if err != nil {
+		fmt.Printf("error is %s", err.Error())
+	}
+	return
+}
+
+func (sp *SearchParms) ImportZipCodes(zc []string) (err error) {
+	fmt.Printf("ImportZipCodes: %v\n", zc)
+	err = sp.Dbcref.GetZipcodesForList(zc, &sp.ZipcodeList)
+	return
+}
+
+func (sp *SearchParms) ImportAreaCodes(ac []string) (err error) {
+	err = sp.Dbcref.GetAreaCodesList(ac, &sp.AreaCodeList)
+	return
+}
+
+// Helper to set error message
+func (sp *SearchParms) ErrorText(errmsg string) Node {
+	return Var(Style("color: red"), Text(errmsg))
+}
+
+// Search Function
+func Search(searchParms *SearchParms, searcher Searcher) (rnode Node, err error) {
+	err = searcher.ValidateSearchParameters(searchParms)
+	if err != nil {
+		rnode = searchParms.ErrorText(fmt.Sprintf("Validation error %s", err.Error()))
+		err = nil
+		return
+	}
+	err = searcher.BuildQuery()
+	if err != nil {
+		rnode = searchParms.ErrorText(fmt.Sprintf("Build query error %s", err.Error()))
+		err = nil
+		return
+	}
+	err = searcher.ExecuteSearch()
+	if err != nil {
+		rnode = searchParms.ErrorText(fmt.Sprintf("Execute Search error %s", err.Error()))
+		err = nil
+		return
+	}
+	err = searcher.SaveResults()
+	if err != nil {
+		return
+	}
+	rnode = searcher.GetNodeResults()
+	return
 }

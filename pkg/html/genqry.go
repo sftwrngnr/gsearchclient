@@ -2,42 +2,60 @@ package html
 
 import (
 	"fmt"
+	"github.com/sftwrngnr/gsearchclient/pkg/searcher"
 	"github.com/sftwrngnr/gsearchclient/pkg/sqldb"
 	"github.com/sftwrngnr/gsearchclient/pkg/system"
 	. "maragu.dev/gomponents"
-	"maragu.dev/gomponents/html"
 	"slices"
 	"strconv"
 	"strings"
 )
 
 func GenQry(mymap map[string][]string) (myOut Node, err error) {
+	googleSearch := &searcher.GooglesearchClient{}
+	searchp := &searcher.SearchParms{}
+
+	fmt.Printf("GenQry %v\n", mymap)
 	keys := make([]string, len(mymap))
-	myst, err := system.GetSystemParams().Dbc.GetStateByAbbr(mymap["state"][0])
+	err = searchp.ImportState(mymap["state"][0])
 	if err != nil {
+		fmt.Println(err)
+		myOut = searchp.ErrorText("You must specify a state")
+		err = nil
 		return
 	}
-	qrystr := fmt.Sprintf("%s", myst.Name)
 
+	//qrystr := fmt.Sprintf("%s", myst.Name)
 	i := 0
 	for k := range mymap {
 		keys[i] = k
 		i++
 	}
+
 	fmt.Printf("Received the following query keys: %v\n", keys)
+
 	if slices.Contains(keys, "kw") {
-		qrystr += "+" + build_keywordqry(mymap["kw"])
+		err = searchp.ImportKeywords(mymap["kw"])
+		if err != nil {
+			myOut = searchp.ErrorText(err.Error())
+			fmt.Printf("%s\n", myOut)
+			err = nil
+			return
+		}
 	}
 	if slices.Contains(keys, "zc") {
-		qrystr += "+" + build_zipcodeqry(mymap["zc"])
+		err = searchp.ImportZipCodes(mymap["zc"])
+		if err != nil {
+			return
+		}
 	}
 	if slices.Contains(keys, "ac") {
-		qrystr += "+" + build_areacodeqry(mymap["ac"])
+		err = searchp.ImportAreaCodes(mymap["ac"])
+		if err != nil {
+			return
+		}
 	}
-	fmt.Printf("Generating a query with qry string: %v\n", qrystr)
-	tOut := []Node{}
-	tOut = append(tOut, GetQueryString(qrystr, myst.Name))
-	myOut = html.Var(tOut...)
+	myOut, err = searcher.Search(searchp, googleSearch)
 	return
 }
 

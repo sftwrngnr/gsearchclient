@@ -27,3 +27,9 @@ func (dbc *DBConnData) GetZipsForState(abbrv string) (zips []Zipcode, err error)
 	fmt.Printf("There are %d records returned\n", len(zips))
 	return
 }
+
+func (dbc *DBConnData) GetZipcodesForList(zc []string, zcl *[]Zipcode) (err error) {
+	err = dbc.DB.Where("zipcode IN ?", zc).Find(&zcl).Error
+	fmt.Printf("There are %d records returned\n", len(*zcl))
+	return
+}

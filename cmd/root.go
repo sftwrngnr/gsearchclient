@@ -48,7 +48,7 @@ func init() {
 	// when this action is called directly.
 	myParms.ParmLock()
 	defer myParms.ParmUnlock()
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	//rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.PersistentFlags().StringVarP(&myParms.GHost, "host", "H", "localhost", "host")
 	rootCmd.PersistentFlags().StringVarP(&myParms.GQKey, "APIKey", "A", "", "API key (required)")
 	rootCmd.MarkPersistentFlagRequired("APIKey")

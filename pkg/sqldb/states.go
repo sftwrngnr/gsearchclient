@@ -20,8 +20,8 @@ func (dbc *DBConnData) GetAllStates() ([]States, error) {
 //func (dbc *DBConnData) GetState(id string) (States, error) {}
 
 func (dbc *DBConnData) GetStateId(abbrev string) (uint, error) {
-	var state States
-	err := dbc.DB.First(&state, "abbrev = ?", abbrev).Error
+
+	state, err := dbc.GetStateByAbbr(abbrev)
 	return state.ID, err
 }
 

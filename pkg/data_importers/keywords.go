@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/schollz/progressbar/v3"
 	"github.com/sftwrngnr/gsearchclient/pkg/sqldb"
+	"github.com/sftwrngnr/gsearchclient/pkg/system"
 	"gorm.io/gorm"
 	"os"
 	"path/filepath"
@@ -33,6 +34,7 @@ func (kwi *KWImporter) Import() (numin int, err error) {
 	bar := progressbar.Default(lineCount, "Keywords")
 	//fmt.Println("number of lines:", lineCount)
 	readFile, _ := os.Open(kwi.inputfile)
+	system.GetSystemParams().Dbc.DeleteKeywords()
 	defer readFile.Close()
 	fs := bufio.NewScanner(readFile)
 	fs.Split(bufio.ScanLines)

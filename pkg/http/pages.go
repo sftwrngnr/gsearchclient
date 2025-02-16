@@ -28,6 +28,8 @@ func GenQry(mux *http.ServeMux) {
 	mux.Handle("POST /genqry", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
 		err := r.ParseForm()
 		if err != nil {
+
+			fmt.Printf("Error with ParseForm %s\n", err.Error())
 			return nil, err
 		}
 		return html.GenQry(r.Form)
