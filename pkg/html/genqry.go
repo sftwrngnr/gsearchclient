@@ -16,7 +16,7 @@ func GenQry(mymap map[string][]string) (myOut Node, err error) {
 	searchp := &searcher.SearchParms{}
 
 	fmt.Printf("GenQry %v\n", mymap)
-	keys := make([]string, len(mymap))
+	searchp.SKeys = make([]string, len(mymap))
 	err = searchp.ImportState(mymap["state"][0])
 	if err != nil {
 		fmt.Println(err)
@@ -28,13 +28,13 @@ func GenQry(mymap map[string][]string) (myOut Node, err error) {
 	//qrystr := fmt.Sprintf("%s", myst.Name)
 	i := 0
 	for k := range mymap {
-		keys[i] = k
+		searchp.SKeys[i] = k
 		i++
 	}
 
-	fmt.Printf("Received the following query keys: %v\n", keys)
+	fmt.Printf("Received the following query keys: %v\n", searchp.SKeys)
 
-	if slices.Contains(keys, "kw") {
+	if slices.Contains(searchp.SKeys, "kw") {
 		err = searchp.ImportKeywords(mymap["kw"])
 		if err != nil {
 			myOut = searchp.ErrorText(err.Error())
@@ -43,13 +43,13 @@ func GenQry(mymap map[string][]string) (myOut Node, err error) {
 			return
 		}
 	}
-	if slices.Contains(keys, "zc") {
+	if slices.Contains(searchp.SKeys, "zc") {
 		err = searchp.ImportZipCodes(mymap["zc"])
 		if err != nil {
 			return
 		}
 	}
-	if slices.Contains(keys, "ac") {
+	if slices.Contains(searchp.SKeys, "ac") {
 		err = searchp.ImportAreaCodes(mymap["ac"])
 		if err != nil {
 			return

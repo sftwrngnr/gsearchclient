@@ -15,8 +15,9 @@ type SearchParms struct {
 	Dbcref       *sqldb.DBConnData
 	State        sqldb.States
 	KeywordList  []sqldb.Keywords
-	ZipcodeList  []sqldb.Zipcode
-	AreaCodeList []sqldb.Areacodes
+	ZipCodeList  []sqldb.Zipcode
+	AreaCodeList []string
+	SKeys        []string
 }
 
 type Searcher interface {
@@ -59,12 +60,15 @@ func (sp *SearchParms) ImportKeywords(kw []string) (err error) {
 
 func (sp *SearchParms) ImportZipCodes(zc []string) (err error) {
 	fmt.Printf("ImportZipCodes: %v\n", zc)
-	err = sp.Dbcref.GetZipcodesForList(zc, &sp.ZipcodeList)
+	err = sp.Dbcref.GetZipcodesForList(zc, &sp.ZipCodeList)
 	return
 }
 
 func (sp *SearchParms) ImportAreaCodes(ac []string) (err error) {
-	err = sp.Dbcref.GetAreaCodesList(ac, &sp.AreaCodeList)
+	sp.AreaCodeList = make([]string, len(ac))
+	for i, a := range ac {
+		sp.AreaCodeList[i] = a
+	}
 	return
 }
 

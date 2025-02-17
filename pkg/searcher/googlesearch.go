@@ -7,6 +7,7 @@ import (
 	"github.com/sftwrngnr/gsearchclient/pkg/system"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
+	"slices"
 	"strings"
 )
 
@@ -17,6 +18,12 @@ type GooglesearchClient struct {
 	Country      string `default:"us"`
 	SearchDomain string `default:"google.com"`
 	sParms       *SearchParms
+	searchParms  map[string]string
+	sResults     g.SearchResult
+}
+
+func (gsc *GooglesearchClient) GetQueryStateId() uint {
+	return gsc.sParms.State.ID
 }
 
 func (gsc *GooglesearchClient) ValidateSearchParameters(sp *SearchParms) (rval error) {
@@ -34,6 +41,11 @@ func (gsc *GooglesearchClient) ValidateSearchParameters(sp *SearchParms) (rval e
 	rval = gsc.CheckRequiredKeywords(sp.KeywordList)
 	if rval != nil {
 		rval = fmt.Errorf("At least one of the following keywords needs to be selected: %s", rval)
+		return
+	}
+	if slices.Contains(sp.SKeys, "ac") && (slices.Contains(sp.SKeys, "zc")) {
+		rval = fmt.Errorf("Only zip code or area code may be selected. Not both.")
+		return
 	}
 	gsc.Location = fmt.Sprintf("%s, United Statess", sp.State.Name)
 	return
@@ -44,19 +56,43 @@ func (gsc *GooglesearchClient) BuildQuery() (rval error) {
 	gsc.Query = gsc.sParms.State.Name
 	gsc.Query += " + " + gsc.GetFirstReqKwd()
 	gsc.Query += "+" + gsc.GetAddtlKwds()
-	//gsc.Query = gsc.Query + " in " + gsc.Location
+	if slices.Contains(gsc.sParms.SKeys, "ac") {
+		gsc.Query += "+ in area code (" + strings.Join(gsc.sParms.AreaCodeList, ",") + ")"
+	}
+	if slices.Contains(gsc.sParms.SKeys, "zc") {
+		zcl := make([]string, 0)
+		for _, v := range gsc.sParms.ZipCodeList {
+			zcl = append(zcl, v.Zipcode)
+		}
+		gsc.Query += "+ in area code (" + strings.Join(zcl, ",") + ")"
+	}
+	gsc.searchParms = make(map[string]string)
+	gsc.searchParms["q"] = gsc.Query
+	gsc.searchParms["location"] = gsc.sParms.State.Name
 	return
 }
 
 func (gsc *GooglesearchClient) SaveResults() (rval error) {
-
+	fmt.Printf("Saving results\n")
+	rval = gsc.sParms.Dbcref.Gsearch_SaveQueryData(gsc.sParms.State.ID, gsc.sParms.KeywordList, gsc.sParms.ZipCodeList,
+		gsc.sParms.AreaCodeList, gsc.Query)
 	return
 }
 
 func (gsc *GooglesearchClient) ExecuteSearch() (rval error) {
 	myRes := NewSearchResults()
-	myRes = myRes.AddResult(OrganicResultType, nil).AddResult(KnowledgeGraph, nil)
-	search := NewGoogleSearch(gsc.sParms, system.GetSystemParams().GQKey)
+	myRes.GetResults()
+	/*
+		search := g.NewGoogleSearch(gsc.searchParms, system.GetSystemParams().GQKey)
+		gsc.sResults, rval = search.GetJSON()
+		if rval != nil {
+			return
+		}
+		fmt.Printf("Search results are: %v\n", gsc.sResults)
+		myRes.StoreResults(gsc.sResults)
+
+	*/
+	//myRes.ProcessSearchData(gsc.sResults)
 
 	/*
 		data, err := search.GetJSON()
