@@ -1,6 +1,7 @@
 package searcher
 
 import (
+	"encoding/json"
 	"fmt"
 	g "github.com/serpapi/google-search-results-golang"
 	"github.com/sftwrngnr/gsearchclient/pkg/sqldb"
@@ -19,7 +20,9 @@ type GooglesearchClient struct {
 	SearchDomain string `default:"google.com"`
 	sParms       *SearchParms
 	searchParms  map[string]string
-	sResults     g.SearchResult
+	SResults     *SearchResults
+	gqrySr       g.SearchResult
+	sRawResults  map[string]interface{}
 }
 
 func (gsc *GooglesearchClient) GetQueryStateId() uint {
@@ -74,14 +77,29 @@ func (gsc *GooglesearchClient) BuildQuery() (rval error) {
 
 func (gsc *GooglesearchClient) SaveResults() (rval error) {
 	fmt.Printf("Saving results\n")
-	rval = gsc.sParms.Dbcref.Gsearch_SaveQueryData(gsc.sParms.State.ID, gsc.sParms.KeywordList, gsc.sParms.ZipCodeList,
+	var qryid uint
+	qryid, rval = gsc.sParms.Dbcref.Gsearch_SaveQueryData(gsc.sParms.State.ID, gsc.sParms.KeywordList, gsc.sParms.ZipCodeList,
 		gsc.sParms.AreaCodeList, gsc.Query)
+	if rval != nil {
+		return
+	}
+
+	gsc.SResults.ProcessSearchData(gsc.sRawResults)
+	for k, rslt := range gsc.SResults.Results {
+		rbyte, _ := json.Marshal(rslt)
+		rval = gsc.sParms.Dbcref.ProcessQry_results(qryid, 0, uint(k), rbyte)
+		if rval != nil {
+			return
+		}
+	}
+
 	return
 }
 
 func (gsc *GooglesearchClient) ExecuteSearch() (rval error) {
-	myRes := NewSearchResults()
-	myRes.GetResults()
+	gsc.SResults = NewSearchResults()
+	//myRes.GetResults()
+	gsc.sRawResults = gsc.SResults.GetResults()
 	/*
 		search := g.NewGoogleSearch(gsc.searchParms, system.GetSystemParams().GQKey)
 		gsc.sResults, rval = search.GetJSON()

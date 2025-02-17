@@ -13,13 +13,14 @@ type Query struct {
 }
 
 func (dbc *DBConnData) Gsearch_SaveQueryData(stateid uint, kwds []Keywords,
-	zcl []Zipcode, acl []string, qstring string) (err error) {
+	zcl []Zipcode, acl []string, qstring string) (queryid uint, err error) {
 	myQry := &Query{State: stateid, Querystring: qstring}
 	err = dbc.DB.Create(myQry).Error
 	if err != nil {
 		fmt.Printf("Blew chow in create query %s", err)
 		return
 	}
+	queryid = myQry.ID
 	err = dbc.AddQueryKeywords(myQry.ID, kwds)
 	if err != nil {
 		fmt.Printf("Blew chow in add keywords %s", err)
@@ -35,6 +36,5 @@ func (dbc *DBConnData) Gsearch_SaveQueryData(stateid uint, kwds []Keywords,
 		fmt.Printf("Blew chow in add areacodes %s", err)
 		return
 	}
-
 	return
 }
