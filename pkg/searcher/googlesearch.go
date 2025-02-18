@@ -81,6 +81,7 @@ func (gsc *GooglesearchClient) SaveResults() (rval error) {
 	qryid, rval = gsc.sParms.Dbcref.Gsearch_SaveQueryData(gsc.sParms.State.ID, gsc.sParms.KeywordList, gsc.sParms.ZipCodeList,
 		gsc.sParms.AreaCodeList, gsc.Query)
 	if rval != nil {
+		fmt.Printf("Blew chowafter Gsearch_SaveQueryData: %s\n", rval.Error())
 		return
 	}
 
@@ -97,20 +98,18 @@ func (gsc *GooglesearchClient) SaveResults() (rval error) {
 }
 
 func (gsc *GooglesearchClient) ExecuteSearch() (rval error) {
-	gsc.SResults = NewSearchResults()
 	//myRes.GetResults()
+	//gsc.sRawResults = gsc.SResults.GetResults()
+	gsc.SResults = NewSearchResults()
+	search := g.NewGoogleSearch(gsc.searchParms, system.GetSystemParams().GQKey)
+	gsc.gqrySr, rval = search.GetJSON()
+	if rval != nil {
+		return
+	}
 	gsc.sRawResults = gsc.SResults.GetResults()
-	/*
-		search := g.NewGoogleSearch(gsc.searchParms, system.GetSystemParams().GQKey)
-		gsc.sResults, rval = search.GetJSON()
-		if rval != nil {
-			return
-		}
-		fmt.Printf("Search results are: %v\n", gsc.sResults)
-		myRes.StoreResults(gsc.sResults)
-
-	*/
-	//myRes.ProcessSearchData(gsc.sResults)
+	fmt.Printf("Search results are (gsc.gqrySr): %v\n", gsc.gqrySr)
+	gsc.SResults.StoreResults(gsc.gqrySr)
+	gsc.SResults.ProcessSearchData(gsc.sRawResults)
 
 	/*
 		data, err := search.GetJSON()

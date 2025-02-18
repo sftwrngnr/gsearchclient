@@ -143,7 +143,10 @@ CREATE TABLE public.query_results (
     query_id bigint,
     resultseq bigint,
     result_type bigint,
-    result jsonb
+    result jsonb,
+    created_at date,
+    updated_at date,
+    deleted_at date
 );
 
 
@@ -179,7 +182,8 @@ CREATE TABLE public.keywords (
     keyword character varying,
     created_at date,
     updated_at date,
-    deleted_at date
+    deleted_at date,
+    req boolean DEFAULT false NOT NULL
 );
 
 
@@ -207,17 +211,20 @@ ALTER SEQUENCE public.keywords_id_seq OWNED BY public.keywords.id;
 
 
 --
--- Name: qry_ac; Type: TABLE; Schema: public; Owner: crawler
+-- Name: qry_acs; Type: TABLE; Schema: public; Owner: crawler
 --
 
-CREATE TABLE public.qry_ac (
+CREATE TABLE public.qry_acs (
     id bigint NOT NULL,
-    qry_id bigint,
-    qry_ac bigint
+    query_id bigint,
+    qry_ac character varying,
+    created_at date,
+    updated_at date,
+    deleted_at date
 );
 
 
-ALTER TABLE public.qry_ac OWNER TO crawler;
+ALTER TABLE public.qry_acs OWNER TO crawler;
 
 --
 -- Name: qry_ac_id_seq; Type: SEQUENCE; Schema: public; Owner: crawler
@@ -237,7 +244,7 @@ ALTER SEQUENCE public.qry_ac_id_seq OWNER TO crawler;
 -- Name: qry_ac_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: crawler
 --
 
-ALTER SEQUENCE public.qry_ac_id_seq OWNED BY public.qry_ac.id;
+ALTER SEQUENCE public.qry_ac_id_seq OWNED BY public.qry_acs.id;
 
 
 --
@@ -247,7 +254,10 @@ ALTER SEQUENCE public.qry_ac_id_seq OWNED BY public.qry_ac.id;
 CREATE TABLE public.qry_kwds (
     id bigint NOT NULL,
     query_id bigint,
-    keyword_id bigint
+    keyword_id bigint,
+    created_at date,
+    updated_at date,
+    deleted_at date
 );
 
 
@@ -281,7 +291,10 @@ ALTER SEQUENCE public.qry_kwds_id_seq OWNED BY public.qry_kwds.id;
 CREATE TABLE public.qry_zips (
     id bigint NOT NULL,
     query_id bigint,
-    zip_id bigint
+    zip_id bigint,
+    created_at date,
+    updated_at date,
+    deleted_at date
 );
 
 
@@ -309,19 +322,20 @@ ALTER SEQUENCE public.qry_zips_id_seq OWNED BY public.qry_zips.id;
 
 
 --
--- Name: query; Type: TABLE; Schema: public; Owner: crawler
+-- Name: queries; Type: TABLE; Schema: public; Owner: crawler
 --
 
-CREATE TABLE public.query (
+CREATE TABLE public.queries (
     id bigint NOT NULL,
     state bigint,
-    kwds bigint,
-    zips bigint,
-    acs bigint
+    created_at date,
+    updated_at date,
+    deleted_at character varying,
+    query_string character varying
 );
 
 
-ALTER TABLE public.query OWNER TO crawler;
+ALTER TABLE public.queries OWNER TO crawler;
 
 --
 -- Name: query_id_seq; Type: SEQUENCE; Schema: public; Owner: crawler
@@ -341,7 +355,7 @@ ALTER SEQUENCE public.query_id_seq OWNER TO crawler;
 -- Name: query_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: crawler
 --
 
-ALTER SEQUENCE public.query_id_seq OWNED BY public.query.id;
+ALTER SEQUENCE public.query_id_seq OWNED BY public.queries.id;
 
 
 --
@@ -453,10 +467,10 @@ ALTER TABLE ONLY public.keywords ALTER COLUMN id SET DEFAULT nextval('public.key
 
 
 --
--- Name: qry_ac id; Type: DEFAULT; Schema: public; Owner: crawler
+-- Name: qry_acs id; Type: DEFAULT; Schema: public; Owner: crawler
 --
 
-ALTER TABLE ONLY public.qry_ac ALTER COLUMN id SET DEFAULT nextval('public.qry_ac_id_seq'::regclass);
+ALTER TABLE ONLY public.qry_acs ALTER COLUMN id SET DEFAULT nextval('public.qry_ac_id_seq'::regclass);
 
 
 --
@@ -474,10 +488,10 @@ ALTER TABLE ONLY public.qry_zips ALTER COLUMN id SET DEFAULT nextval('public.qry
 
 
 --
--- Name: query id; Type: DEFAULT; Schema: public; Owner: crawler
+-- Name: queries id; Type: DEFAULT; Schema: public; Owner: crawler
 --
 
-ALTER TABLE ONLY public.query ALTER COLUMN id SET DEFAULT nextval('public.query_id_seq'::regclass);
+ALTER TABLE ONLY public.queries ALTER COLUMN id SET DEFAULT nextval('public.query_id_seq'::regclass);
 
 
 --
@@ -529,52 +543,15 @@ COPY public.cityareacodes (id, areacode, city, created_at, updated_at, deleted_a
 -- Data for Name: keywords; Type: TABLE DATA; Schema: public; Owner: crawler
 --
 
-COPY public.keywords (id, keyword, created_at, updated_at, deleted_at) FROM stdin;
-1	Clear Aligner	2025-02-10	2025-02-10	\N
-2	Clear Aligners	2025-02-10	2025-02-10	\N
-3	Teeth Straightening	2025-02-10	2025-02-10	\N
-4	Orthodontist	2025-02-10	2025-02-10	\N
-5	Dentist	2025-02-10	2025-02-10	\N
-6	Dental clinic	2025-02-10	2025-02-10	\N
-7	Dentist near me	2025-02-10	2025-02-10	\N
-8	Braces	2025-02-10	2025-02-10	\N
-9	Invisalign	2025-02-10	2025-02-10	\N
-10	Aligners	2025-02-10	2025-02-10	\N
-11	Teeth	2025-02-10	2025-02-10	\N
-12	straight Teeth	2025-02-10	2025-02-10	\N
-13	fix my teeth	2025-02-10	2025-02-10	\N
-14	smile	2025-02-10	2025-02-10	\N
-15	beautiful smile	2025-02-10	2025-02-10	\N
-16	pretty teeth	2025-02-10	2025-02-10	\N
-17	beautiful teeth	2025-02-10	2025-02-10	\N
-18	Clear Aligner	2025-02-11	2025-02-11	\N
-19	Clear Aligners	2025-02-11	2025-02-11	\N
-20	Teeth Straightening	2025-02-11	2025-02-11	\N
-21	Orthodontist	2025-02-11	2025-02-11	\N
-22	Dentist	2025-02-11	2025-02-11	\N
-23	Dental clinic	2025-02-11	2025-02-11	\N
-24	Dentist near me	2025-02-11	2025-02-11	\N
-25	Braces	2025-02-11	2025-02-11	\N
-26	Invisalign	2025-02-11	2025-02-11	\N
-27	Aligners	2025-02-11	2025-02-11	\N
-28	Teeth	2025-02-11	2025-02-11	\N
-29	straight Teeth	2025-02-11	2025-02-11	\N
-30	fix my teeth	2025-02-11	2025-02-11	\N
-31	smile	2025-02-11	2025-02-11	\N
-32	beautiful smile	2025-02-11	2025-02-11	\N
-33	pretty teeth	2025-02-11	2025-02-11	\N
-34	beautiful teeth	2025-02-11	2025-02-11	\N
-35	Dentist in {zipcode}	2025-02-11	2025-02-11	\N
-36	Dentist in {state}	2025-02-11	2025-02-11	\N
-37	Dentist in {area code}	2025-02-11	2025-02-11	\N
+COPY public.keywords (id, keyword, created_at, updated_at, deleted_at, req) FROM stdin;
 \.
 
 
 --
--- Data for Name: qry_ac; Type: TABLE DATA; Schema: public; Owner: crawler
+-- Data for Name: qry_acs; Type: TABLE DATA; Schema: public; Owner: crawler
 --
 
-COPY public.qry_ac (id, qry_id, qry_ac) FROM stdin;
+COPY public.qry_acs (id, query_id, qry_ac, created_at, updated_at, deleted_at) FROM stdin;
 \.
 
 
@@ -582,7 +559,7 @@ COPY public.qry_ac (id, qry_id, qry_ac) FROM stdin;
 -- Data for Name: qry_kwds; Type: TABLE DATA; Schema: public; Owner: crawler
 --
 
-COPY public.qry_kwds (id, query_id, keyword_id) FROM stdin;
+COPY public.qry_kwds (id, query_id, keyword_id, created_at, updated_at, deleted_at) FROM stdin;
 \.
 
 
@@ -590,15 +567,15 @@ COPY public.qry_kwds (id, query_id, keyword_id) FROM stdin;
 -- Data for Name: qry_zips; Type: TABLE DATA; Schema: public; Owner: crawler
 --
 
-COPY public.qry_zips (id, query_id, zip_id) FROM stdin;
+COPY public.qry_zips (id, query_id, zip_id, created_at, updated_at, deleted_at) FROM stdin;
 \.
 
 
 --
--- Data for Name: query; Type: TABLE DATA; Schema: public; Owner: crawler
+-- Data for Name: queries; Type: TABLE DATA; Schema: public; Owner: crawler
 --
 
-COPY public.query (id, state, kwds, zips, acs) FROM stdin;
+COPY public.queries (id, state, created_at, updated_at, deleted_at, query_string) FROM stdin;
 \.
 
 
@@ -606,7 +583,7 @@ COPY public.query (id, state, kwds, zips, acs) FROM stdin;
 -- Data for Name: query_results; Type: TABLE DATA; Schema: public; Owner: crawler
 --
 
-COPY public.query_results (id, query_id, resultseq, result_type, result) FROM stdin;
+COPY public.query_results (id, query_id, resultseq, result_type, result, created_at, updated_at, deleted_at) FROM stdin;
 \.
 
 
@@ -658,7 +635,7 @@ SELECT pg_catalog.setval('public.crawler_results_id_seq', 1, false);
 -- Name: keywords_id_seq; Type: SEQUENCE SET; Schema: public; Owner: crawler
 --
 
-SELECT pg_catalog.setval('public.keywords_id_seq', 37, true);
+SELECT pg_catalog.setval('public.keywords_id_seq', 1, false);
 
 
 --
@@ -744,10 +721,10 @@ ALTER TABLE ONLY public.keywords
 
 
 --
--- Name: qry_ac qry_ac_pk; Type: CONSTRAINT; Schema: public; Owner: crawler
+-- Name: qry_acs qry_ac_pk; Type: CONSTRAINT; Schema: public; Owner: crawler
 --
 
-ALTER TABLE ONLY public.qry_ac
+ALTER TABLE ONLY public.qry_acs
     ADD CONSTRAINT qry_ac_pk PRIMARY KEY (id);
 
 
@@ -768,10 +745,10 @@ ALTER TABLE ONLY public.qry_zips
 
 
 --
--- Name: query query_pk; Type: CONSTRAINT; Schema: public; Owner: crawler
+-- Name: queries query_pk; Type: CONSTRAINT; Schema: public; Owner: crawler
 --
 
-ALTER TABLE ONLY public.query
+ALTER TABLE ONLY public.queries
     ADD CONSTRAINT query_pk PRIMARY KEY (id);
 
 
@@ -797,6 +774,13 @@ ALTER TABLE ONLY public.states
 
 ALTER TABLE ONLY public.zipcodes
     ADD CONSTRAINT zipcode_pk PRIMARY KEY (id);
+
+
+--
+-- Name: areacodes_code_idx; Type: INDEX; Schema: public; Owner: crawler
+--
+
+CREATE INDEX areacodes_code_idx ON public.areacodes USING btree (code);
 
 
 --
@@ -852,19 +836,11 @@ ALTER TABLE ONLY public.cityareacodes
 
 
 --
--- Name: qry_ac qry_ac_areacodes_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
+-- Name: qry_acs qry_ac_query_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
 --
 
-ALTER TABLE ONLY public.qry_ac
-    ADD CONSTRAINT qry_ac_areacodes_fk FOREIGN KEY (qry_ac) REFERENCES public.areacodes(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: qry_ac qry_ac_query_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
---
-
-ALTER TABLE ONLY public.qry_ac
-    ADD CONSTRAINT qry_ac_query_fk FOREIGN KEY (qry_id) REFERENCES public.query(id) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY public.qry_acs
+    ADD CONSTRAINT qry_ac_query_fk FOREIGN KEY (query_id) REFERENCES public.queries(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -880,7 +856,7 @@ ALTER TABLE ONLY public.qry_kwds
 --
 
 ALTER TABLE ONLY public.qry_kwds
-    ADD CONSTRAINT qry_kwds_query_fk FOREIGN KEY (query_id) REFERENCES public.query(id);
+    ADD CONSTRAINT qry_kwds_query_fk FOREIGN KEY (query_id) REFERENCES public.queries(id);
 
 
 --
@@ -888,7 +864,7 @@ ALTER TABLE ONLY public.qry_kwds
 --
 
 ALTER TABLE ONLY public.qry_zips
-    ADD CONSTRAINT qry_zips_query_fk FOREIGN KEY (query_id) REFERENCES public.query(id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT qry_zips_query_fk FOREIGN KEY (query_id) REFERENCES public.queries(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -900,42 +876,18 @@ ALTER TABLE ONLY public.qry_zips
 
 
 --
--- Name: query query_qry_ac_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
---
-
-ALTER TABLE ONLY public.query
-    ADD CONSTRAINT query_qry_ac_fk FOREIGN KEY (acs) REFERENCES public.qry_ac(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: query query_qry_kwds_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
---
-
-ALTER TABLE ONLY public.query
-    ADD CONSTRAINT query_qry_kwds_fk FOREIGN KEY (kwds) REFERENCES public.qry_kwds(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: query query_qry_zips_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
---
-
-ALTER TABLE ONLY public.query
-    ADD CONSTRAINT query_qry_zips_fk FOREIGN KEY (zips) REFERENCES public.qry_zips(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
 -- Name: query_results query_results_query_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
 --
 
 ALTER TABLE ONLY public.query_results
-    ADD CONSTRAINT query_results_query_fk FOREIGN KEY (query_id) REFERENCES public.query(id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT query_results_query_fk FOREIGN KEY (query_id) REFERENCES public.queries(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
--- Name: query query_states_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
+-- Name: queries query_states_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
 --
 
-ALTER TABLE ONLY public.query
+ALTER TABLE ONLY public.queries
     ADD CONSTRAINT query_states_fk FOREIGN KEY (state) REFERENCES public.states(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
