@@ -85,7 +85,6 @@ func (gsc *GooglesearchClient) SaveResults() (rval error) {
 		return
 	}
 
-	gsc.SResults.ProcessSearchData(gsc.sRawResults)
 	for k, rslt := range gsc.SResults.Results {
 		rbyte, _ := json.Marshal(rslt)
 		rval = gsc.sParms.Dbcref.ProcessQry_results(qryid, 0, uint(k), rbyte)

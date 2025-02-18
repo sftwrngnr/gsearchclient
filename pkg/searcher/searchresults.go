@@ -3,6 +3,7 @@ package searcher
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/google/uuid"
 	"io"
 	"os"
 )
@@ -42,7 +43,8 @@ func (sr *SearchResults) ProcessSearchData(rawRes map[string]interface{}) {
 func (sr *SearchResults) StoreResults(searchResults map[string]interface{}) {
 	fmt.Printf("StoreResults\n")
 	bytes, _ := json.MarshalIndent(searchResults, "", "  ")
-	f, err := os.OpenFile("/tmp/searchresults.json", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0600)
+	myUUID := uuid.New()
+	f, err := os.OpenFile(fmt.Sprintf("/tmp/searchresults_%s.json", myUUID.String()), os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0600)
 	if err != nil {
 		panic(err)
 	}

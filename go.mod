@@ -5,6 +5,7 @@ go 1.22
 toolchain go1.23.5
 
 require (
+	github.com/google/uuid v1.6.0
 	github.com/schollz/progressbar/v3 v3.18.0
 	github.com/serpapi/google-search-results-golang v0.0.0-20240325113416-ec93f510648e
 	github.com/spf13/cobra v1.8.1
