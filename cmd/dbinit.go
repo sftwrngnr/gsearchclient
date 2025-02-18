@@ -78,7 +78,6 @@ database connection.`,
 				//fmt.Printf("Error loading tables: %v\n", err)
 				return
 			}
-
 			kwrds := &data_importers.KWImporter{DB: sp.Dbc.DB}
 			_, err = LoadTables(kwrds)
 			if err != nil {

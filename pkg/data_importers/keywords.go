@@ -37,17 +37,16 @@ func (kwi *KWImporter) Import() (numin int, err error) {
 	system.GetSystemParams().Dbc.DeleteKeywords()
 	defer readFile.Close()
 	fs := bufio.NewScanner(readFile)
-	fs.Split(bufio.ScanLines)
 	defer bar.Close()
 	for fs.Scan() {
 		_ = bar.Add(1)
 		v := strings.Split(fs.Text(), ",")
-		for _, kw := range v {
-			kw = strings.TrimSpace(kw)
-			myKw := &sqldb.Keywords{Keyword: kw}
-			kwi.DB.Create(myKw)
-			numin++
-		}
+		kw := strings.TrimSpace(v[0])
+		req := strings.ToLower(strings.TrimSpace(v[1])) == "t"
+		//fmt.Printf("%s %s\n", kw, strconv.FormatBool(req))
+		myKw := &sqldb.Keywords{Keyword: kw, Req: req}
+		kwi.DB.Create(myKw)
+		numin++
 	}
 	return
 }
