@@ -67,7 +67,7 @@ func (gsc *GooglesearchClient) BuildQuery() (rval error) {
 		for _, v := range gsc.sParms.ZipCodeList {
 			zcl = append(zcl, v.Zipcode)
 		}
-		gsc.Query += "+ in area code (" + strings.Join(zcl, ",") + ")"
+		gsc.Query += "+ in zip code (" + strings.Join(zcl, ",") + ")"
 	}
 	gsc.searchParms = make(map[string]string)
 	gsc.searchParms["q"] = gsc.Query
