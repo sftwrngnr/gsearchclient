@@ -31,12 +31,15 @@ func NewSearchResults() (rval *SearchResults) {
 	return
 }
 
-func (sr *SearchResults) ProcessSearchData(rawRes map[string]interface{}) {
+func (sr *SearchResults) ProcessSearchData(qid uint, rawRes map[string]interface{}) {
+	var rp = NewResultProcessor(qid, 0)
 	resultkeys := []string{"serpapi_pagination", "search_metadata", "search_parameters", "search_information",
 		"related_questions", "ai_overview", "organic_results", "pagination"}
 	fmt.Printf("rawRes is %d\n", len(rawRes))
 	for i, key := range resultkeys {
 		sr.Results[ResultType(i)] = rawRes[key]
+		rp.ProcessResults(key, ResultType(i), rawRes[key])
+
 	}
 	fmt.Printf("ProcessSearchData::sr.Results[SerpapiPagination] is:%v\n", sr.Results[SerpapiPagination])
 }

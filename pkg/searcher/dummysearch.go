@@ -93,6 +93,7 @@ func (dsc *DummySearchClient) SaveResults() (rval error) {
 			continue
 		}
 	}
+	dsc.SResults.ProcessSearchData(qryid, dsc.gqrySr)
 
 	return
 }
@@ -104,8 +105,6 @@ func (dsc *DummySearchClient) ExecuteSearch() (rval error) {
 	if rval != nil {
 		return
 	}
-	//fmt.Printf("Search results are (dsc.gqrySr): %v\n", dsc.gqrySr)
-	dsc.SResults.ProcessSearchData(dsc.gqrySr)
 	return
 }
 

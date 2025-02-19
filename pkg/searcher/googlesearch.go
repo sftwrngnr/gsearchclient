@@ -92,6 +92,7 @@ func (gsc *GooglesearchClient) SaveResults() (rval error) {
 			continue
 		}
 	}
+	gsc.SResults.ProcessSearchData(qryid, gsc.gqrySr)
 
 	return
 }
@@ -105,7 +106,6 @@ func (gsc *GooglesearchClient) ExecuteSearch() (rval error) {
 	}
 	fmt.Printf("Search results are (gsc.gqrySr): %v\n", gsc.gqrySr)
 	gsc.SResults.StoreResults(gsc.gqrySr)
-	gsc.SResults.ProcessSearchData(gsc.gqrySr)
 	return
 }
 
