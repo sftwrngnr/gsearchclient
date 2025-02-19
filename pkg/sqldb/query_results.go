@@ -15,6 +15,9 @@ type Query_results struct {
 }
 
 func (dbc *DBConnData) ProcessQry_results(queryid uint, resultseq uint, resulttype uint, result []byte) (myerr error) {
+	if result == nil {
+		return
+	}
 	myqr := &Query_results{Query_id: queryid, Resultseq: resultseq, Resulttype: resulttype, Result: result}
 	myerr = dbc.DB.Create(myqr).Error
 	if myerr != nil {

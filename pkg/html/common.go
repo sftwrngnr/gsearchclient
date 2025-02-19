@@ -30,37 +30,6 @@ func GetQueryString(qs string, st string) (rval Node) {
 		H2(Text("Query String")),
 		Text(qs)),
 	}
-	/*
-			if st != "" {
-				mySp := &searcher.SearchParms{Query: qs, Location: fmt.Sprintf("%s, United States", st)}
-
-				qrs, qerr := mySp.Searchdata()
-				if qerr != nil {
-					tval = append(tval, H2(Text(fmt.Sprintf("Query Error %s", qerr))))
-				}
-				for i, d := range qrs {
-					fmt.Printf("Line %d, %v\n", i, d)
-				}
-				olE := []Node{}
-				for _, q := range qrs {
-					olE = append(olE, Li(Text(q)))
-				}
-				tval = append(tval, Ol(olE...))
-			}
-			rval = Var(tval...)
-			return
-		}
-
-		func GetQueryResults(qr []string) (rval Node) {
-			tval := []Node{
-				Var(
-					H3(Text("Raw query Results")),
-				),
-			}
-			for _, q := range qr {
-				tval = append(tval, Text(q), Br())
-			}
-	*/
 	rval = Var(tval...)
 	return
 }

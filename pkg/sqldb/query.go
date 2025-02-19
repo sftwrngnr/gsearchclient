@@ -12,7 +12,7 @@ type Query struct {
 	Querystring string `gorm:"column:query_string"`
 }
 
-func (dbc *DBConnData) Gsearch_SaveQueryData(stateid uint, kwds []Keywords,
+func (dbc *DBConnData) SaveQueryData(stateid uint, kwds []Keywords,
 	zcl []Zipcode, acl []string, qstring string) (queryid uint, err error) {
 	myQry := &Query{State: stateid, Querystring: qstring}
 	err = dbc.DB.Create(myQry).Error

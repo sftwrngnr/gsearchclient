@@ -12,7 +12,8 @@ import (
 )
 
 func GenQry(mymap map[string][]string) (myOut Node, err error) {
-	googleSearch := &searcher.GooglesearchClient{}
+	//mySearchClient := &searcher.GooglesearchClient{}
+	mySearchClient := &searcher.DummySearchClient{}
 	searchp := &searcher.SearchParms{}
 
 	fmt.Printf("GenQry %v\n", mymap)
@@ -55,7 +56,7 @@ func GenQry(mymap map[string][]string) (myOut Node, err error) {
 			return
 		}
 	}
-	myOut, err = searcher.Search(searchp, googleSearch)
+	myOut, err = searcher.Search(searchp, mySearchClient)
 	return
 }
 

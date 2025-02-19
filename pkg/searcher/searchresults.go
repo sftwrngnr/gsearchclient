@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"io"
 	"os"
+	"path/filepath"
 )
 
 type ResultType int
@@ -46,7 +47,7 @@ func (sr *SearchResults) StoreResults(searchResults map[string]interface{}) {
 	myUUID := uuid.New()
 	f, err := os.OpenFile(fmt.Sprintf("/tmp/searchresults_%s.json", myUUID.String()), os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0600)
 	if err != nil {
-		panic(err)
+		return
 	}
 	defer f.Close()
 	n, err := f.Write(bytes)
@@ -54,16 +55,37 @@ func (sr *SearchResults) StoreResults(searchResults map[string]interface{}) {
 	return
 }
 
-func (sr *SearchResults) GetResults() (myRes map[string]interface{}) {
-	f, err := os.OpenFile("/tmp/searchresults.json", os.O_RDONLY, 0600)
+func (sr *SearchResults) GetJsonFiles(srcdir string) (flist []string, err error) {
+	err = filepath.Walk(srcdir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			//fmt.Println(err)
+			return nil
+		}
+		if !info.IsDir() && filepath.Ext(path) == ".json" {
+			flist = append(flist, path)
+		}
+		return nil
+	})
+	return
+}
+
+func (sr *SearchResults) GetResults() (myRes map[string]interface{}, err error) {
+	// get first json file that is found.
+	fl, ferr := sr.GetJsonFiles("/tmp/")
+	if ferr != nil {
+		err = ferr
+		return
+	}
+	if len(fl) == 0 {
+		return
+	}
+	//fmt.Printf("%v\n", fl)
+	f, err := os.OpenFile(fl[0], os.O_RDONLY, 0600)
 	if err != nil {
-		panic(err)
+		//panic(err)
 	}
 	defer f.Close()
 	err = json.NewDecoder(io.Reader(f)).Decode(&myRes)
-	if err != nil {
-		panic(err)
-	}
 	return
 }
 
