@@ -27,7 +27,7 @@ func (rp *ResultProcessor) ProcessResults(key string, rt ResultType, rawres inte
 		rp.processOrganicResults(rawres)
 		break
 	case SearchMetaData:
-		rp.ProcessSearchMetaData(rawres.(map[string]interface{}))
+		rp.ProcessSearchMetaData(rawres)
 		break
 	default:
 		fmt.Printf("Processing of %s skipped\n", key)
@@ -37,6 +37,9 @@ func (rp *ResultProcessor) ProcessResults(key string, rt ResultType, rawres inte
 func (rp *ResultProcessor) processOrganicResults(rawres interface{}) (err error) {
 	for _, k := range rawres.([]interface{}) {
 		v := k.(map[string]interface{})
+		fmt.Printf("Link: %s\n", v["link"].(string))
+		fmt.Printf("Position: %d\n", int(v["position"].(float64)))
+		fmt.Printf("Source: %s\n", v["source"].(string))
 		err = rp.Dbcref.SaveUrlData(rp.Queryid, uint(OrganicResults), 0, uint(v["position"].(float64)), v["link"].(string), v["source"].(string))
 	}
 }
@@ -56,7 +59,5 @@ func (rp *ResultProcessor) ProcessSearchMetaData(rawres map[string]interface{}) 
 		fmt.Printf("Error saving search meta data: %s\n", err)
 		return err
 	}
-	return
-}
 
-//func (rp *ResultProcessor) ProcessOrganicResults(rawres interface{}) {}
+}
