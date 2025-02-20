@@ -39,7 +39,6 @@ func (rp *ResultProcessor) processOrganicResults(rawres interface{}) (err error)
 		v := k.(map[string]interface{})
 		err = rp.Dbcref.SaveUrlData(rp.Queryid, uint(OrganicResults), 0, uint(v["position"].(float64)), v["link"].(string), v["source"].(string))
 	}
-	return
 }
 
 func (rp *ResultProcessor) ProcessSearchMetaData(rawres map[string]interface{}) (err error) {

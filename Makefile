@@ -8,5 +8,4 @@ run:
 	go run ./main.go $(ARGS)
 
 nocleanbuild:
-	@echo $(GIT_COMMIT)
 	go build -ldflags "-X main.GitCommit=${GIT_COMMIT}" -o bin/gsearch ./main.go
