@@ -3,7 +3,6 @@ package searcher
 import (
 	"encoding/json"
 	"fmt"
-	g "github.com/serpapi/google-search-results-golang"
 	"github.com/sftwrngnr/gsearchclient/pkg/sqldb"
 	"github.com/sftwrngnr/gsearchclient/pkg/system"
 	. "maragu.dev/gomponents"
@@ -22,7 +21,6 @@ type DummySearchClient struct {
 	sParms       *SearchParms
 	searchParms  map[string]string
 	SResults     *SearchResults
-	gqrySr       g.SearchResult
 	sRawResults  map[string]interface{}
 }
 
@@ -85,7 +83,9 @@ func (dsc *DummySearchClient) SaveResults() (rval error) {
 		fmt.Printf("Blew chow after SaveQueryData: %s\n", rval.Error())
 		return
 	}
+	dsc.SResults.ProcessSearchData(qryid, dsc.sRawResults)
 
+	fmt.Printf("sResults.Results len is %d\n", len(dsc.SResults.Results))
 	for k, rslt := range dsc.SResults.Results {
 		rbyte, _ := json.Marshal(rslt)
 		rval = dsc.sParms.Dbcref.ProcessQry_results(qryid, 0, uint(k), rbyte)
@@ -93,7 +93,6 @@ func (dsc *DummySearchClient) SaveResults() (rval error) {
 			continue
 		}
 	}
-	dsc.SResults.ProcessSearchData(qryid, dsc.gqrySr)
 
 	return
 }
@@ -101,7 +100,7 @@ func (dsc *DummySearchClient) SaveResults() (rval error) {
 func (dsc *DummySearchClient) ExecuteSearch() (rval error) {
 	dsc.SResults = NewSearchResults()
 	//search := g.NewGoogleSearch(dsc.searchParms, system.GetSystemParams().GQKey)
-	dsc.gqrySr, rval = dsc.SResults.GetResults()
+	dsc.sRawResults, rval = dsc.SResults.GetResults()
 	if rval != nil {
 		return
 	}

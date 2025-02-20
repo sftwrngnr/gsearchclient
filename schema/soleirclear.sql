@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 17.2 (Debian 17.2-1.pgdg120+1)
--- Dumped by pg_dump version 17.3 (Ubuntu 17.3-1.pgdg24.04+1)
+-- Dumped by pg_dump version 17.3 (Ubuntu 17.3-3.pgdg24.04+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -17,6 +17,95 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+ALTER TABLE ONLY public.zipcodes DROP CONSTRAINT zipcode_states_fk;
+ALTER TABLE ONLY public.zipcodes DROP CONSTRAINT zipcode_cities_fk;
+ALTER TABLE ONLY public.urls DROP CONSTRAINT urls_queries_fk;
+ALTER TABLE ONLY public.queries DROP CONSTRAINT query_states_fk;
+ALTER TABLE ONLY public.query_results DROP CONSTRAINT query_results_query_fk;
+ALTER TABLE ONLY public.search_metadata DROP CONSTRAINT qrysummary_queries_fk;
+ALTER TABLE ONLY public.qry_zips DROP CONSTRAINT qry_zips_zipcodes_fk;
+ALTER TABLE ONLY public.qry_zips DROP CONSTRAINT qry_zips_query_fk;
+ALTER TABLE ONLY public.qry_kwds DROP CONSTRAINT qry_kwds_query_fk;
+ALTER TABLE ONLY public.qry_kwds DROP CONSTRAINT qry_kwds_keywords_fk;
+ALTER TABLE ONLY public.qry_acs DROP CONSTRAINT qry_ac_query_fk;
+ALTER TABLE ONLY public.phonenumber DROP CONSTRAINT phonenumber_areacodes_fk;
+ALTER TABLE ONLY public.pcontact DROP CONSTRAINT pcontact_phonenumber_fk;
+ALTER TABLE ONLY public.paddress DROP CONSTRAINT paddress_zipcodes_fk;
+ALTER TABLE ONLY public.paddress DROP CONSTRAINT paddress_states_fk;
+ALTER TABLE ONLY public.paddress DROP CONSTRAINT paddress_queries_fk;
+ALTER TABLE ONLY public.paddress DROP CONSTRAINT paddress_phonenumber_fk;
+ALTER TABLE ONLY public.cityareacodes DROP CONSTRAINT cityareacodes_cities_fk;
+ALTER TABLE ONLY public.cities DROP CONSTRAINT cities_states_fk;
+ALTER TABLE ONLY public.areacodes DROP CONSTRAINT areacodes_states_fk;
+DROP INDEX public.zipcode_state_idx;
+DROP INDEX public.urls_id_idx;
+DROP INDEX public.states_name_idx;
+DROP INDEX public.cityareacodes_city_idx;
+DROP INDEX public.cities_name_idx;
+DROP INDEX public.areacodes_code_idx;
+ALTER TABLE ONLY public.zipcodes DROP CONSTRAINT zipcode_pk;
+ALTER TABLE ONLY public.urls DROP CONSTRAINT urls_pk;
+ALTER TABLE ONLY public.states DROP CONSTRAINT states_unique;
+ALTER TABLE ONLY public.states DROP CONSTRAINT states_pk;
+ALTER TABLE ONLY public.queries DROP CONSTRAINT query_pk;
+ALTER TABLE ONLY public.search_metadata DROP CONSTRAINT qrysummary_pk;
+ALTER TABLE ONLY public.qry_zips DROP CONSTRAINT qry_zips_pk;
+ALTER TABLE ONLY public.qry_kwds DROP CONSTRAINT qry_kwds_pk;
+ALTER TABLE ONLY public.qry_acs DROP CONSTRAINT qry_ac_pk;
+ALTER TABLE ONLY public.phonenumber DROP CONSTRAINT phonenumber_unique;
+ALTER TABLE ONLY public.keywords DROP CONSTRAINT keywords_pk;
+ALTER TABLE ONLY public.query_results DROP CONSTRAINT crawler_results_pk;
+ALTER TABLE ONLY public.cityareacodes DROP CONSTRAINT cityareacodes_pk;
+ALTER TABLE ONLY public.cities DROP CONSTRAINT cities_pk;
+ALTER TABLE ONLY public.areacodes DROP CONSTRAINT areacodes_pk;
+ALTER TABLE public.zipcodes ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.urls ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.states ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.search_metadata ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.query_results ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.queries ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.qry_zips ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.qry_kwds ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.qry_acs ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.phonenumber ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.pcontact ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.paddress ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.keywords ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.cityareacodes ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.cities ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.areacodes ALTER COLUMN id DROP DEFAULT;
+DROP SEQUENCE public.zipcode_id_seq;
+DROP TABLE public.zipcodes;
+DROP SEQUENCE public.urls_id_seq;
+DROP TABLE public.urls;
+DROP SEQUENCE public.states_id_seq;
+DROP TABLE public.states;
+DROP SEQUENCE public.query_id_seq;
+DROP TABLE public.queries;
+DROP SEQUENCE public.qrysummary_id_seq;
+DROP TABLE public.search_metadata;
+DROP SEQUENCE public.qry_zips_id_seq;
+DROP TABLE public.qry_zips;
+DROP SEQUENCE public.qry_kwds_id_seq;
+DROP TABLE public.qry_kwds;
+DROP SEQUENCE public.qry_ac_id_seq;
+DROP TABLE public.qry_acs;
+DROP SEQUENCE public.phonenumber_id_seq;
+DROP TABLE public.phonenumber;
+DROP SEQUENCE public.pcontact_id_seq;
+DROP TABLE public.pcontact;
+DROP SEQUENCE public.paddress_id_seq;
+DROP TABLE public.paddress;
+DROP SEQUENCE public.keywords_id_seq;
+DROP TABLE public.keywords;
+DROP SEQUENCE public.crawler_results_id_seq;
+DROP TABLE public.query_results;
+DROP SEQUENCE public.cityareacodes_id_seq;
+DROP TABLE public.cityareacodes;
+DROP SEQUENCE public.cities_id_seq;
+DROP TABLE public.cities;
+DROP SEQUENCE public.areacodes_id_seq;
+DROP TABLE public.areacodes;
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -29,11 +118,11 @@ CREATE TABLE public.areacodes (
     id bigint NOT NULL,
     code character varying,
     state bigint,
+    latitude double precision,
+    longitude double precision,
     created_at date,
     updated_at date,
-    deleted_at date,
-    latitude double precision,
-    longitude double precision
+    deleted_at date
 );
 
 
@@ -180,10 +269,10 @@ ALTER SEQUENCE public.crawler_results_id_seq OWNED BY public.query_results.id;
 CREATE TABLE public.keywords (
     id bigint NOT NULL,
     keyword character varying,
+    req boolean DEFAULT false NOT NULL,
     created_at date,
     updated_at date,
-    deleted_at date,
-    req boolean DEFAULT false NOT NULL
+    deleted_at date
 );
 
 
@@ -446,22 +535,27 @@ ALTER SEQUENCE public.qry_zips_id_seq OWNED BY public.qry_zips.id;
 
 
 --
--- Name: qrysummary; Type: TABLE; Schema: public; Owner: crawler
+-- Name: search_metadata; Type: TABLE; Schema: public; Owner: crawler
 --
 
-CREATE TABLE public.qrysummary (
+CREATE TABLE public.search_metadata (
     id bigint NOT NULL,
     query_id bigint,
     status character varying,
-    apiqryid character varying,
-    searchtime character varying,
+    searchid character varying,
+    total_time_taken real,
+    screated_at date,
+    google_url character varying,
+    json_endpoint character varying,
+    processed_at date,
+    raw_html_file character varying,
     created_at date,
     updated_at date,
     deleted_at date
 );
 
 
-ALTER TABLE public.qrysummary OWNER TO crawler;
+ALTER TABLE public.search_metadata OWNER TO crawler;
 
 --
 -- Name: qrysummary_id_seq; Type: SEQUENCE; Schema: public; Owner: crawler
@@ -481,7 +575,7 @@ ALTER SEQUENCE public.qrysummary_id_seq OWNER TO crawler;
 -- Name: qrysummary_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: crawler
 --
 
-ALTER SEQUENCE public.qrysummary_id_seq OWNED BY public.qrysummary.id;
+ALTER SEQUENCE public.qrysummary_id_seq OWNED BY public.search_metadata.id;
 
 
 --
@@ -491,10 +585,10 @@ ALTER SEQUENCE public.qrysummary_id_seq OWNED BY public.qrysummary.id;
 CREATE TABLE public.queries (
     id bigint NOT NULL,
     state bigint,
+    query_string character varying,
     created_at date,
     updated_at date,
-    deleted_at character varying,
-    query_string character varying
+    deleted_at character varying
 );
 
 
@@ -573,6 +667,8 @@ CREATE TABLE public.urls (
     crawldate date,
     crawlsuccess boolean DEFAULT false,
     importdate date DEFAULT now(),
+    "position" bigint,
+    source character varying,
     created_at date,
     updated_at date,
     deleted_at date
@@ -612,11 +708,11 @@ CREATE TABLE public.zipcodes (
     city bigint,
     state bigint,
     population bigint,
+    latitude double precision,
+    longitude double precision,
     created_at date,
     updated_at date,
-    deleted_at date,
-    latitude double precision,
-    longitude double precision
+    deleted_at date
 );
 
 
@@ -714,13 +810,6 @@ ALTER TABLE ONLY public.qry_zips ALTER COLUMN id SET DEFAULT nextval('public.qry
 
 
 --
--- Name: qrysummary id; Type: DEFAULT; Schema: public; Owner: crawler
---
-
-ALTER TABLE ONLY public.qrysummary ALTER COLUMN id SET DEFAULT nextval('public.qrysummary_id_seq'::regclass);
-
-
---
 -- Name: queries id; Type: DEFAULT; Schema: public; Owner: crawler
 --
 
@@ -732,6 +821,13 @@ ALTER TABLE ONLY public.queries ALTER COLUMN id SET DEFAULT nextval('public.quer
 --
 
 ALTER TABLE ONLY public.query_results ALTER COLUMN id SET DEFAULT nextval('public.crawler_results_id_seq'::regclass);
+
+
+--
+-- Name: search_metadata id; Type: DEFAULT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.search_metadata ALTER COLUMN id SET DEFAULT nextval('public.qrysummary_id_seq'::regclass);
 
 
 --
@@ -828,10 +924,10 @@ ALTER TABLE ONLY public.qry_zips
 
 
 --
--- Name: qrysummary qrysummary_pk; Type: CONSTRAINT; Schema: public; Owner: crawler
+-- Name: search_metadata qrysummary_pk; Type: CONSTRAINT; Schema: public; Owner: crawler
 --
 
-ALTER TABLE ONLY public.qrysummary
+ALTER TABLE ONLY public.search_metadata
     ADD CONSTRAINT qrysummary_pk PRIMARY KEY (id);
 
 
@@ -1030,10 +1126,10 @@ ALTER TABLE ONLY public.qry_zips
 
 
 --
--- Name: qrysummary qrysummary_queries_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
+-- Name: search_metadata qrysummary_queries_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
 --
 
-ALTER TABLE ONLY public.qrysummary
+ALTER TABLE ONLY public.search_metadata
     ADD CONSTRAINT qrysummary_queries_fk FOREIGN KEY (query_id) REFERENCES public.queries(id);
 
 

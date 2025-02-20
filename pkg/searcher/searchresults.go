@@ -80,6 +80,7 @@ func (sr *SearchResults) GetResults() (myRes map[string]interface{}, err error) 
 		return
 	}
 	if len(fl) == 0 {
+		fmt.Println("No results found")
 		return
 	}
 	//fmt.Printf("%v\n", fl)
