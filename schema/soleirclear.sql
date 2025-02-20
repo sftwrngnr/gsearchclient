@@ -211,6 +211,130 @@ ALTER SEQUENCE public.keywords_id_seq OWNED BY public.keywords.id;
 
 
 --
+-- Name: paddress; Type: TABLE; Schema: public; Owner: crawler
+--
+
+CREATE TABLE public.paddress (
+    id bigint NOT NULL,
+    query_id bigint NOT NULL,
+    name character varying,
+    address1 character varying,
+    address2 character varying,
+    city character varying,
+    state bigint NOT NULL,
+    zip bigint NOT NULL,
+    zipstr character varying,
+    phoneid bigint,
+    created_at date,
+    updated_at date,
+    deleted_at date
+);
+
+
+ALTER TABLE public.paddress OWNER TO crawler;
+
+--
+-- Name: paddress_id_seq; Type: SEQUENCE; Schema: public; Owner: crawler
+--
+
+CREATE SEQUENCE public.paddress_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.paddress_id_seq OWNER TO crawler;
+
+--
+-- Name: paddress_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: crawler
+--
+
+ALTER SEQUENCE public.paddress_id_seq OWNED BY public.paddress.id;
+
+
+--
+-- Name: pcontact; Type: TABLE; Schema: public; Owner: crawler
+--
+
+CREATE TABLE public.pcontact (
+    id bigint NOT NULL,
+    paddy bigint,
+    prefix character varying,
+    firstname character varying,
+    middle character varying,
+    lastname character varying,
+    suffix character varying,
+    phoneid bigint NOT NULL,
+    created_at date,
+    updated_at date,
+    deleted_at date
+);
+
+
+ALTER TABLE public.pcontact OWNER TO crawler;
+
+--
+-- Name: pcontact_id_seq; Type: SEQUENCE; Schema: public; Owner: crawler
+--
+
+CREATE SEQUENCE public.pcontact_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.pcontact_id_seq OWNER TO crawler;
+
+--
+-- Name: pcontact_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: crawler
+--
+
+ALTER SEQUENCE public.pcontact_id_seq OWNED BY public.pcontact.id;
+
+
+--
+-- Name: phonenumber; Type: TABLE; Schema: public; Owner: crawler
+--
+
+CREATE TABLE public.phonenumber (
+    id bigint NOT NULL,
+    area bigint NOT NULL,
+    number character varying,
+    extension character varying,
+    created_at date,
+    updated_at date,
+    deleted_at date
+);
+
+
+ALTER TABLE public.phonenumber OWNER TO crawler;
+
+--
+-- Name: phonenumber_id_seq; Type: SEQUENCE; Schema: public; Owner: crawler
+--
+
+CREATE SEQUENCE public.phonenumber_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.phonenumber_id_seq OWNER TO crawler;
+
+--
+-- Name: phonenumber_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: crawler
+--
+
+ALTER SEQUENCE public.phonenumber_id_seq OWNED BY public.phonenumber.id;
+
+
+--
 -- Name: qry_acs; Type: TABLE; Schema: public; Owner: crawler
 --
 
@@ -322,6 +446,45 @@ ALTER SEQUENCE public.qry_zips_id_seq OWNED BY public.qry_zips.id;
 
 
 --
+-- Name: qrysummary; Type: TABLE; Schema: public; Owner: crawler
+--
+
+CREATE TABLE public.qrysummary (
+    id bigint NOT NULL,
+    query_id bigint,
+    status character varying,
+    apiqryid character varying,
+    searchtime character varying,
+    created_at date,
+    updated_at date,
+    deleted_at date
+);
+
+
+ALTER TABLE public.qrysummary OWNER TO crawler;
+
+--
+-- Name: qrysummary_id_seq; Type: SEQUENCE; Schema: public; Owner: crawler
+--
+
+CREATE SEQUENCE public.qrysummary_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.qrysummary_id_seq OWNER TO crawler;
+
+--
+-- Name: qrysummary_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: crawler
+--
+
+ALTER SEQUENCE public.qrysummary_id_seq OWNED BY public.qrysummary.id;
+
+
+--
 -- Name: queries; Type: TABLE; Schema: public; Owner: crawler
 --
 
@@ -398,6 +561,48 @@ ALTER SEQUENCE public.states_id_seq OWNED BY public.states.id;
 
 
 --
+-- Name: urls; Type: TABLE; Schema: public; Owner: crawler
+--
+
+CREATE TABLE public.urls (
+    id bigint NOT NULL,
+    query_id bigint,
+    query_src bigint,
+    seq_id bigint,
+    url character varying,
+    crawldate date,
+    crawlsuccess boolean DEFAULT false,
+    importdate date DEFAULT now(),
+    created_at date,
+    updated_at date,
+    deleted_at date
+);
+
+
+ALTER TABLE public.urls OWNER TO crawler;
+
+--
+-- Name: urls_id_seq; Type: SEQUENCE; Schema: public; Owner: crawler
+--
+
+CREATE SEQUENCE public.urls_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.urls_id_seq OWNER TO crawler;
+
+--
+-- Name: urls_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: crawler
+--
+
+ALTER SEQUENCE public.urls_id_seq OWNED BY public.urls.id;
+
+
+--
 -- Name: zipcodes; Type: TABLE; Schema: public; Owner: crawler
 --
 
@@ -467,6 +672,27 @@ ALTER TABLE ONLY public.keywords ALTER COLUMN id SET DEFAULT nextval('public.key
 
 
 --
+-- Name: paddress id; Type: DEFAULT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.paddress ALTER COLUMN id SET DEFAULT nextval('public.paddress_id_seq'::regclass);
+
+
+--
+-- Name: pcontact id; Type: DEFAULT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.pcontact ALTER COLUMN id SET DEFAULT nextval('public.pcontact_id_seq'::regclass);
+
+
+--
+-- Name: phonenumber id; Type: DEFAULT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.phonenumber ALTER COLUMN id SET DEFAULT nextval('public.phonenumber_id_seq'::regclass);
+
+
+--
 -- Name: qry_acs id; Type: DEFAULT; Schema: public; Owner: crawler
 --
 
@@ -485,6 +711,13 @@ ALTER TABLE ONLY public.qry_kwds ALTER COLUMN id SET DEFAULT nextval('public.qry
 --
 
 ALTER TABLE ONLY public.qry_zips ALTER COLUMN id SET DEFAULT nextval('public.qry_zips_id_seq'::regclass);
+
+
+--
+-- Name: qrysummary id; Type: DEFAULT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.qrysummary ALTER COLUMN id SET DEFAULT nextval('public.qrysummary_id_seq'::regclass);
 
 
 --
@@ -509,175 +742,17 @@ ALTER TABLE ONLY public.states ALTER COLUMN id SET DEFAULT nextval('public.state
 
 
 --
+-- Name: urls id; Type: DEFAULT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.urls ALTER COLUMN id SET DEFAULT nextval('public.urls_id_seq'::regclass);
+
+
+--
 -- Name: zipcodes id; Type: DEFAULT; Schema: public; Owner: crawler
 --
 
 ALTER TABLE ONLY public.zipcodes ALTER COLUMN id SET DEFAULT nextval('public.zipcode_id_seq'::regclass);
-
-
---
--- Data for Name: areacodes; Type: TABLE DATA; Schema: public; Owner: crawler
---
-
-COPY public.areacodes (id, code, state, created_at, updated_at, deleted_at, latitude, longitude) FROM stdin;
-\.
-
-
---
--- Data for Name: cities; Type: TABLE DATA; Schema: public; Owner: crawler
---
-
-COPY public.cities (id, name, state, created_at, updated_at, deleted_at) FROM stdin;
-\.
-
-
---
--- Data for Name: cityareacodes; Type: TABLE DATA; Schema: public; Owner: crawler
---
-
-COPY public.cityareacodes (id, areacode, city, created_at, updated_at, deleted_at) FROM stdin;
-\.
-
-
---
--- Data for Name: keywords; Type: TABLE DATA; Schema: public; Owner: crawler
---
-
-COPY public.keywords (id, keyword, created_at, updated_at, deleted_at, req) FROM stdin;
-\.
-
-
---
--- Data for Name: qry_acs; Type: TABLE DATA; Schema: public; Owner: crawler
---
-
-COPY public.qry_acs (id, query_id, qry_ac, created_at, updated_at, deleted_at) FROM stdin;
-\.
-
-
---
--- Data for Name: qry_kwds; Type: TABLE DATA; Schema: public; Owner: crawler
---
-
-COPY public.qry_kwds (id, query_id, keyword_id, created_at, updated_at, deleted_at) FROM stdin;
-\.
-
-
---
--- Data for Name: qry_zips; Type: TABLE DATA; Schema: public; Owner: crawler
---
-
-COPY public.qry_zips (id, query_id, zip_id, created_at, updated_at, deleted_at) FROM stdin;
-\.
-
-
---
--- Data for Name: queries; Type: TABLE DATA; Schema: public; Owner: crawler
---
-
-COPY public.queries (id, state, created_at, updated_at, deleted_at, query_string) FROM stdin;
-\.
-
-
---
--- Data for Name: query_results; Type: TABLE DATA; Schema: public; Owner: crawler
---
-
-COPY public.query_results (id, query_id, resultseq, result_type, result, created_at, updated_at, deleted_at) FROM stdin;
-\.
-
-
---
--- Data for Name: states; Type: TABLE DATA; Schema: public; Owner: crawler
---
-
-COPY public.states (id, abbrev, name, capitol, region, created_at, updated_at, deleted_at) FROM stdin;
-\.
-
-
---
--- Data for Name: zipcodes; Type: TABLE DATA; Schema: public; Owner: crawler
---
-
-COPY public.zipcodes (id, zipcode, city, state, population, created_at, updated_at, deleted_at, latitude, longitude) FROM stdin;
-\.
-
-
---
--- Name: areacodes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: crawler
---
-
-SELECT pg_catalog.setval('public.areacodes_id_seq', 1, false);
-
-
---
--- Name: cities_id_seq; Type: SEQUENCE SET; Schema: public; Owner: crawler
---
-
-SELECT pg_catalog.setval('public.cities_id_seq', 1, false);
-
-
---
--- Name: cityareacodes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: crawler
---
-
-SELECT pg_catalog.setval('public.cityareacodes_id_seq', 1, false);
-
-
---
--- Name: crawler_results_id_seq; Type: SEQUENCE SET; Schema: public; Owner: crawler
---
-
-SELECT pg_catalog.setval('public.crawler_results_id_seq', 1, false);
-
-
---
--- Name: keywords_id_seq; Type: SEQUENCE SET; Schema: public; Owner: crawler
---
-
-SELECT pg_catalog.setval('public.keywords_id_seq', 1, false);
-
-
---
--- Name: qry_ac_id_seq; Type: SEQUENCE SET; Schema: public; Owner: crawler
---
-
-SELECT pg_catalog.setval('public.qry_ac_id_seq', 1, false);
-
-
---
--- Name: qry_kwds_id_seq; Type: SEQUENCE SET; Schema: public; Owner: crawler
---
-
-SELECT pg_catalog.setval('public.qry_kwds_id_seq', 1, false);
-
-
---
--- Name: qry_zips_id_seq; Type: SEQUENCE SET; Schema: public; Owner: crawler
---
-
-SELECT pg_catalog.setval('public.qry_zips_id_seq', 1, false);
-
-
---
--- Name: query_id_seq; Type: SEQUENCE SET; Schema: public; Owner: crawler
---
-
-SELECT pg_catalog.setval('public.query_id_seq', 1, false);
-
-
---
--- Name: states_id_seq; Type: SEQUENCE SET; Schema: public; Owner: crawler
---
-
-SELECT pg_catalog.setval('public.states_id_seq', 1, false);
-
-
---
--- Name: zipcode_id_seq; Type: SEQUENCE SET; Schema: public; Owner: crawler
---
-
-SELECT pg_catalog.setval('public.zipcode_id_seq', 1, false);
 
 
 --
@@ -721,6 +796,14 @@ ALTER TABLE ONLY public.keywords
 
 
 --
+-- Name: phonenumber phonenumber_unique; Type: CONSTRAINT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.phonenumber
+    ADD CONSTRAINT phonenumber_unique UNIQUE (id);
+
+
+--
 -- Name: qry_acs qry_ac_pk; Type: CONSTRAINT; Schema: public; Owner: crawler
 --
 
@@ -745,6 +828,14 @@ ALTER TABLE ONLY public.qry_zips
 
 
 --
+-- Name: qrysummary qrysummary_pk; Type: CONSTRAINT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.qrysummary
+    ADD CONSTRAINT qrysummary_pk PRIMARY KEY (id);
+
+
+--
 -- Name: queries query_pk; Type: CONSTRAINT; Schema: public; Owner: crawler
 --
 
@@ -766,6 +857,14 @@ ALTER TABLE ONLY public.states
 
 ALTER TABLE ONLY public.states
     ADD CONSTRAINT states_unique UNIQUE (abbrev);
+
+
+--
+-- Name: urls urls_pk; Type: CONSTRAINT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.urls
+    ADD CONSTRAINT urls_pk PRIMARY KEY (id);
 
 
 --
@@ -805,6 +904,13 @@ CREATE INDEX states_name_idx ON public.states USING btree (name);
 
 
 --
+-- Name: urls_id_idx; Type: INDEX; Schema: public; Owner: crawler
+--
+
+CREATE INDEX urls_id_idx ON public.urls USING btree (id, query_id, query_src, seq_id);
+
+
+--
 -- Name: zipcode_state_idx; Type: INDEX; Schema: public; Owner: crawler
 --
 
@@ -833,6 +939,54 @@ ALTER TABLE ONLY public.cities
 
 ALTER TABLE ONLY public.cityareacodes
     ADD CONSTRAINT cityareacodes_cities_fk FOREIGN KEY (city) REFERENCES public.cities(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: paddress paddress_phonenumber_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.paddress
+    ADD CONSTRAINT paddress_phonenumber_fk FOREIGN KEY (phoneid) REFERENCES public.phonenumber(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: paddress paddress_queries_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.paddress
+    ADD CONSTRAINT paddress_queries_fk FOREIGN KEY (query_id) REFERENCES public.queries(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: paddress paddress_states_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.paddress
+    ADD CONSTRAINT paddress_states_fk FOREIGN KEY (state) REFERENCES public.states(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: paddress paddress_zipcodes_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.paddress
+    ADD CONSTRAINT paddress_zipcodes_fk FOREIGN KEY (zip) REFERENCES public.zipcodes(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: pcontact pcontact_phonenumber_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.pcontact
+    ADD CONSTRAINT pcontact_phonenumber_fk FOREIGN KEY (phoneid) REFERENCES public.phonenumber(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: phonenumber phonenumber_areacodes_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.phonenumber
+    ADD CONSTRAINT phonenumber_areacodes_fk FOREIGN KEY (area) REFERENCES public.areacodes(id);
 
 
 --
@@ -876,6 +1030,14 @@ ALTER TABLE ONLY public.qry_zips
 
 
 --
+-- Name: qrysummary qrysummary_queries_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.qrysummary
+    ADD CONSTRAINT qrysummary_queries_fk FOREIGN KEY (query_id) REFERENCES public.queries(id);
+
+
+--
 -- Name: query_results query_results_query_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
 --
 
@@ -889,6 +1051,14 @@ ALTER TABLE ONLY public.query_results
 
 ALTER TABLE ONLY public.queries
     ADD CONSTRAINT query_states_fk FOREIGN KEY (state) REFERENCES public.states(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: urls urls_queries_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.urls
+    ADD CONSTRAINT urls_queries_fk FOREIGN KEY (query_id) REFERENCES public.queries(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
