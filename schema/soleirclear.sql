@@ -22,7 +22,7 @@ ALTER TABLE ONLY public.zipcodes DROP CONSTRAINT zipcode_cities_fk;
 ALTER TABLE ONLY public.urls DROP CONSTRAINT urls_queries_fk;
 ALTER TABLE ONLY public.queries DROP CONSTRAINT query_states_fk;
 ALTER TABLE ONLY public.query_results DROP CONSTRAINT query_results_query_fk;
-ALTER TABLE ONLY public.qrysummary DROP CONSTRAINT qrysummary_queries_fk;
+ALTER TABLE ONLY public.search_metadata DROP CONSTRAINT qrysummary_queries_fk;
 ALTER TABLE ONLY public.qry_zips DROP CONSTRAINT qry_zips_zipcodes_fk;
 ALTER TABLE ONLY public.qry_zips DROP CONSTRAINT qry_zips_query_fk;
 ALTER TABLE ONLY public.qry_kwds DROP CONSTRAINT qry_kwds_query_fk;
@@ -48,7 +48,7 @@ ALTER TABLE ONLY public.urls DROP CONSTRAINT urls_pk;
 ALTER TABLE ONLY public.states DROP CONSTRAINT states_unique;
 ALTER TABLE ONLY public.states DROP CONSTRAINT states_pk;
 ALTER TABLE ONLY public.queries DROP CONSTRAINT query_pk;
-ALTER TABLE ONLY public.qrysummary DROP CONSTRAINT qrysummary_pk;
+ALTER TABLE ONLY public.search_metadata DROP CONSTRAINT qrysummary_pk;
 ALTER TABLE ONLY public.qry_zips DROP CONSTRAINT qry_zips_pk;
 ALTER TABLE ONLY public.qry_kwds DROP CONSTRAINT qry_kwds_pk;
 ALTER TABLE ONLY public.qry_acs DROP CONSTRAINT qry_ac_pk;
@@ -61,9 +61,9 @@ ALTER TABLE ONLY public.areacodes DROP CONSTRAINT areacodes_pk;
 ALTER TABLE public.zipcodes ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.urls ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.states ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.search_metadata ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.query_results ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.queries ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.qrysummary ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.qry_zips ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.qry_kwds ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.qry_acs ALTER COLUMN id DROP DEFAULT;
@@ -83,7 +83,7 @@ DROP TABLE public.states;
 DROP SEQUENCE public.query_id_seq;
 DROP TABLE public.queries;
 DROP SEQUENCE public.qrysummary_id_seq;
-DROP TABLE public.qrysummary;
+DROP TABLE public.search_metadata;
 DROP SEQUENCE public.qry_zips_id_seq;
 DROP TABLE public.qry_zips;
 DROP SEQUENCE public.qry_kwds_id_seq;
@@ -535,22 +535,27 @@ ALTER SEQUENCE public.qry_zips_id_seq OWNED BY public.qry_zips.id;
 
 
 --
--- Name: qrysummary; Type: TABLE; Schema: public; Owner: crawler
+-- Name: search_metadata; Type: TABLE; Schema: public; Owner: crawler
 --
 
-CREATE TABLE public.qrysummary (
+CREATE TABLE public.search_metadata (
     id bigint NOT NULL,
     query_id bigint,
     status character varying,
-    apiqryid character varying,
-    searchtime character varying,
+    searchid character varying,
+    total_time_taken real,
+    screated_at date,
+    google_url character varying,
+    json_endpoint character varying,
+    processed_at date,
+    raw_html_file character varying,
     created_at date,
     updated_at date,
     deleted_at date
 );
 
 
-ALTER TABLE public.qrysummary OWNER TO crawler;
+ALTER TABLE public.search_metadata OWNER TO crawler;
 
 --
 -- Name: qrysummary_id_seq; Type: SEQUENCE; Schema: public; Owner: crawler
@@ -570,7 +575,7 @@ ALTER SEQUENCE public.qrysummary_id_seq OWNER TO crawler;
 -- Name: qrysummary_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: crawler
 --
 
-ALTER SEQUENCE public.qrysummary_id_seq OWNED BY public.qrysummary.id;
+ALTER SEQUENCE public.qrysummary_id_seq OWNED BY public.search_metadata.id;
 
 
 --
@@ -805,13 +810,6 @@ ALTER TABLE ONLY public.qry_zips ALTER COLUMN id SET DEFAULT nextval('public.qry
 
 
 --
--- Name: qrysummary id; Type: DEFAULT; Schema: public; Owner: crawler
---
-
-ALTER TABLE ONLY public.qrysummary ALTER COLUMN id SET DEFAULT nextval('public.qrysummary_id_seq'::regclass);
-
-
---
 -- Name: queries id; Type: DEFAULT; Schema: public; Owner: crawler
 --
 
@@ -823,6 +821,13 @@ ALTER TABLE ONLY public.queries ALTER COLUMN id SET DEFAULT nextval('public.quer
 --
 
 ALTER TABLE ONLY public.query_results ALTER COLUMN id SET DEFAULT nextval('public.crawler_results_id_seq'::regclass);
+
+
+--
+-- Name: search_metadata id; Type: DEFAULT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.search_metadata ALTER COLUMN id SET DEFAULT nextval('public.qrysummary_id_seq'::regclass);
 
 
 --
@@ -919,10 +924,10 @@ ALTER TABLE ONLY public.qry_zips
 
 
 --
--- Name: qrysummary qrysummary_pk; Type: CONSTRAINT; Schema: public; Owner: crawler
+-- Name: search_metadata qrysummary_pk; Type: CONSTRAINT; Schema: public; Owner: crawler
 --
 
-ALTER TABLE ONLY public.qrysummary
+ALTER TABLE ONLY public.search_metadata
     ADD CONSTRAINT qrysummary_pk PRIMARY KEY (id);
 
 
@@ -1121,10 +1126,10 @@ ALTER TABLE ONLY public.qry_zips
 
 
 --
--- Name: qrysummary qrysummary_queries_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
+-- Name: search_metadata qrysummary_queries_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
 --
 
-ALTER TABLE ONLY public.qrysummary
+ALTER TABLE ONLY public.search_metadata
     ADD CONSTRAINT qrysummary_queries_fk FOREIGN KEY (query_id) REFERENCES public.queries(id);
 
 
