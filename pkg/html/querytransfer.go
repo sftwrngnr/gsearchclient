@@ -16,7 +16,7 @@ func QueryTransfer(items []string) Node {
 			QueryButton(),
 			Img(ID("spinner"), Class("htmx-indicator"), Src("https://unpkg.com/html-spinner")),
 			Hr(Style("border: 5px solid blue; border-radius: 5px")),
-			Br(),
+			Div(Raw("<B>"), Text("Transferred urls to crawler:"), Raw("</B>")),
 			Div(ID("transfer_res")),
 			Hr(Style("border: 5px solid blue; border-radius: 5px")),
 		),

@@ -13,6 +13,7 @@ func TransferURLS() (urls []string, err error) {
 		return
 	}
 	for _, r := range mydbr {
+		fmt.Println("Processing %s\n", r.Url)
 		turl := r.Url
 		parsedUrl, myerr := url.Parse(turl)
 		if myerr != nil {
