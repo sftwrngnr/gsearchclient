@@ -36,6 +36,24 @@ func GenQry(mux *http.ServeMux) {
 	}))
 }
 
+func QueryTransfer(mux *http.ServeMux) {
+	mux.Handle("GET /qrytransfer", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
+		return nil, nil
+	}))
+}
+
+func CrawlerExec(mux *http.ServeMux) {
+	mux.Handle("GET /crawlerexec", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
+		return nil, nil
+	}))
+}
+
+func CrawlerSetup(mux *http.ServeMux) {
+	mux.Handle("GET /crawlsetup", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
+		return nil, nil
+	}))
+}
+
 func About(mux *http.ServeMux) {
 	mux.Handle("GET /about", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
 		return html.AboutPage(), nil

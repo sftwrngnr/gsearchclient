@@ -44,17 +44,6 @@ func (rp *ResultProcessor) processOrganicResults(rawres interface{}) (err error)
 
 func (rp *ResultProcessor) ProcessSearchMetaData(rawres map[string]interface{}) (err error) {
 	fmt.Printf("ProcessedSearchMetaData: %d\n", rp.Queryid)
-	/*
-		k: raw_html_file v: https://serpapi.com/searches/debf9491e9b795ba/67b564a1c8e2841aa06ce81a.html
-		k: status v: Success
-		k: total_time_taken v: 1.35
-		k: created_at v: 2025-02-19 04:57:05 UTC
-		k: google_url v: https://www.google.com/search?q=Arizona+%2B+%22Orthodontist%22%2B%22Clear+Aligner%22&oq=Arizona+%2B+%22Orthodontist%22%2B%22Clear+Aligner%22&uule=w+CAIQICIVQXJpem9uYSxVbml0ZWQgU3RhdGVz&sourceid=chrome&ie=UTF-8
-		k: id v: 67b564a1c8e2841aa06ce81a
-		k: json_endpoint v: https://serpapi.com/searches/debf9491e9b795ba/67b564a1c8e2841aa06ce81a.json
-		k: processed_at v: 2025-02-19 04:57:05 UTC
-
-	*/
 	err = rp.Dbcref.SaveSearchMetaData(rp.Queryid,
 		rawres["status"].(string),
 		rawres["id"].(string),

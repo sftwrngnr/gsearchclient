@@ -17,6 +17,9 @@ func setupRoutes() http.Handler {
 	Home(mux)
 	ZipCodes(mux)
 	GenQry(mux)
+	QueryTransfer(mux)
+	CrawlerExec(mux)
+	CrawlerSetup(mux)
 	About(mux)
 	return mux
 }
