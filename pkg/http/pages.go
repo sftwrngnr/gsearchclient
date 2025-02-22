@@ -10,9 +10,16 @@ import (
 	"net/http"
 )
 
+func Home2(mux *http.ServeMux) {
+	mux.Handle("GET /H2/", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
+		return html.HomePage2(), nil
+	}))
+
+}
+
 func Home(mux *http.ServeMux) {
 	mux.Handle("GET /", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
-		return html.HomePage(nil), nil
+		return html.HomePage2(), nil
 	}))
 }
 

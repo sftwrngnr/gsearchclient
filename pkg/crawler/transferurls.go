@@ -20,7 +20,9 @@ func TransferURLS() (urls []string, err error) {
 			fmt.Printf("%s\n", err.Error())
 			continue
 		}
-		urls = append(urls, fmt.Sprintf("%s://%s", parsedUrl.Scheme, parsedUrl.Host))
+		myUrl := fmt.Sprintf("%s://%s", parsedUrl.Scheme, parsedUrl.Host)
+		urls = append(urls, myUrl)
+		system.GetSystemParams().Dbc.TransferQryUrls(0, myUrl)
 	}
 	return
 }
