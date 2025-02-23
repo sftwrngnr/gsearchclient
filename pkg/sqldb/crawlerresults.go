@@ -22,10 +22,13 @@ type Crawlerresults struct {
 	Profile        uint      `gorm:"column:profile"`
 	Urlimportdate  time.Time `gorm:"column:urlimportdate"`
 	Status         uint      `gorm:"column:status"`
+	Crawler        uint      `gorm:"column:crawler"`
+	Campaign       uint      `gorm:"column:campaign"`
 }
 
-func (dbc *DBConnData) TransferQryUrls(qid uint, url string, alldomains []byte) (err error) {
-	cr := Crawlerresults{Queryid: qid, Url: url, Urlimportdate: time.Now(), Alloweddomains: alldomains}
+func (dbc *DBConnData) TransferQryUrls(qid uint, url string, alldomains []byte, crawler uint, campaign uint) (err error) {
+	cr := Crawlerresults{Queryid: qid, Url: url, Urlimportdate: time.Now(), Alloweddomains: alldomains,
+		Crawler: crawler, Campaign: campaign}
 	err = dbc.DB.Create(&cr).Error
 	if err != nil {
 		fmt.Printf("Crawleresults error while transferring %d URLs to %s::%s\n", qid, url, err.Error())
