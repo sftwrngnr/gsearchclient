@@ -25,3 +25,7 @@ func (dbc *DBConnData) GetUrls(transfrd bool) (urls []Urls, err error) {
 	err = dbc.DB.Where("transferred = ?", transfrd).Find(&urls).Error
 	return
 }
+
+func (dbc *DBConnData) UpdateRec(url *Urls) error {
+	return dbc.DB.Save(url).Error
+}

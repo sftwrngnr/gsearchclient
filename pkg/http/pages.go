@@ -11,7 +11,7 @@ import (
 )
 
 func Home2(mux *http.ServeMux) {
-	mux.Handle("GET /H2/", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
+	mux.Handle("GET /H2", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
 		return html.HomePage2(), nil
 	}))
 
@@ -19,7 +19,7 @@ func Home2(mux *http.ServeMux) {
 
 func Home(mux *http.ServeMux) {
 	mux.Handle("GET /", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
-		return html.HomePage2(), nil
+		return html.HomePage(), nil
 	}))
 }
 

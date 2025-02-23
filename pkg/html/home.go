@@ -8,7 +8,7 @@ import (
 	. "maragu.dev/gomponents/html"
 )
 
-func HomePage(items []string) Node {
+func HomePage() Node {
 	stateOpts := getStateOptions()
 	States := Select(stateOpts...)
 	return page("Home",
