@@ -8,7 +8,7 @@ import (
 	. "maragu.dev/gomponents/html"
 )
 
-func HomePage(items []string) Node {
+func HomePage() Node {
 	stateOpts := getStateOptions()
 	States := Select(stateOpts...)
 	return page("Home",
@@ -49,11 +49,6 @@ func HomePage(items []string) Node {
 		GetQueryString("", ""),
 	)
 
-}
-
-func searchreqscript() (rval []Node) {
-	rval = append(rval, Script())
-	return
 }
 
 func getStateOptions() []Node {

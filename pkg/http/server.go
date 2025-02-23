@@ -15,8 +15,13 @@ func ServerStart(host string, port int16) error {
 func setupRoutes() http.Handler {
 	mux := http.NewServeMux()
 	Home(mux)
+	Home2(mux)
 	ZipCodes(mux)
 	GenQry(mux)
+	QueryTransfer(mux)
+	ExecTransfer(mux)
+	CrawlerExec(mux)
+	CrawlerSetup(mux)
 	About(mux)
 	return mux
 }
