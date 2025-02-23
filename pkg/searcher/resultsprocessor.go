@@ -70,3 +70,5 @@ func (rp *ResultProcessor) ProcessSearchMetaData(rawres map[string]interface{}) 
 	}
 	return
 }
+
+//func (rp *ResultProcessor) ProcessOrganicResults(rawres interface{}) {}
