@@ -8,7 +8,7 @@ type Company struct {
 	Name string `gorm:"column name"`
 }
 
-func (dbc *DBConnData) GetCompanies() (comp []Company, err error) {
+func (dbc *DBConnData) GetCompanyList() (comp []Company, err error) {
 	err = dbc.DB.Find(&comp).Error
 	return
 }

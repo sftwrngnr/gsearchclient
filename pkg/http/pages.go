@@ -64,6 +64,17 @@ func QueryTransfer(mux *http.ServeMux) {
 	}))
 }
 
+func GetCrawlers(mux *http.ServeMux) {
+	mux.Handle("GET /getcrawlers", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
+		err := r.ParseForm()
+		if err != nil {
+			fmt.Printf("Error with ParseForm %s\n", err.Error())
+			return nil, err
+		}
+		return html.GetDataForComapny(r.Form), nil
+	}))
+}
+
 func CrawlerExec(mux *http.ServeMux) {
 	mux.Handle("GET /crawlerexec", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
 		return nil, nil
