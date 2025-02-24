@@ -39,9 +39,10 @@ func TransferURLS() (urls []string, err error) {
 		}
 		myUrl := fmt.Sprintf("%s://%s", parsedUrl.Scheme, parsedUrl.Host)
 		urls = append(urls, myUrl)
-		err = system.GetSystemParams().Dbc.TransferQryUrls(1, myUrl, alldomains(parsedUrl.Host), 6, 1)
+		err = system.GetSystemParams().Dbc.TransferQryUrls(1, myUrl, alldomains(parsedUrl.Host), 2, 1)
 		if err != nil {
 			fmt.Printf("%s\n", err.Error())
+			continue
 		}
 		r.Transferred = true
 		err = system.GetSystemParams().Dbc.UpdateRec(&r)
