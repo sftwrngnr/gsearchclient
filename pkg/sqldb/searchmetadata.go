@@ -1,6 +1,9 @@
 package sqldb
 
-import "gorm.io/gorm"
+import (
+	"fmt"
+	"gorm.io/gorm"
+)
 
 /*
 CREATE TABLE public.search_metadata (
@@ -41,5 +44,8 @@ func (dbc *DBConnData) SaveSearchMetaData(qryid uint, status string, srchid stri
 		ScreatedAt: screated, GoogleUrl: googleurl, JsonEndpoint: jsonendpoint,
 		ProcessedAt: processedat, RawHtmlFile: rawhtmlfile}
 	err = dbc.DB.Create(myqs).Error
+	if err != nil {
+		fmt.Println(err)
+	}
 	return
 }

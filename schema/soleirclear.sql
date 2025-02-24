@@ -65,7 +65,7 @@ ALTER TABLE ONLY public.keywords DROP CONSTRAINT keywords_pk;
 ALTER TABLE ONLY public.crawlerresults DROP CONSTRAINT crawlerresults_pk;
 ALTER TABLE ONLY public.crawlerprofile DROP CONSTRAINT crawlerconfig_pk;
 ALTER TABLE ONLY public.query_results DROP CONSTRAINT crawler_results_pk;
-ALTER TABLE ONLY public.company DROP CONSTRAINT company_pk;
+ALTER TABLE ONLY public.companies DROP CONSTRAINT company_pk;
 ALTER TABLE ONLY public.cityareacodes DROP CONSTRAINT cityareacodes_pk;
 ALTER TABLE ONLY public.cities DROP CONSTRAINT cities_pk;
 ALTER TABLE ONLY public.areacodes DROP CONSTRAINT areacodes_pk;
@@ -85,7 +85,7 @@ ALTER TABLE public.paddress ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.keywords ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.crawlerresults ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.crawlerprofile ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.company ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.companies ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.cityareacodes ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.cities ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.areacodes ALTER COLUMN id DROP DEFAULT;
@@ -122,7 +122,7 @@ DROP TABLE public.crawlerprofile;
 DROP SEQUENCE public.crawler_results_id_seq;
 DROP TABLE public.query_results;
 DROP SEQUENCE public.company_id_seq;
-DROP TABLE public.company;
+DROP TABLE public.companies;
 DROP SEQUENCE public.cityareacodes_id_seq;
 DROP TABLE public.cityareacodes;
 DROP SEQUENCE public.cities_id_seq;
@@ -247,16 +247,19 @@ ALTER SEQUENCE public.cityareacodes_id_seq OWNED BY public.cityareacodes.id;
 
 
 --
--- Name: company; Type: TABLE; Schema: public; Owner: crawler
+-- Name: companies; Type: TABLE; Schema: public; Owner: crawler
 --
 
-CREATE TABLE public.company (
+CREATE TABLE public.companies (
     id bigint NOT NULL,
-    name character varying
+    name character varying,
+    created_at date,
+    updated_at date,
+    deleted_at date
 );
 
 
-ALTER TABLE public.company OWNER TO crawler;
+ALTER TABLE public.companies OWNER TO crawler;
 
 --
 -- Name: company_id_seq; Type: SEQUENCE; Schema: public; Owner: crawler
@@ -276,7 +279,7 @@ ALTER SEQUENCE public.company_id_seq OWNER TO crawler;
 -- Name: company_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: crawler
 --
 
-ALTER SEQUENCE public.company_id_seq OWNED BY public.company.id;
+ALTER SEQUENCE public.company_id_seq OWNED BY public.companies.id;
 
 
 --
@@ -956,10 +959,10 @@ ALTER TABLE ONLY public.cityareacodes ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
--- Name: company id; Type: DEFAULT; Schema: public; Owner: crawler
+-- Name: companies id; Type: DEFAULT; Schema: public; Owner: crawler
 --
 
-ALTER TABLE ONLY public.company ALTER COLUMN id SET DEFAULT nextval('public.company_id_seq'::regclass);
+ALTER TABLE ONLY public.companies ALTER COLUMN id SET DEFAULT nextval('public.company_id_seq'::regclass);
 
 
 --
@@ -1099,10 +1102,10 @@ ALTER TABLE ONLY public.cityareacodes
 
 
 --
--- Name: company company_pk; Type: CONSTRAINT; Schema: public; Owner: crawler
+-- Name: companies company_pk; Type: CONSTRAINT; Schema: public; Owner: crawler
 --
 
-ALTER TABLE ONLY public.company
+ALTER TABLE ONLY public.companies
     ADD CONSTRAINT company_pk PRIMARY KEY (id);
 
 
@@ -1304,7 +1307,7 @@ ALTER TABLE ONLY public.cityareacodes
 --
 
 ALTER TABLE ONLY public.crawlerprofile
-    ADD CONSTRAINT crawlercampaign_company_fk FOREIGN KEY (company) REFERENCES public.company(id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT crawlercampaign_company_fk FOREIGN KEY (company) REFERENCES public.companies(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -1456,7 +1459,7 @@ ALTER TABLE ONLY public.queries
 --
 
 ALTER TABLE ONLY public.searchcampaign
-    ADD CONSTRAINT searchcampaign_company_fk FOREIGN KEY (company) REFERENCES public.company(id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT searchcampaign_company_fk FOREIGN KEY (company) REFERENCES public.companies(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
