@@ -10,7 +10,7 @@ import (
 )
 
 func QueryTransfer(items []string) Node {
-	Companies := getComanies()
+	Companies := getCompanies()
 	Crawlers := getCrawlers(0)
 	Campaigns := getCampaigns(0)
 	return page("QueryTransfer",
@@ -41,6 +41,16 @@ func getCrawlers(id uint) []Node {
 		rval = append(rval, Option(Value("Name"), Text("None")))
 		return rval
 	}
+	crawlers, err := system.GetSystemParams().Dbc.GetCompanyCrawlers(id)
+	if err != nil {
+		fmt.Printf("error getting crawlers: %v\n", err)
+		rval = append(rval, Option(Value("Name"), Text("None")))
+		return rval
+	}
+	for _, crawler := range crawlers {
+		fmt.Printf("%s\n", crawler.Name)
+		rval = append(rval, Option(Value(fmt.Sprintf("%d", crawler.ID)), Text(crawler.Name)))
+	}
 	return rval
 }
 
@@ -51,10 +61,21 @@ func getCampaigns(id uint) []Node {
 		rval = append(rval, Option(Value("Name"), Text("None")))
 		return rval
 	}
+	campaigns, err := system.GetSystemParams().Dbc.GetCompanyCampaigns(id)
+	if err != nil {
+		fmt.Printf("error getting campaigns: %v\n", err)
+		rval = append(rval, Option(Value("Name"), Text("None")))
+		return rval
+	}
+	for _, campaign := range campaigns {
+		fmt.Printf("%s\n", campaign.Name)
+		rval = append(rval, Option(Value(fmt.Sprintf("%d", campaign.ID)), Text(campaign.Name)))
+	}
+
 	return rval
 }
 
-func getComanies() []Node {
+func getCompanies() []Node {
 	var rval []Node
 	complist, err := system.GetSystemParams().Dbc.GetCompanyList()
 	if err != nil {
@@ -92,6 +113,9 @@ func QueryButton() (rval Node) {
 	rval = Button(Type("submit"), Text(`Transfer`),
 		Class("rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"),
 		hx.Target("#transfer_res"),
+		hx.Include("#Company"),
+		hx.Include("#Campaign"),
+		hx.Include("#Crawler"),
 		hx.Post("/exectransfer"),
 	)
 	return
