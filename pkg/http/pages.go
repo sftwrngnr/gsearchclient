@@ -8,6 +8,7 @@ import (
 	html2 "maragu.dev/gomponents/html"
 	ghttp "maragu.dev/gomponents/http"
 	"net/http"
+	"slices"
 )
 
 func Home2(mux *http.ServeMux) {
@@ -33,7 +34,13 @@ func ZipCodes(mux *http.ServeMux) {
 
 func ExecTransfer(mux *http.ServeMux) {
 	mux.Handle("POST /exectransfer", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
-		turls, err := crawler.TransferURLS()
+		fmt.Printf("Received exectransfer request\n")
+		err := r.ParseForm()
+		if err != nil {
+			return nil, err
+		}
+		fmt.Printf("%v\n", r.Form)
+		turls, err := crawler.TransferURLS(r.Form)
 		if err != nil {
 			return html2.Div(), err
 		}
@@ -71,12 +78,26 @@ func GetCrawlers(mux *http.ServeMux) {
 			fmt.Printf("Error with ParseForm %s\n", err.Error())
 			return nil, err
 		}
-		return html.GetDataForComapny(r.Form), nil
+		fmt.Printf("%v\n", r.Form)
+		kl := make([]string, 0)
+		for k, _ := range r.Form {
+			kl = append(kl, k)
+		}
+		if slices.Contains(kl, "Company") && !slices.Contains(kl, "Campaign") {
+			return html.GetDataForComapny(r.Form), nil
+		}
+		if slices.Contains(kl, "Company") && slices.Contains(kl, "Campaign") {
+			return html.GetDataForCampaign(r.Form), nil
+		}
+		return nil, fmt.Errorf("could not find Company or Campaign")
 	}))
 }
 
 func CrawlerExec(mux *http.ServeMux) {
-	mux.Handle("GET /crawlerexec", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
+	mux.Handle("GET /crawlexec", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
+		//crawler.Crawl("https://www.arizonaortho.com")
+		c2 := crawler.NewCrawler2("https://www.arizonaortho.com")
+		c2.Crawl()
 		return nil, nil
 	}))
 }

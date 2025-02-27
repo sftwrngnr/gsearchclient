@@ -41,22 +41,48 @@ func getCrawlers(id uint) []Node {
 		rval = append(rval, Option(Value("Name"), Text("None")))
 		return rval
 	}
-	crawlers, err := system.GetSystemParams().Dbc.GetCompanyCrawlers(id)
+	crawlers, err := system.GetSystemParams().Dbc.GetCrawlersForCampaign(id)
 	if err != nil {
 		fmt.Printf("error getting crawlers: %v\n", err)
 		rval = append(rval, Option(Value("Name"), Text("None")))
 		return rval
 	}
 	for _, crawler := range crawlers {
-		fmt.Printf("%s\n", crawler.Name)
+		fmt.Printf("[%d]%s\n", crawler.ID, crawler.Name)
 		rval = append(rval, Option(Value(fmt.Sprintf("%d", crawler.ID)), Text(crawler.Name)))
 	}
 	return rval
 }
 
+func getCrawlersForCampaign(id uint) []Node {
+	var rval []Node
+	rval = append(rval, Name("Crawler"))
+	if id == 0 {
+		rval = append(rval, Option(Value("Name"), Text("None")))
+		return rval
+	}
+	crawlers, err := system.GetSystemParams().Dbc.GetCrawlersForCampaign(id)
+	if err != nil {
+		fmt.Printf("error getting crawlers: %v\n", err)
+		rval = append(rval, Option(Value("Name"), Text("None")))
+		return rval
+	}
+	for _, crawler := range crawlers {
+		fmt.Printf("[%d]%s\n", crawler.ID, crawler.Name)
+		rval = append(rval, Option(Value(fmt.Sprintf("%d", crawler.ID)), Text(crawler.Name)))
+	}
+	return rval
+
+}
+
+func getFirstCampaign(company uint) uint {
+	return 0
+}
+
 func getCampaigns(id uint) []Node {
 	var rval []Node
 	rval = append(rval, Name("Campaign"))
+	rval = append(rval, hx.Get("/getcrawlers"), hx.Include("#Company"), hx.Include("#Campaign"), hx.Target("#qrytransferupdate"))
 	if id == 0 {
 		rval = append(rval, Option(Value("Name"), Text("None")))
 		return rval
@@ -68,7 +94,7 @@ func getCampaigns(id uint) []Node {
 		return rval
 	}
 	for _, campaign := range campaigns {
-		fmt.Printf("%s\n", campaign.Name)
+		fmt.Printf("[%d]%s\n", campaign.ID, campaign.Name)
 		rval = append(rval, Option(Value(fmt.Sprintf("%d", campaign.ID)), Text(campaign.Name)))
 	}
 
@@ -77,6 +103,7 @@ func getCampaigns(id uint) []Node {
 
 func getCompanies() []Node {
 	var rval []Node
+	rval = append(rval, Name("Company"), ID("Company"))
 	complist, err := system.GetSystemParams().Dbc.GetCompanyList()
 	if err != nil {
 		fmt.Printf("error getting companies: %v\n", err)
@@ -99,13 +126,28 @@ func GetDataForComapny(mymap map[string][]string) Node {
 	}
 	var compid uint = uint(ti)
 	fmt.Printf("%v\n", mymap["Company"][0])
-
-	Crawlers := getCrawlers(compid)
+	myCamp := getFirstCampaign(compid)
+	Crawlers := getCrawlersForCampaign(myCamp)
 	Campaigns := getCampaigns(compid)
-	rval = Div(ID("qrytransferupdate"),
-		Text("Campaigns:"), Select(Campaigns...), Br(),
+	rval = Div(Text("Campaigns:"), Select(Campaigns...), Br(),
 		Text("Crawlers"), Select(Crawlers...), Br())
 
+	return rval
+}
+
+func GetDataForCampaign(mymap map[string][]string) Node {
+	var rval Node
+	fmt.Printf("GetDataForCampaign\n")
+	ca, err := strconv.Atoi(mymap["Campaign"][0])
+	if err != nil {
+		return rval
+	}
+	co, err := strconv.Atoi(mymap["Company"][0])
+	// First get Campaigns, and specify selection
+	Campaigns := getCampaigns(uint(co))
+	Crawlers := getCrawlersForCampaign(uint(ca))
+	rval = Div(Text("Campaigns:"), Select(Campaigns...), Br(),
+		Text("Crawlers"), Select(Crawlers...), Br())
 	return rval
 }
 

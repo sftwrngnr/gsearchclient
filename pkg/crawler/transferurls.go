@@ -5,10 +5,32 @@ import (
 	"fmt"
 	"github.com/sftwrngnr/gsearchclient/pkg/system"
 	"net/url"
+	"strconv"
 	"strings"
 )
 
-func TransferURLS() (urls []string, err error) {
+func TransferURLS(mymap map[string][]string) (urls []string, err error) {
+	var (
+		//comp int
+		camp  int
+		crawl int
+	)
+	/*
+		comp, err = strconv.Atoi(mymap["Company"][0])
+		if err != nil {
+			return
+		}
+
+	*/
+	camp, err = strconv.Atoi(mymap["Campaign"][0])
+	if err != nil {
+		return
+	}
+	crawl, err = strconv.Atoi(mymap["Crawler"][0])
+	if err != nil {
+		return
+	}
+
 	alldomains := func(url string) []byte {
 		myDomains := AllowedDomains{}
 		myDomains.Domains = append(myDomains.Domains, url)
@@ -39,7 +61,7 @@ func TransferURLS() (urls []string, err error) {
 		}
 		myUrl := fmt.Sprintf("%s://%s", parsedUrl.Scheme, parsedUrl.Host)
 		urls = append(urls, myUrl)
-		err = system.GetSystemParams().Dbc.TransferQryUrls(1, myUrl, alldomains(parsedUrl.Host), 2, 1)
+		err = system.GetSystemParams().Dbc.TransferQryUrls(1, myUrl, alldomains(parsedUrl.Host), uint(crawl), uint(camp))
 		if err != nil {
 			fmt.Printf("%s\n", err.Error())
 			continue

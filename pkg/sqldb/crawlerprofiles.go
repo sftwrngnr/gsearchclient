@@ -28,3 +28,8 @@ func (dbc *DBConnData) GetCompanyCrawlers(company uint) (crawlers []Crawlerprofi
 	err = dbc.DB.Where("company = ?", company).Find(&crawlers).Error
 	return
 }
+
+func (dbc *DBConnData) GetCrawlersForCampaign(campaign uint) (crawlers []Crawlerprofiles, err error) {
+	err = dbc.DB.Where("searchcampaign = ?", campaign).Find(&crawlers).Error
+	return
+}
