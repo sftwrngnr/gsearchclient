@@ -3,6 +3,7 @@ package crawler
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/playwright-community/playwright-go"
 )
@@ -38,6 +39,17 @@ func Crawl(url string) {
 	if cerr != nil {
 		log.Fatalf("could not get content: %v", cerr)
 	}
+	f, ferr := os.OpenFile("/tmp/home.html", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
+	if ferr != nil {
+		log.Fatalf("could not open file: %v", ferr)
+	}
+	defer f.Close()
+
+	_, ferr = f.WriteString(string(content))
+	if ferr != nil {
+		log.Fatalf("could not write to file: %v", ferr)
+	}
+
 	fmt.Printf("%v\n", content)
 	var myData interface{}
 	test, err := page.Evaluate("div", &myData)

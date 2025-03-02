@@ -96,7 +96,8 @@ func GetCrawlers(mux *http.ServeMux) {
 func CrawlerExec(mux *http.ServeMux) {
 	mux.Handle("GET /crawlexec", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
 		//crawler.Crawl("https://www.arizonaortho.com")
-		c2 := crawler.NewCrawler2("https://www.arizonaortho.com")
+		//c2 := crawler.NewCrawler2("https://www.arizonaortho.com", false)
+		c2 := crawler.NewCrawler2("", true, "index.html", "/tmp")
 		c2.Crawl()
 		return nil, nil
 	}))
