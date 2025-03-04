@@ -8,7 +8,8 @@ import (
 	"github.com/playwright-community/playwright-go"
 )
 
-func Crawl(url string) {
+func Crawl(url string, fname string) {
+	var tfile string = "/tmp/index.hthml"
 	fmt.Printf("Crawling %s\n", url)
 	/*
 		err := playwright.Install()
@@ -31,7 +32,8 @@ func Crawl(url string) {
 		log.Fatalf("could not create page: %v", err)
 	}
 	if _, err = page.Goto(url); err != nil {
-		log.Fatalf("could not goto: %v", err)
+		log.Printf("could not goto: %v", err)
+		return
 	}
 	fmt.Printf("Opened page %s\n", url)
 
@@ -39,7 +41,10 @@ func Crawl(url string) {
 	if cerr != nil {
 		log.Fatalf("could not get content: %v", cerr)
 	}
-	f, ferr := os.OpenFile("/tmp/home.html", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
+	if fname != "" {
+		tfile = fname
+	}
+	f, ferr := os.OpenFile(tfile, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
 	if ferr != nil {
 		log.Fatalf("could not open file: %v", ferr)
 	}
@@ -51,16 +56,18 @@ func Crawl(url string) {
 	}
 
 	fmt.Printf("%v\n", content)
+
 	var myData interface{}
 	test, err := page.Evaluate("div", &myData)
 	if err != nil {
-		log.Fatalf("could not evaluate test: %v", err)
+		log.Printf("could not evaluate test: %v", err)
+	} else {
+		fmt.Printf("%v\n", test)
 	}
-	fmt.Printf("%v\n", test)
 	entries, err := page.Locator("<div").All()
 	fmt.Printf("%v\n", entries)
 	if err != nil {
-		log.Fatalf("could not get entries: %v", err)
+		log.Printf("could not get entries: %v", err)
 	}
 	/*
 		for i, entry := range entries {

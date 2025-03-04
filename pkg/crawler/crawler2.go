@@ -41,28 +41,26 @@ func NewCrawler2(path string, disk bool, file string, dir string) *Crawler2 {
 	return rval
 }
 
+func (c *Crawler2) checkIgnoreUrls(inl string) bool {
+	myIgnl := []string{"youtube.com", "instagrame.com", "pinterest.com"}
+	for _, v := range myIgnl {
+		if strings.Contains(inl, v) {
+			return true
+		}
+	}
+	return false
+}
+
 func (c *Crawler2) checkLink(link string) bool {
 	crawllinks := []string{"about", "doctors", "staff", "location", "dentists", "meet", "office", "dr", "info", "phone"}
 	myl, err := url.Parse(link)
-	//fmt.Printf("%s\n", link)
-	if myl[0] == '/' {
-		if len(myl) > 2 {
-			if myl[1] != '/' {
-				myl = fmt.Sprintf("https://%s%s", c.Urlhost, myl)
-			}
-		}
-	}
-	parsedUrl, myerr := url.Parse(myl)
-	if myerr != nil {
+	if err != nil {
 		return false
 	}
-	fmt.Printf("%v\n", parsedUrl)
-	if parsedUrl.Hostname() != c.CurUrl {
-		fmt.Printf("Error Parsing URL(2) %s\n", myl)
-		fmt.Printf("%s %s\n", parsedUrl.Host, c.CurUrl)
+	tl := strings.ToLower(myl.String())
+	if c.checkIgnoreUrls(tl) {
 		return false
 	}
-	tl := strings.ToLower(myl)
 	for _, l := range crawllinks {
 		if strings.Contains(tl, l) {
 			return true
@@ -95,21 +93,23 @@ func (c *Crawler2) Crawl() {
 		c.colly.WithTransport(c.transp)
 	}
 
-	c.colly.OnHTML("name, practice, phone, address, tel, addy, location, dr, info", func(e *colly.HTMLElement) {
-		fmt.Printf("%v:%s\n", e.Name, c.cleanText(e.Text))
-	})
+	/*
+		c.colly.OnHTML("name, practice, phone, address, tel, addy, location, dr, info", func(e *colly.HTMLElement) {
+			fmt.Printf("%v:%s\n", e.Name, c.cleanText(e.Text))
+		})
 
-	c.colly.OnHTML("a", func(e *colly.HTMLElement) {
-		fmt.Printf("%s::%v\n", e.Name, e.DOM.Nodes[0])
-	})
+		c.colly.OnHTML("a", func(e *colly.HTMLElement) {
+			fmt.Printf("%s::%v\n", e.Name, e.DOM.Nodes[0])
+		})
 
-	c.colly.OnHTML("div[phone]", func(e *colly.HTMLElement) {
-		fmt.Printf("Phone:%s\n", e.Name)
-	})
+		c.colly.OnHTML("div[phone]", func(e *colly.HTMLElement) {
+			fmt.Printf("Phone:%s\n", e.Name)
+		})
 
-	c.colly.OnHTML("a[phone]", func(e *colly.HTMLElement) {
-		fmt.Printf("Phone:%s:%v\n", e.Name, e.DOM.Nodes)
-	})
+		c.colly.OnHTML("a[phone]", func(e *colly.HTMLElement) {
+			fmt.Printf("Phone:%s:%v\n", e.Name, e.DOM.Nodes)
+		})
+	*/
 
 	c.colly.OnHTML("a[href]", func(e *colly.HTMLElement) {
 		link := e.Attr("href")
@@ -119,7 +119,7 @@ func (c *Crawler2) Crawl() {
 					link = fmt.Sprintf("%s%s", c.CurUrl, link)
 				}
 				cLinks[link] = Crawler2Links{visited: false}
-				fmt.Printf("Link: %s\n", link)
+				//sfmt.Printf("Link: %s\n", link)
 			}
 		}
 	})
@@ -140,5 +140,14 @@ func (c *Crawler2) Crawl() {
 	}
 
 	fmt.Printf("There were %d links found.\n", len(cLinks))
-	fmt.Printf("Links are:  %v\n", cLinks)
+	myKeys := make([]string, 0)
+	for k, _ := range cLinks {
+		myKeys = append(myKeys, k)
+	}
+	SCRawler(myKeys)
+	for k, _ := range cLinks {
+		fmt.Printf("Subcrawling link %s\n", k)
+		//c.colly.Visit(k)
+	}
+
 }
