@@ -9,13 +9,12 @@ import (
 )
 
 type Crawler2 struct {
-	CurUrl    string
-	Urlhost   string
-	LocalDir  string
-	LocalFile string
-	UrlCrawl  bool
-	transp    *http.Transport
-	colly     *colly.Collector
+	CurUrl   string
+	Urlhost  string
+	LocalDir string
+	UrlCrawl bool
+	transp   *http.Transport
+	colly    *colly.Collector
 }
 
 type Crawler2Result struct {
@@ -25,7 +24,7 @@ type Crawler2Links struct {
 	visited bool
 }
 
-func NewCrawler2(path string, disk bool, file string, dir string) *Crawler2 {
+func NewCrawler2(path string, disk bool, dir string) *Crawler2 {
 	rval := &Crawler2{CurUrl: path, UrlCrawl: !disk}
 	if disk {
 		rval.transp = &http.Transport{}
@@ -116,8 +115,9 @@ func (c *Crawler2) Crawl() {
 		if _, ok := cLinks[link]; !ok {
 			if c.checkLink(link) {
 				if link[0] == '/' {
-					link = fmt.Sprintf("%s%s", c.CurUrl, link)
+					link = fmt.Sprintf("%s%s", c.Urlhost, link)
 				}
+
 				cLinks[link] = Crawler2Links{visited: false}
 				//sfmt.Printf("Link: %s\n", link)
 			}
@@ -133,7 +133,7 @@ func (c *Crawler2) Crawl() {
 	if c.UrlCrawl {
 		err = c.colly.Visit(c.CurUrl)
 	} else {
-		err = c.colly.Visit("file://" + c.LocalDir + "/" + c.LocalFile)
+		err = c.colly.Visit("file://" + c.LocalDir + "/" + "index.html")
 	}
 	if err != nil {
 		fmt.Println(err)

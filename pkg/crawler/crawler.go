@@ -8,8 +8,19 @@ import (
 	"github.com/playwright-community/playwright-go"
 )
 
-func Crawl(url string, fname string) {
+func Crawl(url string, fname string, procfunc Filterfunc) (err error) {
 	var tfile string = "/tmp/index.hthml"
+	var pw *playwright.Playwright
+	var browser playwright.Browser
+	shutdownpw := func() {
+		if err = browser.Close(); err != nil {
+			log.Fatalf("could not close browser: %v", err)
+		}
+		if err = pw.Stop(); err != nil {
+			log.Fatalf("could not stop Playwright: %v", err)
+		}
+
+	}
 	fmt.Printf("Crawling %s\n", url)
 	/*
 		err := playwright.Install()
@@ -19,13 +30,15 @@ func Crawl(url string, fname string) {
 
 	*/
 
-	pw, err := playwright.Run()
+	pw, err = playwright.Run()
 	if err != nil {
 		log.Fatalf("could not start playwright: %v", err)
 	}
-	browser, err := pw.Chromium.Launch()
+	browser, err = pw.Chromium.Launch()
+	defer shutdownpw()
 	if err != nil {
 		log.Fatalf("could not launch browser: %v", err)
+		return
 	}
 	page, err := browser.NewPage()
 	if err != nil {
@@ -39,8 +52,10 @@ func Crawl(url string, fname string) {
 
 	content, cerr := page.Content()
 	if cerr != nil {
-		log.Fatalf("could not get content: %v", cerr)
+		log.Printf("could not get content: %v", cerr)
+		return
 	}
+
 	if fname != "" {
 		tfile = fname
 	}
@@ -56,6 +71,12 @@ func Crawl(url string, fname string) {
 	}
 
 	fmt.Printf("%v\n", content)
+	if procfunc != nil {
+		myerr := procfunc(content)
+		if myerr != nil {
+			log.Printf("Filterfunc failed: %v", myerr)
+		}
+	}
 
 	var myData interface{}
 	test, err := page.Evaluate("div", &myData)
@@ -69,6 +90,7 @@ func Crawl(url string, fname string) {
 	if err != nil {
 		log.Printf("could not get entries: %v", err)
 	}
+	return err
 	/*
 		for i, entry := range entries {
 
@@ -80,10 +102,4 @@ func Crawl(url string, fname string) {
 		}
 
 	*/
-	if err = browser.Close(); err != nil {
-		log.Fatalf("could not close browser: %v", err)
-	}
-	if err = pw.Stop(); err != nil {
-		log.Fatalf("could not stop Playwright: %v", err)
-	}
 }
