@@ -21,7 +21,7 @@ func SCRawler(clist []string) {
 		if !strings.HasPrefix(turl, "http://") || !strings.HasPrefix(turl, "https://") {
 			turl = "https://" + turl
 		}
-		err := Crawl(turl, myfname)
+		err := Crawl(turl, myfname, callbackFunc)
 		// Wiat for 60 seconds
 		if err != nil {
 			log.Printf("Error crawling %s: %s\n", url, err)
@@ -29,4 +29,18 @@ func SCRawler(clist []string) {
 		time.Sleep(5 * time.Second)
 	}
 
+}
+
+func callbackFunc(contents string) error {
+	fmt.Printf("callbackFunc called\n")
+	if strings.Contains(contents, "mailto") {
+		log.Printf("Got mailto:!!\n")
+	}
+	if strings.Contains(strings.ToLower(contents), "dds") {
+		log.Printf("Got dds:!!\n")
+	}
+	if strings.Contains(strings.ToLower(contents), "dmd") {
+		log.Printf("Got dmd:!!\n")
+	}
+	return nil
 }

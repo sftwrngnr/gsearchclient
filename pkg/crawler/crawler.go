@@ -70,7 +70,7 @@ func Crawl(url string, fname string, procfunc Filterfunc) (err error) {
 		log.Fatalf("could not write to file: %v", ferr)
 	}
 
-	fmt.Printf("%v\n", content)
+	//fmt.Printf("%v\n", content)
 	if procfunc != nil {
 		myerr := procfunc(content)
 		if myerr != nil {
@@ -78,18 +78,22 @@ func Crawl(url string, fname string, procfunc Filterfunc) (err error) {
 		}
 	}
 
-	var myData interface{}
-	test, err := page.Evaluate("div", &myData)
-	if err != nil {
-		log.Printf("could not evaluate test: %v", err)
-	} else {
-		fmt.Printf("%v\n", test)
-	}
-	entries, err := page.Locator("<div").All()
-	fmt.Printf("%v\n", entries)
-	if err != nil {
-		log.Printf("could not get entries: %v", err)
-	}
+	/*
+		var myData interface{}
+		test, err := page.Evaluate("div", &myData)
+		if err != nil {
+			log.Printf("could not evaluate test: %v", err)
+		} else {
+			fmt.Printf("%v\n", test)
+		}
+
+			entries, err := page.Locator("div").All()
+			fmt.Printf("%v\n", entries)
+			if err != nil {
+				log.Printf("could not get entries: %v", err)
+			}
+
+	*/
 	return err
 	/*
 		for i, entry := range entries {
