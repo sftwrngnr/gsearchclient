@@ -36,7 +36,7 @@ func header() Node {
 				headerLink("/", "Home"),
 				headerLink("/qrytransfer", "Query Transfer"),
 				headerLink("/crawlexec", "Execute Crawler"),
-				headerLink("/crawlsetup", "Crawler Setup"),
+				headerLink("/crawltest", "Crawler Test"),
 				headerLink("/about", "About"),
 			),
 		),

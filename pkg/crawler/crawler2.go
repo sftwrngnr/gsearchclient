@@ -145,9 +145,4 @@ func (c *Crawler2) Crawl() {
 		myKeys = append(myKeys, k)
 	}
 	SCRawler(myKeys)
-	for k, _ := range cLinks {
-		fmt.Printf("Subcrawling link %s\n", k)
-		//c.colly.Visit(k)
-	}
-
 }

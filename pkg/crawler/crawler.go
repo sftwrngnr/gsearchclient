@@ -2,13 +2,15 @@ package crawler
 
 import (
 	"fmt"
+	"github.com/PuerkitoBio/goquery"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/playwright-community/playwright-go"
 )
 
-func Crawl(url string, fname string, procfunc Filterfunc) (err error) {
+func Crawl(url string, fname string, sc *Subcrawler, procfunc Filterfunc) (err error) {
 	var tfile string = "/tmp/index.hthml"
 	var pw *playwright.Playwright
 	var browser playwright.Browser
@@ -22,14 +24,6 @@ func Crawl(url string, fname string, procfunc Filterfunc) (err error) {
 
 	}
 	fmt.Printf("Crawling %s\n", url)
-	/*
-		err := playwright.Install()
-		if err != nil {
-			log.Fatal(err)
-		}
-
-	*/
-
 	pw, err = playwright.Run()
 	if err != nil {
 		log.Fatalf("could not start playwright: %v", err)
@@ -72,38 +66,17 @@ func Crawl(url string, fname string, procfunc Filterfunc) (err error) {
 
 	//fmt.Printf("%v\n", content)
 	if procfunc != nil {
-		myerr := procfunc(content)
+		doc, derr := goquery.NewDocumentFromReader(strings.NewReader(content))
+		if derr != nil {
+			log.Printf("could not create document: %v", derr)
+			return
+		}
+
+		myerr := procfunc(doc, sc)
 		if myerr != nil {
 			log.Printf("Filterfunc failed: %v", myerr)
 		}
 	}
 
-	/*
-		var myData interface{}
-		test, err := page.Evaluate("div", &myData)
-		if err != nil {
-			log.Printf("could not evaluate test: %v", err)
-		} else {
-			fmt.Printf("%v\n", test)
-		}
-
-			entries, err := page.Locator("div").All()
-			fmt.Printf("%v\n", entries)
-			if err != nil {
-				log.Printf("could not get entries: %v", err)
-			}
-
-	*/
 	return err
-	/*
-		for i, entry := range entries {
-
-			title, err := entry.Locator("td.title > span > a").TextContent()
-			if err != nil {
-				log.Fatalf("could not get text content: %v", err)
-			}
-			fmt.Printf("%d: %s\n", i+1, title)
-		}
-
-	*/
 }

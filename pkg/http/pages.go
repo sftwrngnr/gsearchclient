@@ -9,6 +9,7 @@ import (
 	ghttp "maragu.dev/gomponents/http"
 	"net/http"
 	"slices"
+	"strings"
 )
 
 func Home2(mux *http.ServeMux) {
@@ -104,7 +105,14 @@ func CrawlerExec(mux *http.ServeMux) {
 }
 
 func CrawlerSetup(mux *http.ServeMux) {
-	mux.Handle("GET /crawlsetup", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
+	mux.Handle("GET /crawltest", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
+		fmt.Printf("Received crawltest request\n")
+		ftest := strings.Split("8irRPr7t_0.html cnpES0Co_7.html _MAPoAiZ_10.html zbk27hzz_3.html 8yNzrR_O_1.html dsKfyzte_9.html rBD_Az3g_8.html zNnKxziu_2.html 9rEiehAd_5.html VIOXDhvc_6.html", " ")
+		proclist := make([]string, 0)
+		for _, t := range ftest {
+			proclist = append(proclist, fmt.Sprintf("/tmp/%s", t))
+		}
+		TestSubCrawler(proclist)
 		return nil, nil
 	}))
 }
