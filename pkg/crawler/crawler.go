@@ -76,6 +76,8 @@ func Crawl(url string, fname string, sc *Subcrawler, procfunc Filterfunc) (err e
 		if myerr != nil {
 			log.Printf("Filterfunc failed: %v", myerr)
 		}
+	} else {
+		log.Printf("No processor functions available for crawling")
 	}
 
 	return err

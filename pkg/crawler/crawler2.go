@@ -92,24 +92,6 @@ func (c *Crawler2) Crawl() {
 		c.colly.WithTransport(c.transp)
 	}
 
-	/*
-		c.colly.OnHTML("name, practice, phone, address, tel, addy, location, dr, info", func(e *colly.HTMLElement) {
-			fmt.Printf("%v:%s\n", e.Name, c.cleanText(e.Text))
-		})
-
-		c.colly.OnHTML("a", func(e *colly.HTMLElement) {
-			fmt.Printf("%s::%v\n", e.Name, e.DOM.Nodes[0])
-		})
-
-		c.colly.OnHTML("div[phone]", func(e *colly.HTMLElement) {
-			fmt.Printf("Phone:%s\n", e.Name)
-		})
-
-		c.colly.OnHTML("a[phone]", func(e *colly.HTMLElement) {
-			fmt.Printf("Phone:%s:%v\n", e.Name, e.DOM.Nodes)
-		})
-	*/
-
 	c.colly.OnHTML("a[href]", func(e *colly.HTMLElement) {
 		link := e.Attr("href")
 		if _, ok := cLinks[link]; !ok {

@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"github.com/sftwrngnr/gsearchclient/pkg/crawler"
 	"github.com/sftwrngnr/gsearchclient/pkg/html"
+	"github.com/sftwrngnr/gsearchclient/pkg/system"
 	. "maragu.dev/gomponents"
 	html2 "maragu.dev/gomponents/html"
 	ghttp "maragu.dev/gomponents/http"
 	"net/http"
 	"slices"
 	"strings"
+	"time"
 )
 
 func Home2(mux *http.ServeMux) {
@@ -96,10 +98,28 @@ func GetCrawlers(mux *http.ServeMux) {
 
 func CrawlerExec(mux *http.ServeMux) {
 	mux.Handle("GET /crawlexec", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
+		myurls, err := system.GetSystemParams().Dbc.GetUrlsToCrawl(1, 0) // Default to campaign 1
+		if err != nil {
+			fmt.Printf("Error with GetUrlsToCrawl %s\n", err.Error())
+			return nil, err
+		}
+		for _, url := range myurls {
+			fmt.Printf("Crawling url %s\n", url.Url)
+			c2 := crawler.NewCrawler2(url.Url, false, "")
+			url.Crawldate = time.Now()
+			stime := time.Now()
+			c2.Crawl()
+			etime := time.Now()
+			url.Totalduration = etime.Sub(stime).Seconds()
+			url.Crawled = true
+			err := system.GetSystemParams().Dbc.UpdateCrawlerresults(&url)
+			if err != nil {
+				fmt.Printf("Error with UpdateCrawlerresults %s\n", err.Error())
+			}
+			break
+		}
 		//crawler.Crawl("https://www.arizonaortho.com")
 		//c2 := crawler.NewCrawler2("https://www.arizonaortho.com", false)
-		c2 := crawler.NewCrawler2("https://www.sonoransmile.com", true, "/tmp")
-		c2.Crawl()
 		return nil, nil
 	}))
 }

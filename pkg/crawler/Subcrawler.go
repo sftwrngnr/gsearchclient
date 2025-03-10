@@ -25,17 +25,18 @@ func SCRawler(clist []string) {
 		sha := base64.URLEncoding.EncodeToString(hasher.Sum(nil))
 		myfname := fmt.Sprintf("/tmp/%s_%d.html", sha[0:8], i)
 		fmt.Printf("Crawling %s saving to %s\n", url, myfname)
+		// Store file info to crawlerinfo
 		turl := url
-		if !strings.HasPrefix(turl, "http://") || !strings.HasPrefix(turl, "https://") {
+		if (!strings.Contains(turl, "https://")) && (!strings.Contains(turl, "http://")) {
 			turl = "https://" + turl
 		}
 
 		err := Crawl(turl, myfname, &sc, SCCallback)
-		// Wiat for 60 seconds
+		// Wait for 60 seconds
 		if err != nil {
 			log.Printf("Error crawling %s: %s\n", url, err)
 		}
-		time.Sleep(5 * time.Second)
+		time.Sleep(1 * time.Second)
 	}
 
 }
@@ -85,39 +86,4 @@ func sanitize(str string) string {
 		rval += string(ar)
 	}
 	return str
-}
-
-func parse(str string, suffixes []string) []string {
-	checkSfx := func(instr string) bool {
-		for _, sfx := range suffixes {
-			if strings.Contains(strings.ToUpper(instr), sfx) {
-				return true
-			}
-		}
-		return false
-	}
-	var rval []string = make([]string, 0)
-	var lname bool = false
-	splitstr := strings.Split(str, ",")
-	myName := ""
-
-	for _, k := range splitstr {
-		if checkSfx(k) {
-			fmt.Printf("Found %s\n", k)
-			myName += "," + k
-		} else {
-			if strings.Index(k, ".") == -1 {
-				if !lname {
-					myName = k
-					lname = true
-				} else {
-					myName += k
-					lname = false
-				}
-			} else {
-				myName += k
-			}
-		}
-	}
-	return rval
 }
