@@ -2,7 +2,7 @@ package sqldb
 
 import "gorm.io/gorm"
 
-type Crawlerpage struct {
+type CrawlerPage struct {
 	gorm.Model
 	ID       uint   `gorm:"primary_key"`
 	Crid     uint   `gorm:"column:crid"`
