@@ -19,6 +19,7 @@ const (
 	RelatedQuestions
 	AIOverview
 	OrganicResults
+	LocalResults
 	Pagination
 )
 
@@ -34,7 +35,7 @@ func NewSearchResults() (rval *SearchResults) {
 func (sr *SearchResults) ProcessSearchData(qid uint, rawRes map[string]interface{}) {
 	var rp = NewResultProcessor(qid, 0)
 	resultkeys := []string{"serpapi_pagination", "search_metadata", "search_parameters", "search_information",
-		"related_questions", "ai_overview", "organic_results", "pagination"}
+		"related_questions", "ai_overview", "organic_results", "local_results", "pagination"}
 	fmt.Printf("rawRes is %d\n", len(rawRes))
 	for i, key := range resultkeys {
 		sr.Results[ResultType(i)] = rawRes[key]
