@@ -36,3 +36,21 @@ func (dbc *DBConnData) TransferQryUrls(qid uint, url string, alldomains []byte, 
 	return
 
 }
+
+func (dbc *DBConnData) GetUrlsToCrawl(campaign uint, crawler uint) (cres []Crawlerresults, err error) {
+	mysqlqry := "campaign = ? and crawler = ? and crawled = false"
+	if crawler == 0 {
+		// Now crawler specified, get results for campaign
+		mysqlqry = "campaign = ? and crawled = false"
+		fmt.Printf("")
+		err = dbc.DB.Where(mysqlqry, campaign).Find(&cres).Error
+		return
+	}
+	err = dbc.DB.Where(mysqlqry, campaign, crawler).Find(&cres).Error
+	return
+}
+
+func (dbc *DBConnData) UpdateCrawlerresults(cres *Crawlerresults) (err error) {
+	err = dbc.DB.Save(cres).Error
+	return
+}

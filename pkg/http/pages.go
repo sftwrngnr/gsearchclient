@@ -4,10 +4,14 @@ import (
 	"fmt"
 	"github.com/sftwrngnr/gsearchclient/pkg/crawler"
 	"github.com/sftwrngnr/gsearchclient/pkg/html"
+	"github.com/sftwrngnr/gsearchclient/pkg/system"
 	. "maragu.dev/gomponents"
 	html2 "maragu.dev/gomponents/html"
 	ghttp "maragu.dev/gomponents/http"
 	"net/http"
+	"slices"
+	"strings"
+	"time"
 )
 
 func Home2(mux *http.ServeMux) {
@@ -33,7 +37,13 @@ func ZipCodes(mux *http.ServeMux) {
 
 func ExecTransfer(mux *http.ServeMux) {
 	mux.Handle("POST /exectransfer", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
-		turls, err := crawler.TransferURLS()
+		fmt.Printf("Received exectransfer request\n")
+		err := r.ParseForm()
+		if err != nil {
+			return nil, err
+		}
+		fmt.Printf("%v\n", r.Form)
+		turls, err := crawler.TransferURLS(r.Form)
 		if err != nil {
 			return html2.Div(), err
 		}
@@ -71,18 +81,98 @@ func GetCrawlers(mux *http.ServeMux) {
 			fmt.Printf("Error with ParseForm %s\n", err.Error())
 			return nil, err
 		}
-		return html.GetDataForComapny(r.Form), nil
+		fmt.Printf("%v\n", r.Form)
+		kl := make([]string, 0)
+		for k, _ := range r.Form {
+			kl = append(kl, k)
+		}
+		if slices.Contains(kl, "Company") && !slices.Contains(kl, "Campaign") {
+			return html.GetDataForComapny(r.Form), nil
+		}
+		if slices.Contains(kl, "Company") && slices.Contains(kl, "Campaign") {
+			return html.GetDataForCampaign(r.Form), nil
+		}
+		return nil, fmt.Errorf("could not find Company or Campaign")
 	}))
 }
 
 func CrawlerExec(mux *http.ServeMux) {
-	mux.Handle("GET /crawlerexec", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
+	mux.Handle("GET /crawlexec", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
+		myurls, err := system.GetSystemParams().Dbc.GetUrlsToCrawl(1, 0) // Default to campaign 1
+		if err != nil {
+			fmt.Printf("Error with GetUrlsToCrawl %s\n", err.Error())
+			return nil, err
+		}
+		for _, url := range myurls {
+			fmt.Printf("Crawling url %s\n", url.Url)
+			c2 := crawler.NewCrawler2(url.Url, false, "")
+			url.Crawldate = time.Now()
+			stime := time.Now()
+			sc := &crawler.Subcrawler{}
+			sc.Procfunc = sc.SCCallback
+			c2.Crawl(sc)
+			etime := time.Now()
+			url.Totalduration = etime.Sub(stime).Seconds()
+			url.Crawled = true
+			fmt.Printf("Subcrawler results are: %v\n", sc)
+			url.Pagescrawled = uint(len(sc.CPages))
+			url.Success = true
+			err := system.GetSystemParams().Dbc.UpdateCrawlerresults(&url)
+			if err != nil {
+				fmt.Printf("Error with UpdateCrawlerresults %s\n", err.Error())
+			}
+		}
 		return nil, nil
 	}))
 }
 
 func CrawlerSetup(mux *http.ServeMux) {
-	mux.Handle("GET /crawlsetup", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
+	mux.Handle("GET /crawltest", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
+		fmt.Printf("Received crawltest request\n")
+		ftest := strings.Split("8irRPr7t_0.html cnpES0Co_7.html _MAPoAiZ_10.html zbk27hzz_3.html 8yNzrR_O_1.html dsKfyzte_9.html rBD_Az3g_8.html zNnKxziu_2.html 9rEiehAd_5.html VIOXDhvc_6.html", " ")
+		proclist := make([]string, 0)
+		for _, t := range ftest {
+			proclist = append(proclist, fmt.Sprintf("/tmp/%s", t))
+		}
+		BatchSubCrawler(proclist)
+		return nil, nil
+	}))
+}
+
+func Crawler3Exec(mux *http.ServeMux) {
+	mux.Handle("GET /crawl3test", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
+		//myurls, err := system.GetSystemParams().Dbc.GetUrlsToCrawl(1, 0) // Default to campaign 1
+		myurls, err := system.GetSystemParams().Dbc.GetUrlsToCrawl(1, 0) // Default to campaign 1
+		if err != nil {
+			fmt.Printf("Error with GetUrlsToCrawl %s\n", err.Error())
+			return nil, err
+		}
+
+		for _, url := range myurls {
+			turl := url.Url
+			if !strings.Contains(turl, "www.") {
+				turl = fmt.Sprintf("www.%s", turl)
+			}
+			url.Url = turl
+			fmt.Printf("Crawling url %s\n", url.Url)
+			c3 := crawler.NewCrawler3(url.Url, false, "")
+			url.Crawldate = time.Now()
+			stime := time.Now()
+			sc := &crawler.Subcrawler{}
+			sc.Procfunc = sc.SCCallback
+			c3.Crawl(sc)
+			etime := time.Now()
+			url.Totalduration = etime.Sub(stime).Seconds()
+			url.Crawled = true
+			fmt.Printf("Subcrawler results are: %v\n", sc)
+			err := system.GetSystemParams().Dbc.UpdateCrawlerresults(&url)
+			if err != nil {
+				fmt.Printf("Error with UpdateCrawlerresults %s\n", err.Error())
+			}
+			break
+		}
+		//crawler.Crawl("https://www.arizonaortho.com")
+		//c2 := crawler.NewCrawler2("https://www.arizonaortho.com", false)
 		return nil, nil
 	}))
 }

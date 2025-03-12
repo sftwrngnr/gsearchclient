@@ -23,6 +23,7 @@ func setupRoutes() http.Handler {
 	ExecTransfer(mux)
 	CrawlerExec(mux)
 	CrawlerSetup(mux)
+	Crawler3Exec(mux)
 	About(mux)
 	return mux
 }

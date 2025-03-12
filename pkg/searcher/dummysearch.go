@@ -49,7 +49,7 @@ func (dsc *DummySearchClient) ValidateSearchParameters(sp *SearchParms) (rval er
 		rval = fmt.Errorf("Only zip code or area code may be selected. Not both.")
 		return
 	}
-	dsc.Location = fmt.Sprintf("%s, United Statess", sp.State.Name)
+	dsc.Location = fmt.Sprintf("%s, United States", sp.State.Name)
 	return
 }
 
