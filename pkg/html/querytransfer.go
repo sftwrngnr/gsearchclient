@@ -21,7 +21,8 @@ func QueryTransfer(items []string) Node {
 			H2(Text("Query Transfer")),
 			Text("Company:"), Select(Companies...), Br(),
 			Div(ID("qrytransferupdate"),
-				Text("Campaigns:"), Select(Campaigns...), Br(),
+				Text("Campaigns:"), Select(Campaigns...), Br()),
+			Div(ID("qrycrawlers"),
 				Text("Crawlers"), Select(Crawlers...), Br()),
 			QueryButton(),
 			Img(ID("spinner"), Class("htmx-indicator"), Src("https://unpkg.com/html-spinner")),
@@ -57,8 +58,8 @@ func getCrawlers(id uint) []Node {
 func getCrawlersForCampaign(id uint) []Node {
 	var rval []Node
 	rval = append(rval, Name("Crawler"))
+	rval = append(rval, Option(Value("Name"), Text("None")))
 	if id == 0 {
-		rval = append(rval, Option(Value("Name"), Text("None")))
 		return rval
 	}
 	crawlers, err := system.GetSystemParams().Dbc.GetCrawlersForCampaign(id)
@@ -81,16 +82,17 @@ func getFirstCampaign(company uint) uint {
 
 func getCampaigns(id uint) []Node {
 	var rval []Node
+	fmt.Printf("getCampaigns\n")
 	rval = append(rval, Name("Campaign"))
-	rval = append(rval, hx.Get("/getcrawlers"), hx.Include("#Company"), hx.Include("#Campaign"), hx.Target("#qrytransferupdate"))
+	rval = append(rval, hx.Get("/getcrawlers"), hx.Include("#Company"), hx.Include("#Campaign"), hx.Target("#qrycrawlers"))
 	if id == 0 {
 		rval = append(rval, Option(Value("Name"), Text("None")))
 		return rval
 	}
+	rval = append(rval, Option(Value("Name"), Text("None")))
 	campaigns, err := system.GetSystemParams().Dbc.GetCompanyCampaigns(id)
 	if err != nil {
 		fmt.Printf("error getting campaigns: %v\n", err)
-		rval = append(rval, Option(Value("Name"), Text("None")))
 		return rval
 	}
 	for _, campaign := range campaigns {
@@ -126,11 +128,11 @@ func GetDataForComapny(mymap map[string][]string) Node {
 	}
 	var compid uint = uint(ti)
 	fmt.Printf("%v\n", mymap["Company"][0])
-	myCamp := getFirstCampaign(compid)
-	Crawlers := getCrawlersForCampaign(myCamp)
+	//myCamp := getFirstCampaign(compid)
+	//Crawlers := getCrawlersForCampaign(myCamp)
 	Campaigns := getCampaigns(compid)
-	rval = Div(Text("Campaigns:"), Select(Campaigns...), Br(),
-		Text("Crawlers"), Select(Crawlers...), Br())
+	rval = Div(Text("Campaigns:"), Select(Campaigns...), Br())
+	//Text("Crawlers"), Select(Crawlers...), Br())
 
 	return rval
 }
@@ -142,12 +144,11 @@ func GetDataForCampaign(mymap map[string][]string) Node {
 	if err != nil {
 		return rval
 	}
-	co, err := strconv.Atoi(mymap["Company"][0])
+	//co, err := strconv.Atoi(mymap["Company"][0])
 	// First get Campaigns, and specify selection
-	Campaigns := getCampaigns(uint(co))
+	//Campaigns := getCampaigns(uint(co))
 	Crawlers := getCrawlersForCampaign(uint(ca))
-	rval = Div(Text("Campaigns:"), Select(Campaigns...), Br(),
-		Text("Crawlers"), Select(Crawlers...), Br())
+	rval = Div(Text("Crawlers"), Select(Crawlers...), Br())
 	return rval
 }
 

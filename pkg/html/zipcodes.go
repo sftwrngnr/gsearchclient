@@ -41,13 +41,13 @@ func ZipCodes(qs string) (rval Node) {
 			Tr(Th(Text("Zip code")), Th(Text("Area code")), Th(Text("Keywords"))),
 			Tr(
 				Td(Div(Label(Name("zipcodes")), ID("zipcodes")),
-					Select(Name("zc"), ID("zc"), Multiple(), Var(zval...)),
+					Select(Name("zc"), ID("zc"), Multiple(), Option(zval...)),
 				),
 				Td(Div(Label(Name("areacodes")), ID("areacodes")),
-					Select(Name("ac"), ID("ac"), Multiple(), Var(acval...)),
+					Select(Name("ac"), ID("ac"), Multiple(), Option(acval...)),
 				),
 				Td(Div(Label(Name("keywords")), ID("keywords")),
-					Select(Name("kw"), ID("kw"), Multiple(), Var(kwval...)),
+					Select(Name("kw"), ID("kw"), Multiple(), Option(kwval...)),
 				),
 			),
 			Tr(

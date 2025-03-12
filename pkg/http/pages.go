@@ -108,18 +108,20 @@ func CrawlerExec(mux *http.ServeMux) {
 			c2 := crawler.NewCrawler2(url.Url, false, "")
 			url.Crawldate = time.Now()
 			stime := time.Now()
-			c2.Crawl()
+			sc := &crawler.Subcrawler{}
+			sc.Procfunc = sc.SCCallback
+			c2.Crawl(sc)
 			etime := time.Now()
 			url.Totalduration = etime.Sub(stime).Seconds()
 			url.Crawled = true
+			fmt.Printf("Subcrawler results are: %v\n", sc)
+			url.Pagescrawled = uint(len(sc.CPages))
+			url.Success = true
 			err := system.GetSystemParams().Dbc.UpdateCrawlerresults(&url)
 			if err != nil {
 				fmt.Printf("Error with UpdateCrawlerresults %s\n", err.Error())
 			}
-			break
 		}
-		//crawler.Crawl("https://www.arizonaortho.com")
-		//c2 := crawler.NewCrawler2("https://www.arizonaortho.com", false)
 		return nil, nil
 	}))
 }
@@ -132,7 +134,45 @@ func CrawlerSetup(mux *http.ServeMux) {
 		for _, t := range ftest {
 			proclist = append(proclist, fmt.Sprintf("/tmp/%s", t))
 		}
-		TestSubCrawler(proclist)
+		BatchSubCrawler(proclist)
+		return nil, nil
+	}))
+}
+
+func Crawler3Exec(mux *http.ServeMux) {
+	mux.Handle("GET /crawl3test", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
+		//myurls, err := system.GetSystemParams().Dbc.GetUrlsToCrawl(1, 0) // Default to campaign 1
+		myurls, err := system.GetSystemParams().Dbc.GetUrlsToCrawl(1, 0) // Default to campaign 1
+		if err != nil {
+			fmt.Printf("Error with GetUrlsToCrawl %s\n", err.Error())
+			return nil, err
+		}
+
+		for _, url := range myurls {
+			turl := url.Url
+			if !strings.Contains(turl, "www.") {
+				turl = fmt.Sprintf("www.%s", turl)
+			}
+			url.Url = turl
+			fmt.Printf("Crawling url %s\n", url.Url)
+			c3 := crawler.NewCrawler3(url.Url, false, "")
+			url.Crawldate = time.Now()
+			stime := time.Now()
+			sc := &crawler.Subcrawler{}
+			sc.Procfunc = sc.SCCallback
+			c3.Crawl(sc)
+			etime := time.Now()
+			url.Totalduration = etime.Sub(stime).Seconds()
+			url.Crawled = true
+			fmt.Printf("Subcrawler results are: %v\n", sc)
+			err := system.GetSystemParams().Dbc.UpdateCrawlerresults(&url)
+			if err != nil {
+				fmt.Printf("Error with UpdateCrawlerresults %s\n", err.Error())
+			}
+			break
+		}
+		//crawler.Crawl("https://www.arizonaortho.com")
+		//c2 := crawler.NewCrawler2("https://www.arizonaortho.com", false)
 		return nil, nil
 	}))
 }

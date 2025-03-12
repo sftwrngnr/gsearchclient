@@ -1,6 +1,7 @@
 package crawler
 
 import (
+	"errors"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"log"
@@ -10,7 +11,7 @@ import (
 	"github.com/playwright-community/playwright-go"
 )
 
-func Crawl(url string, fname string, sc *Subcrawler, procfunc Filterfunc) (err error) {
+func Crawl(url string, fname string, sc *Subcrawler) (err error) {
 	var tfile string = "/tmp/index.hthml"
 	var pw *playwright.Playwright
 	var browser playwright.Browser
@@ -65,19 +66,21 @@ func Crawl(url string, fname string, sc *Subcrawler, procfunc Filterfunc) (err e
 	}
 
 	//fmt.Printf("%v\n", content)
-	if procfunc != nil {
+	if sc.Procfunc != nil {
 		doc, derr := goquery.NewDocumentFromReader(strings.NewReader(content))
 		if derr != nil {
 			log.Printf("could not create document: %v", derr)
 			return
 		}
 
-		myerr := procfunc(doc, sc)
+		myerr := sc.Procfunc(doc)
 		if myerr != nil {
 			log.Printf("Filterfunc failed: %v", myerr)
 		}
 	} else {
-		log.Printf("No processor functions available for crawling")
+		err = errors.New("No processor function available for crawling")
+		log.Printf("%s\n", err.Error())
+
 	}
 
 	return err

@@ -33,8 +33,12 @@ func TransferURLS(mymap map[string][]string) (urls []string, err error) {
 
 	alldomains := func(url string) []byte {
 		myDomains := AllowedDomains{}
-		myDomains.Domains = append(myDomains.Domains, url)
-		pdom := strings.Index(url, ".")
+		turl := url
+		if !strings.Contains(strings.ToLower(url), "www.") {
+			turl = "www." + url
+		}
+		myDomains.Domains = append(myDomains.Domains, turl)
+		pdom := strings.Index(turl, ".")
 		if pdom != -1 {
 			pdom++
 			myDomains.Domains = append(myDomains.Domains, url[pdom:])

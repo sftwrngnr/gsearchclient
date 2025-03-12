@@ -9,9 +9,9 @@ import (
 	"os"
 )
 
-func TestSubCrawler(sl []string) {
-	fmt.Println("TestSubCrawler")
-	var sc crawler.Subcrawler
+func BatchSubCrawler(sl []string) {
+	fmt.Println("BatchSubCrawler")
+	sc := &crawler.Subcrawler{}
 	for _, s := range sl {
 		// Open and test
 		fr, err := os.Open(s)
@@ -25,7 +25,7 @@ func TestSubCrawler(sl []string) {
 			log.Printf("could not create document: %v", derr)
 			return
 		}
-		myerr := crawler.SCCallback(doc, &sc)
+		myerr := sc.SCCallback(doc)
 		if myerr != nil {
 			fmt.Println(myerr)
 		}

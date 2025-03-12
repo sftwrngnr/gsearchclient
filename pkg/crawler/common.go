@@ -6,4 +6,4 @@ type AllowedDomains struct {
 	Domains []string `json:"domains"`
 }
 
-type Filterfunc func(document *goquery.Document, sc *Subcrawler) error
+type Filterfunc func(document *goquery.Document) error
