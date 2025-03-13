@@ -26,6 +26,9 @@ func (rp *ResultProcessor) ProcessResults(key string, rt ResultType, rawres inte
 		//fmt.Printf("Processing key: %s, rawres: %v\n", key, rawres)
 		rp.processOrganicResults(rawres)
 		break
+	case LocalResults:
+		rp.ProcessLocalResults(rawres)
+		break
 	case SearchMetaData:
 		rp.ProcessSearchMetaData(rawres.(map[string]interface{}))
 		break
@@ -39,6 +42,10 @@ func (rp *ResultProcessor) processOrganicResults(rawres interface{}) (err error)
 		v := k.(map[string]interface{})
 		err = rp.Dbcref.SaveUrlData(rp.Queryid, uint(OrganicResults), 0, uint(v["position"].(float64)), v["link"].(string), v["source"].(string))
 	}
+	return
+}
+
+func (rp *ResultProcessor) ProcessLocalResults(rawres interface{}) (err error) {
 	return
 }
 

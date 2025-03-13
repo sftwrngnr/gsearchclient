@@ -117,7 +117,7 @@ func (sc *Subcrawler) TransferDataToDB(cid uint) {
 	fmt.Printf("Transfering data to DB\n")
 	for _, dta := range sc.CPages {
 		// Load raw data
-		myCP := &sqldb.CrawlerPage{Crid: cid, Pageref: dta.PgRef, Filename: dta.Fname, Filedata: sc.getFileData(dta.Fname)}
+		myCP := &sqldb.Crawlerpage{Crid: cid, Pageref: dta.PgRef, Filename: dta.Fname, Filedata: sc.getFileData(dta.Fname)}
 		err := system.GetSystemParams().Dbc.CreateCrawlerPage(myCP)
 		if err != nil {
 			log.Printf("Error creating crawler page: %s\n", err)
