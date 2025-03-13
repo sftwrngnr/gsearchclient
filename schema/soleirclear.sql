@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 17.2 (Debian 17.2-1.pgdg120+1)
--- Dumped by pg_dump version 17.3 (Ubuntu 17.3-3.pgdg24.04+1)
+-- Dumped by pg_dump version 17.4 (Ubuntu 17.4-1.pgdg24.04+2)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -37,7 +37,7 @@ ALTER TABLE ONLY public.paddress DROP CONSTRAINT paddress_states_fk;
 ALTER TABLE ONLY public.paddress DROP CONSTRAINT paddress_queries_fk;
 ALTER TABLE ONLY public.paddress DROP CONSTRAINT paddress_phonenumber_fk;
 ALTER TABLE ONLY public.crawlerresults DROP CONSTRAINT crawlerresults_searchcampaign_fk;
-ALTER TABLE ONLY public.crawlerresults DROP CONSTRAINT crawlerresults_crawlerprofile_fk;
+ALTER TABLE ONLY public.crawlerresults DROP CONSTRAINT crawlerresults_crawlerprofiles_fk;
 ALTER TABLE ONLY public.crawlerprofiles DROP CONSTRAINT crawlercampaign_searchcampaign_fk;
 ALTER TABLE ONLY public.crawlerprofiles DROP CONSTRAINT crawlercampaign_company_fk;
 ALTER TABLE ONLY public.cityareacodes DROP CONSTRAINT cityareacodes_cities_fk;
@@ -54,6 +54,7 @@ ALTER TABLE ONLY public.zipcodes DROP CONSTRAINT zipcode_pk;
 ALTER TABLE ONLY public.urls DROP CONSTRAINT urls_pk;
 ALTER TABLE ONLY public.states DROP CONSTRAINT states_unique;
 ALTER TABLE ONLY public.states DROP CONSTRAINT states_pk;
+ALTER TABLE ONLY public.simpleresults DROP CONSTRAINT simpleresults_pk;
 ALTER TABLE ONLY public.campaigns DROP CONSTRAINT searchcampaign_pk;
 ALTER TABLE ONLY public.queries DROP CONSTRAINT query_pk;
 ALTER TABLE ONLY public.search_metadata DROP CONSTRAINT qrysummary_pk;
@@ -62,7 +63,9 @@ ALTER TABLE ONLY public.qry_kwds DROP CONSTRAINT qry_kwds_pk;
 ALTER TABLE ONLY public.qry_acs DROP CONSTRAINT qry_ac_pk;
 ALTER TABLE ONLY public.phonenumber DROP CONSTRAINT phonenumber_unique;
 ALTER TABLE ONLY public.keywords DROP CONSTRAINT keywords_pk;
+ALTER TABLE ONLY public.ignoreurls DROP CONSTRAINT ignoreurls_pk;
 ALTER TABLE ONLY public.crawlerresults DROP CONSTRAINT crawlerresults_pk;
+ALTER TABLE ONLY public.crawlerpages DROP CONSTRAINT crawlerpages_pk;
 ALTER TABLE ONLY public.crawlerprofiles DROP CONSTRAINT crawlerconfig_pk;
 ALTER TABLE ONLY public.query_results DROP CONSTRAINT crawler_results_pk;
 ALTER TABLE ONLY public.companies DROP CONSTRAINT company_pk;
@@ -72,6 +75,7 @@ ALTER TABLE ONLY public.areacodes DROP CONSTRAINT areacodes_pk;
 ALTER TABLE public.zipcodes ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.urls ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.states ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.simpleresults ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.search_metadata ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.query_results ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.queries ALTER COLUMN id DROP DEFAULT;
@@ -82,8 +86,10 @@ ALTER TABLE public.phonenumber ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.pcontact ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.paddress ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.keywords ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.ignoreurls ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.crawlerresults ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.crawlerprofiles ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.crawlerpages ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.companies ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.cityareacodes ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.cities ALTER COLUMN id DROP DEFAULT;
@@ -95,6 +101,8 @@ DROP SEQUENCE public.urls_id_seq;
 DROP TABLE public.urls;
 DROP SEQUENCE public.states_id_seq;
 DROP TABLE public.states;
+DROP SEQUENCE public.simpleresults_id_seq;
+DROP TABLE public.simpleresults;
 DROP SEQUENCE public.searchcampaign_id_seq;
 DROP SEQUENCE public.query_id_seq;
 DROP TABLE public.queries;
@@ -114,8 +122,12 @@ DROP SEQUENCE public.paddress_id_seq;
 DROP TABLE public.paddress;
 DROP SEQUENCE public.keywords_id_seq;
 DROP TABLE public.keywords;
+DROP SEQUENCE public.ignoreurls_id_seq;
+DROP TABLE public.ignoreurls;
 DROP SEQUENCE public.crawlerresults_id_seq;
 DROP TABLE public.crawlerresults;
+DROP SEQUENCE public.crawlerpages_id_seq;
+DROP TABLE public.crawlerpages;
 DROP SEQUENCE public.crawlerconfig_id_seq;
 DROP TABLE public.crawlerprofiles;
 DROP SEQUENCE public.crawler_results_id_seq;
@@ -391,6 +403,45 @@ ALTER SEQUENCE public.crawlerconfig_id_seq OWNED BY public.crawlerprofiles.id;
 
 
 --
+-- Name: crawlerpages; Type: TABLE; Schema: public; Owner: crawler
+--
+
+CREATE TABLE public.crawlerpages (
+    id bigint NOT NULL,
+    crid bigint NOT NULL,
+    pageref character varying,
+    filename character varying,
+    filedata character varying,
+    created_at date,
+    updated_at date,
+    deleted_at date
+);
+
+
+ALTER TABLE public.crawlerpages OWNER TO crawler;
+
+--
+-- Name: crawlerpages_id_seq; Type: SEQUENCE; Schema: public; Owner: crawler
+--
+
+CREATE SEQUENCE public.crawlerpages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.crawlerpages_id_seq OWNER TO crawler;
+
+--
+-- Name: crawlerpages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: crawler
+--
+
+ALTER SEQUENCE public.crawlerpages_id_seq OWNED BY public.crawlerpages.id;
+
+
+--
 -- Name: crawlerresults; Type: TABLE; Schema: public; Owner: crawler
 --
 
@@ -438,6 +489,40 @@ ALTER SEQUENCE public.crawlerresults_id_seq OWNER TO crawler;
 --
 
 ALTER SEQUENCE public.crawlerresults_id_seq OWNED BY public.crawlerresults.id;
+
+
+--
+-- Name: ignoreurls; Type: TABLE; Schema: public; Owner: crawler
+--
+
+CREATE TABLE public.ignoreurls (
+    id bigint NOT NULL,
+    url character varying,
+    subdomains boolean DEFAULT true
+);
+
+
+ALTER TABLE public.ignoreurls OWNER TO crawler;
+
+--
+-- Name: ignoreurls_id_seq; Type: SEQUENCE; Schema: public; Owner: crawler
+--
+
+CREATE SEQUENCE public.ignoreurls_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.ignoreurls_id_seq OWNER TO crawler;
+
+--
+-- Name: ignoreurls_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: crawler
+--
+
+ALTER SEQUENCE public.ignoreurls_id_seq OWNED BY public.ignoreurls.id;
 
 
 --
@@ -816,6 +901,44 @@ ALTER SEQUENCE public.searchcampaign_id_seq OWNED BY public.campaigns.id;
 
 
 --
+-- Name: simpleresults; Type: TABLE; Schema: public; Owner: crawler
+--
+
+CREATE TABLE public.simpleresults (
+    id bigint NOT NULL,
+    cid bigint,
+    dentist character varying,
+    email character varying,
+    created_at date,
+    updated_at date,
+    deleted_at date
+);
+
+
+ALTER TABLE public.simpleresults OWNER TO crawler;
+
+--
+-- Name: simpleresults_id_seq; Type: SEQUENCE; Schema: public; Owner: crawler
+--
+
+CREATE SEQUENCE public.simpleresults_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.simpleresults_id_seq OWNER TO crawler;
+
+--
+-- Name: simpleresults_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: crawler
+--
+
+ALTER SEQUENCE public.simpleresults_id_seq OWNED BY public.simpleresults.id;
+
+
+--
 -- Name: states; Type: TABLE; Schema: public; Owner: crawler
 --
 
@@ -976,6 +1099,13 @@ ALTER TABLE ONLY public.companies ALTER COLUMN id SET DEFAULT nextval('public.co
 
 
 --
+-- Name: crawlerpages id; Type: DEFAULT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.crawlerpages ALTER COLUMN id SET DEFAULT nextval('public.crawlerpages_id_seq'::regclass);
+
+
+--
 -- Name: crawlerprofiles id; Type: DEFAULT; Schema: public; Owner: crawler
 --
 
@@ -987,6 +1117,13 @@ ALTER TABLE ONLY public.crawlerprofiles ALTER COLUMN id SET DEFAULT nextval('pub
 --
 
 ALTER TABLE ONLY public.crawlerresults ALTER COLUMN id SET DEFAULT nextval('public.crawlerresults_id_seq'::regclass);
+
+
+--
+-- Name: ignoreurls id; Type: DEFAULT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.ignoreurls ALTER COLUMN id SET DEFAULT nextval('public.ignoreurls_id_seq'::regclass);
 
 
 --
@@ -1060,6 +1197,13 @@ ALTER TABLE ONLY public.search_metadata ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
+-- Name: simpleresults id; Type: DEFAULT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.simpleresults ALTER COLUMN id SET DEFAULT nextval('public.simpleresults_id_seq'::regclass);
+
+
+--
 -- Name: states id; Type: DEFAULT; Schema: public; Owner: crawler
 --
 
@@ -1129,11 +1273,27 @@ ALTER TABLE ONLY public.crawlerprofiles
 
 
 --
+-- Name: crawlerpages crawlerpages_pk; Type: CONSTRAINT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.crawlerpages
+    ADD CONSTRAINT crawlerpages_pk PRIMARY KEY (id);
+
+
+--
 -- Name: crawlerresults crawlerresults_pk; Type: CONSTRAINT; Schema: public; Owner: crawler
 --
 
 ALTER TABLE ONLY public.crawlerresults
     ADD CONSTRAINT crawlerresults_pk PRIMARY KEY (id);
+
+
+--
+-- Name: ignoreurls ignoreurls_pk; Type: CONSTRAINT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.ignoreurls
+    ADD CONSTRAINT ignoreurls_pk PRIMARY KEY (id);
 
 
 --
@@ -1198,6 +1358,14 @@ ALTER TABLE ONLY public.queries
 
 ALTER TABLE ONLY public.campaigns
     ADD CONSTRAINT searchcampaign_pk PRIMARY KEY (id);
+
+
+--
+-- Name: simpleresults simpleresults_pk; Type: CONSTRAINT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.simpleresults
+    ADD CONSTRAINT simpleresults_pk PRIMARY KEY (id);
 
 
 --
@@ -1322,11 +1490,11 @@ ALTER TABLE ONLY public.crawlerprofiles
 
 
 --
--- Name: crawlerresults crawlerresults_crawlerprofile_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
+-- Name: crawlerresults crawlerresults_crawlerprofiles_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
 --
 
 ALTER TABLE ONLY public.crawlerresults
-    ADD CONSTRAINT crawlerresults_crawlerprofile_fk FOREIGN KEY (crawler) REFERENCES public.crawlerprofiles(id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT crawlerresults_crawlerprofiles_fk FOREIGN KEY (crawler) REFERENCES public.crawlerprofiles(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
