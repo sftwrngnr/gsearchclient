@@ -128,14 +128,36 @@ func CrawlerExec(mux *http.ServeMux) {
 
 func CrawlerSetup(mux *http.ServeMux) {
 	mux.Handle("GET /crawltest", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
+		var States []string = []string{"AZ", "UT", "IL", "HI"}
 		fmt.Printf("Received crawltest request\n")
-		mydc := crawler.NewDeltacrawl()
-		err := mydc.Init()
-		if err != nil {
-			fmt.Printf("Error with Init %s\n", err.Error())
+		fmt.Printf("States: %v\n", States)
+		for _, state := range States {
+			mySt, serr := system.GetSystemParams().Dbc.GetStateByAbbr(state)
+			if serr != nil {
+				fmt.Printf("Error with GetStateByAbbr %s\n", serr.Error())
+				continue
+			}
+			zips, zerr := system.GetSystemParams().Dbc.Top10Zipcodes(mySt.ID)
+			if zerr != nil {
+				fmt.Printf("Error with Top10Zipcodes %s\n", zerr.Error())
+				continue
+			}
+			fmt.Printf("Crawling Delta Dental site for top ten zips in %s\n", state)
+			for _, zip := range zips {
+
+				fmt.Printf("Crawling zip %s\n", zip.Zipcode)
+				mydc := crawler.NewDeltacrawl()
+				err := mydc.Init()
+				if err != nil {
+					fmt.Printf("Error with Init %s\n", err.Error())
+				}
+				err = mydc.Run(zip.Zipcode, zip.ID)
+				if err != nil {
+					fmt.Printf("Error with Run %s\n", err.Error())
+				}
+			}
 		}
-		err = mydc.Run("85142")
-		return nil, err
+		return nil, nil
 	}))
 }
 
