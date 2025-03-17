@@ -38,11 +38,15 @@ func (sr *SearchResults) ProcessSearchData(qid uint, rawRes map[string]interface
 		"related_questions", "ai_overview", "organic_results", "local_results", "pagination"}
 	fmt.Printf("rawRes is %d\n", len(rawRes))
 	for i, key := range resultkeys {
-		sr.Results[ResultType(i)] = rawRes[key]
-		rp.ProcessResults(key, ResultType(i), rawRes[key])
+		if rawRes[key] != nil {
+			sr.Results[ResultType(i)] = rawRes[key]
+			rp.ProcessResults(key, ResultType(i), rawRes[key])
+		}
 
 	}
-	fmt.Printf("ProcessSearchData::sr.Results[SerpapiPagination] is:%v\n", sr.Results[SerpapiPagination])
+	if sr.Results[SerpapiPagination] != nil {
+		fmt.Printf("ProcessSearchData::sr.Results[SerpapiPagination] is:%v\n", sr.Results[SerpapiPagination])
+	}
 }
 
 func (sr *SearchResults) StoreResults(searchResults map[string]interface{}) {

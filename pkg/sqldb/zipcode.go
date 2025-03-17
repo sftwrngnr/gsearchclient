@@ -33,3 +33,9 @@ func (dbc *DBConnData) GetZipcodesForList(zc []string, zcl *[]Zipcode) (err erro
 	fmt.Printf("There are %d records returned\n", len(*zcl))
 	return
 }
+
+func (dbc *DBConnData) Top10Zipcodes(stid uint) (zips []Zipcode, err error) {
+	err = dbc.DB.Where("state = ?", stid).Order("population DESC").Limit(10).Find(&zips).Error
+	fmt.Printf("There are %d records returned\n", len(zips))
+	return
+}

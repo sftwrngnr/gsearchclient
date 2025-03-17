@@ -38,7 +38,7 @@ func HomePage() Node {
 						Td(Input(Type("checkbox"), Label(Text("allac"))), Text("All Area Codes")),
 						Td(Input(Type("checkbox"), Label(Text("allkw"))), Text("All Keywords")),
 					),
-					Tr(Td(),
+					Tr(Td(Input(Type("checkbox"), Label(Text("top10z"))), Text("Top 10 Zipcodes")),
 						Td(),
 						Td(Input(Type("checkbox"), Label(Text("indivkw"))), Text("Individual Keywords")),
 					),

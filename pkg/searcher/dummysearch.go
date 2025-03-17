@@ -45,7 +45,8 @@ func (dsc *DummySearchClient) ValidateSearchParameters(sp *SearchParms) (rval er
 		rval = fmt.Errorf("At least one of the following keywords needs to be selected: %s", rval)
 		return
 	}
-	if slices.Contains(sp.SKeys, "ac") && (slices.Contains(sp.SKeys, "zc")) {
+	if (slices.Contains(sp.SKeys, "ac") || slices.Contains(sp.SKeys, "allac")) && (slices.Contains(sp.SKeys, "allzc") || slices.Contains(sp.SKeys, "zc") ||
+		slices.Contains(sp.SKeys, "top10z")) {
 		rval = fmt.Errorf("Only zip code or area code may be selected. Not both.")
 		return
 	}
@@ -53,20 +54,27 @@ func (dsc *DummySearchClient) ValidateSearchParameters(sp *SearchParms) (rval er
 	return
 }
 
-func (dsc *DummySearchClient) BuildQuery() (rval error) {
+func (dsc *DummySearchClient) BuildQuery(zc string) (rval error) {
 	fmt.Printf("Building search query\n")
 	dsc.Query = dsc.sParms.State.Name
 	dsc.Query += " + " + dsc.GetFirstReqKwd()
-	dsc.Query += "+" + dsc.GetAddtlKwds()
+	addkw := dsc.GetAddtlKwds()
+	if addkw != "" {
+		dsc.Query += "+" + addkw
+	}
 	if slices.Contains(dsc.sParms.SKeys, "ac") {
-		dsc.Query += "+ in area code (" + strings.Join(dsc.sParms.AreaCodeList, ",") + ")"
+		dsc.Query += " + in area code (" + strings.Join(dsc.sParms.AreaCodeList, ",") + ")"
 	}
 	if slices.Contains(dsc.sParms.SKeys, "zc") {
 		zcl := make([]string, 0)
 		for _, v := range dsc.sParms.ZipCodeList {
 			zcl = append(zcl, v.Zipcode)
 		}
-		dsc.Query += "+ in zip code (" + strings.Join(zcl, ",") + ")"
+		dsc.Query += " + in zip code (" + strings.Join(zcl, ",") + ")"
+	}
+	if zc != "" {
+		dsc.Query += " + in zip code " + zc
+		fmt.Printf("Query: %s\n", dsc.Query)
 	}
 	dsc.searchParms = make(map[string]string)
 	dsc.searchParms["q"] = dsc.Query

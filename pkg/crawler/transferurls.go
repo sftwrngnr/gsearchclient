@@ -14,6 +14,7 @@ func TransferURLS(mymap map[string][]string) (urls []string, err error) {
 		//comp int
 		camp  int
 		crawl int
+		iurls []string
 	)
 	/*
 		comp, err = strconv.Atoi(mymap["Company"][0])
@@ -22,6 +23,14 @@ func TransferURLS(mymap map[string][]string) (urls []string, err error) {
 		}
 
 	*/
+	ignurls, ierr := system.GetSystemParams().Dbc.GetIgnoreUrls()
+	if ierr != nil {
+		err = ierr
+		return
+	}
+	for _, iurl := range ignurls {
+		iurls = append(iurls, iurl.Url)
+	}
 	camp, err = strconv.Atoi(mymap["Campaign"][0])
 	if err != nil {
 		return
@@ -36,12 +45,15 @@ func TransferURLS(mymap map[string][]string) (urls []string, err error) {
 		turl := url
 		if !strings.Contains(strings.ToLower(url), "www.") {
 			turl = "www." + url
+			fmt.Printf("%s\n", turl)
 		}
 		myDomains.Domains = append(myDomains.Domains, turl)
 		pdom := strings.Index(turl, ".")
 		if pdom != -1 {
-			pdom++
-			myDomains.Domains = append(myDomains.Domains, url[pdom:])
+			if strings.Index(turl, "www") != -1 {
+				pdom++
+				myDomains.Domains = append(myDomains.Domains, turl[pdom:])
+			}
 		}
 		fmt.Printf("%v\n", myDomains.Domains)
 		rval, err := json.Marshal(myDomains)
@@ -56,6 +68,9 @@ func TransferURLS(mymap map[string][]string) (urls []string, err error) {
 		return
 	}
 	for _, r := range mydbr {
+		if FoundIgnoreUrl(r.Url, iurls) {
+			continue
+		}
 		fmt.Printf("Processing %s\n", r.Url)
 		turl := r.Url
 		parsedUrl, myerr := url.Parse(turl)
@@ -77,4 +92,13 @@ func TransferURLS(mymap map[string][]string) (urls []string, err error) {
 		}
 	}
 	return
+}
+
+func FoundIgnoreUrl(url string, urls []string) bool {
+	for _, u := range urls {
+		if strings.Contains(url, u) {
+			return true
+		}
+	}
+	return false
 }

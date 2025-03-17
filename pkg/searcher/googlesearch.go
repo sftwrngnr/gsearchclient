@@ -46,7 +46,8 @@ func (gsc *GooglesearchClient) ValidateSearchParameters(sp *SearchParms) (rval e
 		rval = fmt.Errorf("At least one of the following keywords needs to be selected: %s", rval)
 		return
 	}
-	if slices.Contains(sp.SKeys, "ac") && (slices.Contains(sp.SKeys, "zc")) {
+	if (slices.Contains(sp.SKeys, "ac") || slices.Contains(sp.SKeys, "allac")) && (slices.Contains(sp.SKeys, "allzc") || slices.Contains(sp.SKeys, "zc") ||
+		slices.Contains(sp.SKeys, "top10z")) {
 		rval = fmt.Errorf("Only zip code or area code may be selected. Not both.")
 		return
 	}
@@ -54,11 +55,14 @@ func (gsc *GooglesearchClient) ValidateSearchParameters(sp *SearchParms) (rval e
 	return
 }
 
-func (gsc *GooglesearchClient) BuildQuery() (rval error) {
+func (gsc *GooglesearchClient) BuildQuery(zc string) (rval error) {
 	fmt.Printf("Building search query\n")
 	gsc.Query = gsc.sParms.State.Name
 	gsc.Query += " + " + gsc.GetFirstReqKwd()
-	gsc.Query += "+" + gsc.GetAddtlKwds()
+	addkw := gsc.GetAddtlKwds()
+	if len(addkw) > 1 {
+		gsc.Query += "+" + addkw
+	}
 	if slices.Contains(gsc.sParms.SKeys, "ac") {
 		gsc.Query += "+ in area code (" + strings.Join(gsc.sParms.AreaCodeList, ",") + ")"
 	}
@@ -67,8 +71,13 @@ func (gsc *GooglesearchClient) BuildQuery() (rval error) {
 		for _, v := range gsc.sParms.ZipCodeList {
 			zcl = append(zcl, v.Zipcode)
 		}
-		gsc.Query += "+ in zip code (" + strings.Join(zcl, ",") + ")"
+		gsc.Query += " in zip code (" + strings.Join(zcl, ",") + ")"
 	}
+	if zc != "" {
+		gsc.Query += "+ in zip code " + zc
+		fmt.Printf("Query: %s\n", gsc.Query)
+	}
+
 	gsc.searchParms = make(map[string]string)
 	gsc.searchParms["q"] = gsc.Query
 	gsc.searchParms["location"] = gsc.sParms.State.Name

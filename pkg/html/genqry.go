@@ -56,6 +56,11 @@ func GenQry(mymap map[string][]string) (myOut Node, err error) {
 			return
 		}
 	}
+	if slices.Contains(searchp.SKeys, "top10z") {
+		fmt.Printf("Top 10 Zipcodes for %d\n", searchp.State)
+		err = searchp.GetTop10Zips()
+
+	}
 	myOut, err = searcher.Search(searchp, mySearchClient)
 	return
 }

@@ -16,13 +16,14 @@ type SearchParms struct {
 	State        sqldb.States
 	KeywordList  []sqldb.Keywords
 	ZipCodeList  []sqldb.Zipcode
+	TopZipList   []sqldb.Zipcode
 	AreaCodeList []string
 	SKeys        []string
 }
 
 type Searcher interface {
 	ValidateSearchParameters(*SearchParms) error
-	BuildQuery() error
+	BuildQuery(string) error
 	ExecuteSearch() error
 	SaveResults() error
 	GetNodeResults() Node
@@ -85,22 +86,56 @@ func Search(searchParms *SearchParms, searcher Searcher) (rnode Node, err error)
 		err = nil
 		return
 	}
-	err = searcher.BuildQuery()
-	if err != nil {
-		rnode = searchParms.ErrorText(fmt.Sprintf("Build query error %s", err.Error()))
-		err = nil
-		return
+	if searchParms.TopZipList != nil {
+		rslts := make([]Node, len(searchParms.TopZipList))
+		for i, zip := range searchParms.TopZipList {
+			fmt.Printf("Build query and executing for zip code %s\n", zip.Zipcode)
+			err = searcher.BuildQuery(zip.Zipcode)
+			if err != nil {
+				rnode = searchParms.ErrorText(fmt.Sprintf("Build query error %s", err.Error()))
+				err = nil
+				return
+			}
+			err = searcher.ExecuteSearch()
+			if err != nil {
+				rnode = searchParms.ErrorText(fmt.Sprintf("Execute Search error %s", err.Error()))
+				err = nil
+				return
+			}
+			err = searcher.SaveResults()
+			if err != nil {
+				return
+			}
+			rslts[i] = searcher.GetNodeResults()
+		}
+		rnode = Div(rslts...)
+	} else {
+		err = searcher.BuildQuery("")
+		if err != nil {
+			rnode = searchParms.ErrorText(fmt.Sprintf("Build query error %s", err.Error()))
+			err = nil
+			return
+		}
+		err = searcher.ExecuteSearch()
+		if err != nil {
+			rnode = searchParms.ErrorText(fmt.Sprintf("Execute Search error %s", err.Error()))
+			err = nil
+			return
+		}
+		err = searcher.SaveResults()
+		if err != nil {
+			return
+		}
+		rnode = searcher.GetNodeResults()
+
 	}
-	err = searcher.ExecuteSearch()
-	if err != nil {
-		rnode = searchParms.ErrorText(fmt.Sprintf("Execute Search error %s", err.Error()))
-		err = nil
-		return
+	return
+}
+
+func (sp *SearchParms) GetTop10Zips() (err error) {
+	sp.TopZipList, err = sp.Dbcref.Top10Zipcodes(sp.State.ID)
+	for _, zip := range sp.TopZipList {
+		fmt.Printf("%s, %d\n", zip.Zipcode, zip.Population)
 	}
-	err = searcher.SaveResults()
-	if err != nil {
-		return
-	}
-	rnode = searcher.GetNodeResults()
 	return
 }
