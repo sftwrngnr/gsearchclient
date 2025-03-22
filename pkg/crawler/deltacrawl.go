@@ -103,7 +103,6 @@ func (dc *Deltacrawl) Run(zc string, zcid uint) (err error) {
 				fmt.Printf("%v\n", entry)
 			}
 			fmt.Printf("Entry #%d: %v\n", i, entry)
-			time.Sleep(1 * time.Second)
 
 		}
 		fmt.Printf("%v\n", myResp)
@@ -157,6 +156,7 @@ func (dc *Deltacrawl) processDentistSearchResults(ent playwright.Locator, disp p
 				panic(err)
 			}
 			dc.ProcessIndivDentistBlock()
+			time.Sleep(1 * time.Second)
 			bkbutn := dc.pwPage.Locator(backButtonId).First()
 			if bkbutn != nil {
 				fmt.Printf("Found single dentist button: %v\n", bkbutn)
