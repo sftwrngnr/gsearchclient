@@ -21,10 +21,13 @@ func HomePage() Node {
 			Input(Type("checkbox"), Name("sonly"), ID("sonly")), Text("State Only"),
 			Hr(Style("border: 5px solid blue; border-radius: 5px")),
 			Div(ID("selectorupdate"),
-				Table(Tr(Th(Text("Zip code")), Th(Text("Area code")), Th(Text("Keywords"))),
+				Table(Tr(Th(Text("Zip code")), Th(Text("City")), Th(Text("Area code")), Th(Text("Keywords"))),
 					Tr(
 						Td(
 							Select(Name("zc"), ID("zc"), Multiple()),
+						),
+						Td(
+							Select(Name("city"), ID("city"), Multiple()),
 						),
 						Td(
 							Select(Name("ac"), ID("ac"), Multiple()),
@@ -35,6 +38,7 @@ func HomePage() Node {
 					),
 					Tr(
 						Td(Input(Type("checkbox"), Label(Text("allzc"))), Text("All Zipcodes")),
+						Td(Input(Type("Text"), Label(Text("City"))), Text("City")),
 						Td(Input(Type("checkbox"), Label(Text("allac"))), Text("All Area Codes")),
 						Td(Input(Type("checkbox"), Label(Text("allkw"))), Text("All Keywords")),
 					),
