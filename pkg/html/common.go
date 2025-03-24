@@ -17,7 +17,6 @@ func GetSearchPostReq() (rval Node) {
 		hx.Include("#allac"),
 		hx.Include("#allkw"),
 		hx.Include("#indivkw"),
-		hx.Include("#sonly"),
 		hx.Include("#top10z"),
 		hx.Target("#qrystring"),
 		hx.Target("#spage"),

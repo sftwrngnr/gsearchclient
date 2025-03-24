@@ -11,14 +11,19 @@ import (
 func HomePage() Node {
 	stateOpts := getStateOptions()
 	States := Select(stateOpts...)
+	Crawlers := crawlerlist()
 	return page("Home",
 		Head(Script(Src("https://cdn.tailwindcss.com?plugins=forms,typography")),
 			Script(Src("https://unpkg.com/htmx.org"))),
 		H1(Text("Market Research Crawler")),
 		H2(Text("Select query options:")),
-		Img(ID("spinner"), Class("htmx-indicator"), Src("https://unpkg.com/html-spinner")),
-		Form(Text("State:"), Br(), States, Br(),
-			Input(Type("checkbox"), Name("sonly"), ID("sonly")), Text("State Only"),
+		Form(
+			Table(
+				Tr(
+					Td(Text("State:"), States),
+					Td(Text("Crawler:"), Select(Name("Crawler"), ID("Crawler"), Option(Crawlers...))),
+				),
+			),
 			Hr(Style("border: 5px solid blue; border-radius: 5px")),
 			Div(ID("selectorupdate"),
 				Table(Tr(Th(Text("Zip code")), Th(Text("City")), Th(Text("Area code")), Th(Text("Keywords"))),
@@ -55,6 +60,16 @@ func HomePage() Node {
 
 }
 
+func crawlerlist() []Node {
+	validCrawlers := []string{"Dummy", "Google", "Delta"}
+	rval := []Node{}
+	rval = append(rval)
+	for i, crawler := range validCrawlers {
+		rval = append(rval, Option(Value(string(i)), Text(crawler)))
+	}
+	return rval
+}
+
 func getStateOptions() []Node {
 	rval := []Node{}
 	myStates, err := system.GetSystemParams().Dbc.GetAllStates()
@@ -62,7 +77,7 @@ func getStateOptions() []Node {
 		fmt.Printf("getStateOptions: %v\n", err)
 		return rval
 	}
-	rval = append(rval, Name("state"), hx.Get("/zipcodes"), hx.Target("#selectorupdate"), hx.Indicator("#spinner"))
+	rval = append(rval, Name("state"), hx.Get("/zipcodes"))
 	rval = append(rval, Option(Value("Name"), Text("None")))
 	for _, myState := range myStates {
 		rval = append(rval, Option(Value(myState.Abbrev), Text(myState.Name)))
