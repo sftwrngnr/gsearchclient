@@ -20,6 +20,9 @@ func GetSearchPostReq() (rval Node) {
 		hx.Include("#sonly"),
 		hx.Include("#top10z"),
 		hx.Target("#qrystring"),
+		hx.Target("#spage"),
+		hx.Target("#maxpages"),
+		hx.Target("#resper"),
 		hx.Post("/genqry"),
 	)
 	return

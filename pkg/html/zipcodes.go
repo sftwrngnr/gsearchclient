@@ -74,6 +74,18 @@ func ZipCodes(qs string) (rval Node) {
 					Td(),
 					Td(Input(Type("checkbox"), Label(Text("indivkw")), ID("indivkw")), Text("Individual Keywords"))),
 			),
+			H2(Text("Pagination:")),
+			Table(
+				Tr(
+					Td(Text("Start page:"), Input(Type("text"), ID("spage"), Value("1"))),
+				),
+				Tr(
+					Td(Text("Maximum pages:"), Input(Type("text"), ID("maxpages"), Value("10"))),
+				),
+				Tr(
+					Td(Text("Results per page:"), Input(Type("text"), ID("resper"), Value("10"))),
+				),
+			),
 		))
 
 	rval = Var(tval...)
