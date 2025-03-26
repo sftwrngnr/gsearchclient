@@ -863,7 +863,8 @@ CREATE TABLE public.search_metadata (
     raw_html_file character varying,
     created_at date,
     updated_at date,
-    deleted_at date
+    deleted_at date,
+    page bigint DEFAULT 1 NOT NULL
 );
 
 
@@ -901,7 +902,10 @@ CREATE TABLE public.queries (
     created_at date,
     updated_at date,
     deleted_at character varying,
-    campaign bigint
+    campaign bigint,
+    startpage bigint DEFAULT 1,
+    maxpage bigint DEFAULT 10,
+    resperpage bigint DEFAULT 10
 );
 
 

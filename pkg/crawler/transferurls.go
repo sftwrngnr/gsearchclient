@@ -50,7 +50,7 @@ func TransferURLS(mymap map[string][]string) (urls []string, err error) {
 		myDomains.Domains = append(myDomains.Domains, turl)
 		pdom := strings.Index(turl, ".")
 		if pdom != -1 {
-			if strings.Index(turl, "www") != -1 {
+			if strings.Index(turl, "www.") != -1 {
 				pdom++
 				myDomains.Domains = append(myDomains.Domains, turl[pdom:])
 			}

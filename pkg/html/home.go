@@ -64,8 +64,8 @@ func crawlerlist() []Node {
 	validCrawlers := []string{"Dummy", "Google", "Delta"}
 	rval := []Node{}
 	rval = append(rval)
-	for i, crawler := range validCrawlers {
-		rval = append(rval, Option(Value(string(i)), Text(crawler)))
+	for _, crawler := range validCrawlers {
+		rval = append(rval, Option(Value(crawler), Text(crawler)))
 	}
 	return rval
 }
@@ -77,7 +77,7 @@ func getStateOptions() []Node {
 		fmt.Printf("getStateOptions: %v\n", err)
 		return rval
 	}
-	rval = append(rval, Name("state"), hx.Get("/zipcodes"))
+	rval = append(rval, Name("state"), hx.Get("/zipcodes"), hx.Target("#selectorupdate"))
 	rval = append(rval, Option(Value("Name"), Text("None")))
 	for _, myState := range myStates {
 		rval = append(rval, Option(Value(myState.Abbrev), Text(myState.Name)))

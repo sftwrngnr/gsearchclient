@@ -22,6 +22,7 @@ type DummySearchClient struct {
 	searchParms  map[string]string
 	SResults     *SearchResults
 	sRawResults  map[string]interface{}
+	genericVal   GenericValidator
 }
 
 func (dsc *DummySearchClient) GetQueryStateId() uint {
@@ -29,29 +30,9 @@ func (dsc *DummySearchClient) GetQueryStateId() uint {
 }
 
 func (dsc *DummySearchClient) ValidateSearchParameters(sp *SearchParms) (rval error) {
-	fmt.Printf("Validating search parameters\n")
 	dsc.sParms = sp
-	if sp.State.ID == 0 {
-		rval = fmt.Errorf("State ID must be set")
-		return
-	}
-	if len(sp.KeywordList) == 0 {
-		rval = fmt.Errorf("At least one keyword must be specified")
-		return
-	}
-	fmt.Printf("Checking to see if at least one required keyword has been selected\n")
-	rval = dsc.CheckRequiredKeywords(sp.KeywordList)
-	if rval != nil {
-		rval = fmt.Errorf("At least one of the following keywords needs to be selected: %s", rval)
-		return
-	}
-	if (slices.Contains(sp.SKeys, "ac") || slices.Contains(sp.SKeys, "allac")) && (slices.Contains(sp.SKeys, "allzc") || slices.Contains(sp.SKeys, "zc") ||
-		slices.Contains(sp.SKeys, "top10z")) {
-		rval = fmt.Errorf("Only zip code or area code may be selected. Not both.")
-		return
-	}
 	dsc.Location = fmt.Sprintf("%s, United States", sp.State.Name)
-	return
+	return dsc.genericVal.Validate(sp)
 }
 
 func (dsc *DummySearchClient) BuildQuery(zc string) (rval error) {

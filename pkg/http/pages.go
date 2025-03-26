@@ -18,7 +18,6 @@ func Home2(mux *http.ServeMux) {
 	mux.Handle("GET /H2", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
 		return html.HomePage2(), nil
 	}))
-
 }
 
 func Home(mux *http.ServeMux) {
@@ -60,7 +59,6 @@ func GenQry(mux *http.ServeMux) {
 	mux.Handle("POST /genqry", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
 		err := r.ParseForm()
 		if err != nil {
-
 			fmt.Printf("Error with ParseForm %s\n", err.Error())
 			return nil, err
 		}
@@ -83,7 +81,7 @@ func GetCrawlers(mux *http.ServeMux) {
 		}
 		fmt.Printf("%v\n", r.Form)
 		kl := make([]string, 0)
-		for k, _ := range r.Form {
+		for k := range r.Form {
 			kl = append(kl, k)
 		}
 		if slices.Contains(kl, "Company") && !slices.Contains(kl, "Campaign") {
