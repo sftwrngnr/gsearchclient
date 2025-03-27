@@ -20,13 +20,16 @@ func (dbc *DBConnData) GetKeywords() (keywrds []Keywords, err error) {
 
 func (dbc *DBConnData) GetReqKeywords() (reqd []string, err error) {
 	var keywords []Keywords
+
 	err = dbc.DB.Where("req = true").Find(&keywords).Error
 	if err != nil {
+		fmt.Printf("%s\n", err.Error())
 		return
 	}
 	for _, kw := range keywords {
 		reqd = append(reqd, kw.Keyword)
 	}
+	fmt.Printf("%v\n", reqd)
 	return
 }
 

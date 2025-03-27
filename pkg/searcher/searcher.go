@@ -19,6 +19,9 @@ type SearchParms struct {
 	TopZipList   []sqldb.Zipcode
 	AreaCodeList []string
 	SKeys        []string
+	SPage        int
+	MPages       int
+	ResultsPP    int
 }
 
 type Searcher interface {

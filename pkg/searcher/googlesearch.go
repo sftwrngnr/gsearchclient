@@ -81,6 +81,8 @@ func (gsc *GooglesearchClient) BuildQuery(zc string) (rval error) {
 	gsc.searchParms = make(map[string]string)
 	gsc.searchParms["q"] = gsc.Query
 	gsc.searchParms["location"] = gsc.sParms.State.Name
+	gsc.searchParms["start"] = "1"
+	gsc.searchParms["num"] = "10"
 	return
 }
 
