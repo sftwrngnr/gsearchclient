@@ -29,3 +29,8 @@ func (dbc *DBConnData) GetUrls(transfrd bool) (urls []Urls, err error) {
 func (dbc *DBConnData) UpdateRec(url *Urls) error {
 	return dbc.DB.Save(url).Error
 }
+
+func (dbc *DBConnData) PurgeIgnoreUrl(purgeurl string) error {
+	err := dbc.DB.Where("url like ?", purgeurl).Delete(&Urls{}).Error
+	return err
+}

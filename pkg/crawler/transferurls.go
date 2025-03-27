@@ -14,7 +14,6 @@ func TransferURLS(mymap map[string][]string) (urls []string, err error) {
 		//comp int
 		camp  int
 		crawl int
-		iurls []string
 	)
 	/*
 		comp, err = strconv.Atoi(mymap["Company"][0])
@@ -23,14 +22,6 @@ func TransferURLS(mymap map[string][]string) (urls []string, err error) {
 		}
 
 	*/
-	ignurls, ierr := system.GetSystemParams().Dbc.GetIgnoreUrls()
-	if ierr != nil {
-		err = ierr
-		return
-	}
-	for _, iurl := range ignurls {
-		iurls = append(iurls, iurl.Url)
-	}
 	camp, err = strconv.Atoi(mymap["Campaign"][0])
 	if err != nil {
 		return
@@ -68,9 +59,6 @@ func TransferURLS(mymap map[string][]string) (urls []string, err error) {
 		return
 	}
 	for _, r := range mydbr {
-		if FoundIgnoreUrl(r.Url, iurls) {
-			continue
-		}
 		fmt.Printf("Processing %s\n", r.Url)
 		turl := r.Url
 		parsedUrl, myerr := url.Parse(turl)
@@ -91,14 +79,32 @@ func TransferURLS(mymap map[string][]string) (urls []string, err error) {
 			fmt.Printf("%s\n", err.Error())
 		}
 	}
+	purgeIgnoreUrls()
+	purgeDuplicateUrls()
 	return
 }
 
-func FoundIgnoreUrl(url string, urls []string) bool {
-	for _, u := range urls {
-		if strings.Contains(url, u) {
-			return true
-		}
+func purgeIgnoreUrls() {
+	fmt.Printf("purgeIgnoreUrls\n")
+	urlIgnorelist, err := system.GetSystemParams().Dbc.GetIgnoreUrls()
+	if err != nil {
+		return
 	}
-	return false
+	for _, v := range urlIgnorelist {
+		myPurge := "%" + v.Url
+		fmt.Printf("Purging %s\n", myPurge)
+		err := system.GetSystemParams().Dbc.PurgeIgnoreUrl(myPurge)
+		if err != nil {
+			fmt.Printf("%s\n", err.Error())
+		}
+		err = system.GetSystemParams().Dbc.PurgeIgnoreUrlCR(myPurge)
+		if err != nil {
+			fmt.Printf("%s\n", err.Error())
+		}
+
+	}
+}
+
+func purgeDuplicateUrls() {
+	
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/sftwrngnr/gsearchclient/pkg/system"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
+	"time"
 
 	"strconv"
 )
@@ -27,7 +28,7 @@ type SearchParms struct {
 type Searcher interface {
 	ValidateSearchParameters(*SearchParms) error
 	BuildQuery(string) error
-	ExecuteSearch() error
+	ExecuteSearch(pgoff int) error
 	SaveResults() error
 	GetNodeResults() Node
 }
@@ -58,7 +59,9 @@ func (sp *SearchParms) ImportKeywords(kw []string) (err error) {
 
 	if err != nil {
 		fmt.Printf("error is %s", err.Error())
+		return
 	}
+
 	return
 }
 
@@ -90,8 +93,10 @@ func Search(searchParms *SearchParms, searcher Searcher) (rnode Node, err error)
 		return
 	}
 	if searchParms.TopZipList != nil {
+		// Build pagination every time
 		rslts := make([]Node, len(searchParms.TopZipList))
-		for i, zip := range searchParms.TopZipList {
+		isPage := searchParms.SPage
+		for _, zip := range searchParms.TopZipList {
 			fmt.Printf("Build query and executing for zip code %s\n", zip.Zipcode)
 			err = searcher.BuildQuery(zip.Zipcode)
 			if err != nil {
@@ -99,7 +104,35 @@ func Search(searchParms *SearchParms, searcher Searcher) (rnode Node, err error)
 				err = nil
 				return
 			}
-			err = searcher.ExecuteSearch()
+			pgOff := isPage
+			searchParms.SPage = isPage
+			for j := 0; j < searchParms.MPages; j++ {
+				err = searcher.ExecuteSearch(pgOff)
+				if err != nil {
+					rnode = searchParms.ErrorText(fmt.Sprintf("Execute Search error %s", err.Error()))
+					err = nil
+					return
+				}
+				err = searcher.SaveResults()
+				if err != nil {
+					return
+				}
+				rslts[j] = searcher.GetNodeResults()
+				pgOff++
+				time.Sleep(5 * time.Second)
+			}
+		}
+		rnode = Div(rslts...)
+	} else {
+		pgOff := searchParms.SPage
+		for i := 0; i < searchParms.MPages; i++ {
+			err = searcher.BuildQuery("")
+			if err != nil {
+				rnode = searchParms.ErrorText(fmt.Sprintf("Build query error %s", err.Error()))
+				err = nil
+				return
+			}
+			err = searcher.ExecuteSearch(pgOff)
 			if err != nil {
 				rnode = searchParms.ErrorText(fmt.Sprintf("Execute Search error %s", err.Error()))
 				err = nil
@@ -109,27 +142,10 @@ func Search(searchParms *SearchParms, searcher Searcher) (rnode Node, err error)
 			if err != nil {
 				return
 			}
-			rslts[i] = searcher.GetNodeResults()
+			rnode = searcher.GetNodeResults()
+			pgOff++
+			time.Sleep(5 * time.Second)
 		}
-		rnode = Div(rslts...)
-	} else {
-		err = searcher.BuildQuery("")
-		if err != nil {
-			rnode = searchParms.ErrorText(fmt.Sprintf("Build query error %s", err.Error()))
-			err = nil
-			return
-		}
-		err = searcher.ExecuteSearch()
-		if err != nil {
-			rnode = searchParms.ErrorText(fmt.Sprintf("Execute Search error %s", err.Error()))
-			err = nil
-			return
-		}
-		err = searcher.SaveResults()
-		if err != nil {
-			return
-		}
-		rnode = searcher.GetNodeResults()
 
 	}
 	return

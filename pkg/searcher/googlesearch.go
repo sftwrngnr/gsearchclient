@@ -9,6 +9,7 @@ import (
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
 	"slices"
+	"strconv"
 	"strings"
 )
 
@@ -81,8 +82,8 @@ func (gsc *GooglesearchClient) BuildQuery(zc string) (rval error) {
 	gsc.searchParms = make(map[string]string)
 	gsc.searchParms["q"] = gsc.Query
 	gsc.searchParms["location"] = gsc.sParms.State.Name
-	gsc.searchParms["start"] = "1"
-	gsc.searchParms["num"] = "10"
+	gsc.searchParms["start"] = strconv.Itoa(gsc.sParms.SPage)
+	gsc.searchParms["num"] = strconv.Itoa(gsc.sParms.ResultsPP)
 	return
 }
 
@@ -108,8 +109,9 @@ func (gsc *GooglesearchClient) SaveResults() (rval error) {
 	return
 }
 
-func (gsc *GooglesearchClient) ExecuteSearch() (rval error) {
+func (gsc *GooglesearchClient) ExecuteSearch(pgoff int) (rval error) {
 	gsc.SResults = NewSearchResults()
+	gsc.UpdatePagination(pgoff)
 	search := g.NewGoogleSearch(gsc.searchParms, system.GetSystemParams().GQKey)
 	gsc.gqrySr, rval = search.GetJSON()
 	if rval != nil {
@@ -126,6 +128,12 @@ func (gsc *GooglesearchClient) GetNodeResults() (rval Node) {
 		H2(Text("Query String")),
 		Text(gsc.Query))
 	return
+}
+
+func (gsc *GooglesearchClient) UpdatePagination(i int) {
+	gsc.sParms.SPage = i * gsc.sParms.ResultsPP
+	gsc.searchParms["start"] = strconv.Itoa(gsc.sParms.SPage)
+
 }
 
 func (gsc *GooglesearchClient) CheckRequiredKeywords(kwds []sqldb.Keywords) (rval error) {

@@ -60,6 +60,18 @@ func GenQry(mymap map[string][]string) (myOut Node, err error) {
 		err = searchp.GetTop10Zips()
 
 	}
+	searchp.SPage, err = strconv.Atoi(mymap["spage"][0])
+	if err != nil {
+		myOut = searchp.ErrorText("Invalid start page")
+	}
+	searchp.MPages, err = strconv.Atoi(mymap["maxpages"][0])
+	if err != nil {
+		myOut = searchp.ErrorText("Invalid maximum pages")
+	}
+	searchp.ResultsPP, err = strconv.Atoi(mymap["resper"][0])
+	if err != nil {
+		myOut = searchp.ErrorText("Invalid start page")
+	}
 	myOut, err = searcher.Search(searchp, mySearchClient)
 	return
 }

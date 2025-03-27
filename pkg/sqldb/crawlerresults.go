@@ -54,3 +54,8 @@ func (dbc *DBConnData) UpdateCrawlerresults(cres *Crawlerresults) (err error) {
 	err = dbc.DB.Save(cres).Error
 	return
 }
+
+func (dbc *DBConnData) PurgeIgnoreUrlCR(purgeurl string) (err error) {
+	err = dbc.DB.Where("url like ?", purgeurl).Delete(&Crawlerresults{}).Error
+	return
+}

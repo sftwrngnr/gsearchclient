@@ -52,6 +52,18 @@ func HomePage() Node {
 						Td(Input(Type("checkbox"), Label(Text("indivkw"))), Text("Individual Keywords")),
 					),
 				)),
+			H2(Text("Pagination:")),
+			Table(
+				Tr(
+					Td(Text("Start page:"), Input(Type("text"), Name("spage"), ID("spage"), Value("1"))),
+				),
+				Tr(
+					Td(Text("Maximum pages:"), Input(Type("text"), Name("maxpages"), ID("maxpages"), Value("10"))),
+				),
+				Tr(
+					Td(Text("Results per page:"), Input(Type("text"), Name("resper"), ID("resper"), Value("10"))),
+				),
+			),
 			Hr(Style("border: 5px solid blue; border-radius: 5px")),
 			GetSearchPostReq(),
 		),

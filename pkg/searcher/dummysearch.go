@@ -86,7 +86,7 @@ func (dsc *DummySearchClient) SaveResults() (rval error) {
 	return
 }
 
-func (dsc *DummySearchClient) ExecuteSearch() (rval error) {
+func (dsc *DummySearchClient) ExecuteSearch(pgidx int) (rval error) {
 	dsc.SResults = NewSearchResults()
 	//search := g.NewGoogleSearch(dsc.searchParms, system.GetSystemParams().GQKey)
 	dsc.sRawResults, rval = dsc.SResults.GetResults()
