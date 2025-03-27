@@ -14,7 +14,6 @@ type GenericValidator struct {
 
 func (g GenericValidator) Validate(sp *SearchParms) (rval error) {
 	fmt.Printf("Validating search parameters\n")
-	fmt.Printf("Validating search parameters\n")
 
 	if sp.State.ID == 0 {
 		rval = fmt.Errorf("State ID must be set")
@@ -43,7 +42,9 @@ func (g GenericValidator) Validate(sp *SearchParms) (rval error) {
 func (g GenericValidator) CheckRequiredKeywords(kwds []sqldb.Keywords) (rval error) {
 	reqlist, err := system.GetSystemParams().Dbc.GetReqKeywords()
 	if err != nil {
-		return err
+		fmt.Printf("Error in GetReqKeywords():: %s\n", err.Error())
+		rval = err
+		return
 	}
 	for _, kwd := range kwds {
 		if kwd.Req {

@@ -41,7 +41,7 @@ func NewCrawler3(path string, disk bool, dir string) *Crawler3 {
 }
 
 func (c *Crawler3) checkIgnoreUrls(inl string) bool {
-	myIgnl := []string{"youtube.com", "instagram.com", "pinterest.com"}
+	myIgnl := []string{"youtube.com", "instagram.com", "pinterest.com", "yelp.com"}
 	for _, v := range myIgnl {
 		if strings.Contains(inl, v) {
 			return true

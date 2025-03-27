@@ -66,9 +66,14 @@ func GenQry(mymap map[string][]string) (myOut Node, err error) {
 
 func getSearchClient(mymap map[string][]string) searcher.Searcher {
 	fmt.Printf("getSearchClient %v\n", mymap)
-	//mySearchClient := &searcher.GooglesearchClient{}
-	return &searcher.DummySearchClient{}
-
+	switch mymap["Crawler"][0] {
+	case "Dummy":
+		return &searcher.DummySearchClient{}
+	case "Google":
+		return &searcher.GooglesearchClient{}
+	default:
+		return &searcher.DummySearchClient{}
+	}
 }
 
 func build_keywordqry(mykws []string) string {
