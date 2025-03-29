@@ -34,6 +34,10 @@ func ZipCodes(mux *http.ServeMux) {
 	}))
 }
 
+func Login(mux *http.ServeMux) {
+	mux.HandleFunc("GET /login", html.LoginPage)
+}
+
 func ExecTransfer(mux *http.ServeMux) {
 	mux.Handle("POST /exectransfer", ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
 		fmt.Printf("Received exectransfer request\n")

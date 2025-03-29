@@ -24,6 +24,7 @@ func setupRoutes() http.Handler {
 	CrawlerExec(mux)
 	CrawlerSetup(mux)
 	Crawler3Exec(mux)
+	Login(mux)
 	About(mux)
 	return mux
 }
