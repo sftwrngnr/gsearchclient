@@ -50,7 +50,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// If not a POST request, serve the login page template.
-	tmpl, err := template.ParseFiles("templates/login.html")
+	tmpl, err := template.ParseFiles("template/login.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

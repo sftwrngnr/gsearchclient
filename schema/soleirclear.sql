@@ -36,7 +36,7 @@ ALTER TABLE ONLY public.paddress DROP CONSTRAINT paddress_zipcodes_fk;
 ALTER TABLE ONLY public.paddress DROP CONSTRAINT paddress_states_fk;
 ALTER TABLE ONLY public.paddress DROP CONSTRAINT paddress_queries_fk;
 ALTER TABLE ONLY public.paddress DROP CONSTRAINT paddress_phonenumber_fk;
-ALTER TABLE ONLY public.deltadata DROP CONSTRAINT deltadata_zipcodes_fk;
+ALTER TABLE ONLY public.insurdata DROP CONSTRAINT deltadata_zipcodes_fk;
 ALTER TABLE ONLY public.crawlerresults DROP CONSTRAINT crawlerresults_searchcampaign_fk;
 ALTER TABLE ONLY public.crawlerresults DROP CONSTRAINT crawlerresults_crawlerprofiles_fk;
 ALTER TABLE ONLY public.crawlerprofiles DROP CONSTRAINT crawlercampaign_searchcampaign_fk;
@@ -47,6 +47,7 @@ ALTER TABLE ONLY public.areacodes DROP CONSTRAINT areacodes_states_fk;
 DROP INDEX public.zipcode_state_idx;
 DROP INDEX public.urls_id_idx;
 DROP INDEX public.states_name_idx;
+DROP INDEX public.insurdata_source_idx;
 DROP INDEX public.crawlercampaign_company_idx;
 DROP INDEX public.cityareacodes_city_idx;
 DROP INDEX public.cities_name_idx;
@@ -65,7 +66,7 @@ ALTER TABLE ONLY public.qry_acs DROP CONSTRAINT qry_ac_pk;
 ALTER TABLE ONLY public.phonenumber DROP CONSTRAINT phonenumber_unique;
 ALTER TABLE ONLY public.keywords DROP CONSTRAINT keywords_pk;
 ALTER TABLE ONLY public.ignoreurls DROP CONSTRAINT ignoreurls_pk;
-ALTER TABLE ONLY public.deltadata DROP CONSTRAINT deltadata_pk;
+ALTER TABLE ONLY public.insurdata DROP CONSTRAINT deltadata_pk;
 ALTER TABLE ONLY public.crawlerresults DROP CONSTRAINT crawlerresults_pk;
 ALTER TABLE ONLY public.crawlerpages DROP CONSTRAINT crawlerpages_pk;
 ALTER TABLE ONLY public.crawlerprofiles DROP CONSTRAINT crawlerconfig_pk;
@@ -88,8 +89,8 @@ ALTER TABLE public.phonenumber ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.pcontact ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.paddress ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.keywords ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.insurdata ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.ignoreurls ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.deltadata ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.crawlerresults ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.crawlerprofiles ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.crawlerpages ALTER COLUMN id DROP DEFAULT;
@@ -128,7 +129,7 @@ DROP TABLE public.keywords;
 DROP SEQUENCE public.ignoreurls_id_seq;
 DROP TABLE public.ignoreurls;
 DROP SEQUENCE public.deltadata_id_seq;
-DROP TABLE public.deltadata;
+DROP TABLE public.insurdata;
 DROP SEQUENCE public.crawlerresults_id_seq;
 DROP TABLE public.crawlerresults;
 DROP SEQUENCE public.crawlerpages_id_seq;
@@ -497,10 +498,10 @@ ALTER SEQUENCE public.crawlerresults_id_seq OWNED BY public.crawlerresults.id;
 
 
 --
--- Name: deltadata; Type: TABLE; Schema: public; Owner: crawler
+-- Name: insurdata; Type: TABLE; Schema: public; Owner: crawler
 --
 
-CREATE TABLE public.deltadata (
+CREATE TABLE public.insurdata (
     id bigint NOT NULL,
     name character varying,
     address character varying,
@@ -510,11 +511,12 @@ CREATE TABLE public.deltadata (
     created_at date,
     updated_at date,
     deleted_at date,
-    jobtitle character varying
+    jobtitle character varying,
+    source character varying
 );
 
 
-ALTER TABLE public.deltadata OWNER TO crawler;
+ALTER TABLE public.insurdata OWNER TO crawler;
 
 --
 -- Name: deltadata_id_seq; Type: SEQUENCE; Schema: public; Owner: crawler
@@ -534,7 +536,7 @@ ALTER SEQUENCE public.deltadata_id_seq OWNER TO crawler;
 -- Name: deltadata_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: crawler
 --
 
-ALTER SEQUENCE public.deltadata_id_seq OWNED BY public.deltadata.id;
+ALTER SEQUENCE public.deltadata_id_seq OWNED BY public.insurdata.id;
 
 
 --
@@ -1173,17 +1175,17 @@ ALTER TABLE ONLY public.crawlerresults ALTER COLUMN id SET DEFAULT nextval('publ
 
 
 --
--- Name: deltadata id; Type: DEFAULT; Schema: public; Owner: crawler
---
-
-ALTER TABLE ONLY public.deltadata ALTER COLUMN id SET DEFAULT nextval('public.deltadata_id_seq'::regclass);
-
-
---
 -- Name: ignoreurls id; Type: DEFAULT; Schema: public; Owner: crawler
 --
 
 ALTER TABLE ONLY public.ignoreurls ALTER COLUMN id SET DEFAULT nextval('public.ignoreurls_id_seq'::regclass);
+
+
+--
+-- Name: insurdata id; Type: DEFAULT; Schema: public; Owner: crawler
+--
+
+ALTER TABLE ONLY public.insurdata ALTER COLUMN id SET DEFAULT nextval('public.deltadata_id_seq'::regclass);
 
 
 --
@@ -1349,10 +1351,10 @@ ALTER TABLE ONLY public.crawlerresults
 
 
 --
--- Name: deltadata deltadata_pk; Type: CONSTRAINT; Schema: public; Owner: crawler
+-- Name: insurdata deltadata_pk; Type: CONSTRAINT; Schema: public; Owner: crawler
 --
 
-ALTER TABLE ONLY public.deltadata
+ALTER TABLE ONLY public.insurdata
     ADD CONSTRAINT deltadata_pk PRIMARY KEY (id);
 
 
@@ -1497,6 +1499,13 @@ CREATE INDEX crawlercampaign_company_idx ON public.crawlerprofiles USING btree (
 
 
 --
+-- Name: insurdata_source_idx; Type: INDEX; Schema: public; Owner: crawler
+--
+
+CREATE INDEX insurdata_source_idx ON public.insurdata USING btree (source);
+
+
+--
 -- Name: states_name_idx; Type: INDEX; Schema: public; Owner: crawler
 --
 
@@ -1574,10 +1583,10 @@ ALTER TABLE ONLY public.crawlerresults
 
 
 --
--- Name: deltadata deltadata_zipcodes_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
+-- Name: insurdata deltadata_zipcodes_fk; Type: FK CONSTRAINT; Schema: public; Owner: crawler
 --
 
-ALTER TABLE ONLY public.deltadata
+ALTER TABLE ONLY public.insurdata
     ADD CONSTRAINT deltadata_zipcodes_fk FOREIGN KEY (zipcode) REFERENCES public.zipcodes(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
