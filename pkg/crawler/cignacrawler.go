@@ -8,32 +8,6 @@ import (
 	"time"
 )
 
-const (
-	backButtonId             string = "#backTo-dentistSearchList"
-	searchResultsDiv         string = "dentistSearchResults"
-	searchControls           string = ".dentistSearchControls"
-	singleDentistCtl         string = ".singleDentistControls"
-	searchResultsListSection string = "searchResultsList"
-	searchResultsClass       string = ".results-list"
-	dentistInfoPanel         string = ".info-dentist-0-single"
-	dentist_info_card        string = ".info-card__body"
-	dentistSearchListCol     string = "#dentistSearchListCol"
-	dentist_name             string = ".dentist-name"
-	dentist_job_title        string = ".post-jobtitle"
-	dentist_contact          string = ".post-contact"
-	details_block            string = ".post-details"
-	detailsButtonId          string = "disableInList"
-	address_block            string = ".post-address"
-	paginationSection        string = ".searchPagination"
-	nextButton               string = "next"
-	onetrustsdk              string = ".onetrust-pc-sdk"
-	alertFrame               string = ".ot-text-resize"
-	cookieDlg                string = ".alertdialog"
-	cookieGroup              string = ".onetrust-button-group-parent"
-	cookieButton             string = "#onetrust-accept-btn-handler"
-	urlPattern               string = "https://www.deltadental.com/us/en/member/find-a-dentist/dentist-search-results.html?address=%s&specialtyCode=020&plan=Any"
-)
-
 type Cignacrawl struct {
 	pw      *playwright.Playwright
 	pwPage  playwright.Page

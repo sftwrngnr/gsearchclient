@@ -273,7 +273,7 @@ func (dc *Deltacrawl) ProcessIndivDentistBlock() {
 			}
 		}
 	}
-	dberr := system.GetSystemParams().Dbc.CreateDaeltaData(dName, dJob, dAddy, dPhone, dEmail, dc.zcid)
+	dberr := system.GetSystemParams().Dbc.CreateDeltaData(dName, dJob, dAddy, dPhone, dEmail, dc.zcid)
 	if dberr != nil {
 		fmt.Printf("Couldn't create delta data: %v\n", dberr)
 	}

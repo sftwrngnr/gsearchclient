@@ -28,9 +28,7 @@ func NewCrawler3(path string, disk bool, dir string) *Crawler3 {
 	rval := &Crawler3{CurUrl: path, UrlCrawl: !disk}
 	if disk {
 		rval.transp = &http.Transport{}
-
 		rval.transp.RegisterProtocol("file", http.NewFileTransport(http.Dir(dir)))
-
 	}
 	myurl, err := url.Parse(path)
 	if err != nil {
